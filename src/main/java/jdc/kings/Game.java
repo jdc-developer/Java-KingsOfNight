@@ -13,6 +13,7 @@ import jdc.kings.objects.enums.ObjectAction;
 import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.ImageUtil;
+import jdc.kings.view.Animator;
 import jdc.kings.view.Handler;
 import jdc.kings.view.Window;
 
@@ -25,6 +26,7 @@ public class Game extends Canvas implements Runnable {
 	private static Game instance;
 	private static Handler handler;
 	private static ImageUtil imageLoader;
+	static Animator anim;
 	
 	private Game() {};
 	
@@ -38,13 +40,14 @@ public class Game extends Canvas implements Runnable {
 		imageLoader = ImageUtil.getInstance();
 		Window.createWindow();
 		
-		Player player = new Player(100, 100, ObjectType.PLAYER);
-		imageLoader.loadImage("/player/attack.png");
+		imageLoader.loadImage("/player/idle.png");
 		List<BufferedImage> images = new ArrayList<>();
 		for (int i = 1; i <= 15; i++) {
-			BufferedImage idle = imageLoader.grabImage(1, i, 64, 64);
-			images.add(idle);
+			BufferedImage image = imageLoader.grabImage(1, i, 64, 64);
+			images.add(image);
 		}
+		Animator playerAnimator = new Animator(images);
+		Player player = new Player(100, 100, ObjectType.PLAYER, playerAnimator);
 		player.getActionImages().put(ObjectAction.IDLE, images);
 		handler.addObject(player);
 	}

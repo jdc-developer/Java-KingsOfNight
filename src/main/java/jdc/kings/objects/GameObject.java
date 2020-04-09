@@ -9,6 +9,7 @@ import java.util.Map;
 
 import jdc.kings.objects.enums.ObjectAction;
 import jdc.kings.objects.enums.ObjectType;
+import jdc.kings.view.Animator;
 
 public abstract class GameObject {
 	
@@ -16,12 +17,16 @@ public abstract class GameObject {
 	protected ObjectType type;
 	protected float velX, velY;
 	protected Map<ObjectAction, List<BufferedImage>> actionImages = new HashMap<ObjectAction, List<BufferedImage>>();
-
-	public GameObject(float x, float y, ObjectType type) {
+	protected Animator animator;
+	
+	public GameObject(float x, float y, ObjectType type, Animator animator) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.type = type;
+		this.animator = animator;
+		animator.setSpeed(100);
+		animator.start();
 	}
 	
 	public abstract void tick();
@@ -74,6 +79,14 @@ public abstract class GameObject {
 
 	public void setActionImages(Map<ObjectAction, List<BufferedImage>> actionImages) {
 		this.actionImages = actionImages;
+	}
+
+	public Animator getAnimator() {
+		return animator;
+	}
+
+	public void setAnimator(Animator animator) {
+		this.animator = animator;
 	}
 
 }
