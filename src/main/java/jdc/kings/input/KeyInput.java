@@ -59,22 +59,16 @@ public class KeyInput extends KeyAdapter {
 				if (tempObject.getType() == ObjectType.PLAYER) {
 					KeyAction action = key.getAction();
 					
-					if (action == KeyAction.UP) {
-						tempObject.setVelY(-Constants.PLAYER_SPEED);
-					}
-					if (action == KeyAction.DOWN) {
-						tempObject.setVelY(Constants.PLAYER_SPEED);
-					}
 					if (action == KeyAction.RIGHT) {
-						tempObject.setPerscpective(0);
+						tempObject.setPerspective(0);
 						tempObject.setVelX(Constants.PLAYER_SPEED);
 					}
 					if (action == KeyAction.LEFT) {
-						tempObject.setPerscpective(1);
+						tempObject.setPerspective(1);
 						tempObject.setVelX(-Constants.PLAYER_SPEED);
 					}
 					if (action == KeyAction.JUMP) {
-						if (tempObject.getPerscpective() == 0) {
+						if (tempObject.getPerspective() == 0) {
 							tempObject.changeAction(ObjectAction.JUMP_FRONT);
 						} else {
 							tempObject.changeAction(ObjectAction.JUMP_BACK);
@@ -82,7 +76,7 @@ public class KeyInput extends KeyAdapter {
 						
 					}
 					if (action == KeyAction.ATTACK) {
-						if (tempObject.getPerscpective() == 0) {
+						if (tempObject.getPerspective() == 0) {
 							tempObject.changeAction(ObjectAction.ATTACK_FRONT);
 						} else {
 							tempObject.changeAction(ObjectAction.ATTACK_BACK);
@@ -107,9 +101,6 @@ public class KeyInput extends KeyAdapter {
 				if (tempObject.getType() == ObjectType.PLAYER) {
 					KeyAction action = key.getAction();
 					
-					if (action == KeyAction.UP || action == KeyAction.DOWN) {
-						tempObject.setVelY(0);
-					}
 					if (action == KeyAction.RIGHT || action == KeyAction.LEFT) {
 						tempObject.setVelX(0);
 					}

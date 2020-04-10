@@ -28,12 +28,11 @@ public class JumpUtil {
 	
 	public void jump(Player player) {
 		if (player.getY() <= position - Constants.PLAYER_JUMP_SIZE) {
-			player.setVelY(5);
+			player.setFalling(true);
 			finish = true;
 		}
 		if (finish) {
 			if (player.getY() >= position) {
-				player.setVelY(0);
 				jumping = false;
 			}
 		}

@@ -6,10 +6,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
+import jdc.kings.objects.Block;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.Constants;
-import jdc.kings.view.Animator;
 import jdc.kings.view.Handler;
 import jdc.kings.view.Window;
 
@@ -21,7 +21,6 @@ public class Game extends Canvas implements Runnable {
 	private Thread thread;
 	private static Game instance;
 	private static Handler handler;
-	static Animator anim;
 	
 	private Game() {};
 	
@@ -36,6 +35,13 @@ public class Game extends Canvas implements Runnable {
 		instance.addKeyListener(keyInput);
 		
 		Window.createWindow();
+		
+		int x = 200;
+		for (int i = 0; i < 20; i++) {
+			Block block = new Block(x, 350, ObjectType.BLOCK);
+			handler.addObject(block);
+			x += 16;
+		}
 		
 		Player player = new Player(200, 200, ObjectType.PLAYER);
 		handler.addObject(player);

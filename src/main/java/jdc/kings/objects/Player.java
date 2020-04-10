@@ -1,5 +1,6 @@
 package jdc.kings.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -8,8 +9,11 @@ import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.AttackUtil;
 import jdc.kings.utils.ImageUtil;
 import jdc.kings.utils.JumpUtil;
+import jdc.kings.view.Handler;
 
 public class Player extends GameObject {
+	
+	private boolean falling = true;
 
 	public Player(int x, int y, ObjectType type) {
 		super(x, y, type);
@@ -29,6 +33,8 @@ public class Player extends GameObject {
 		imageUtil.mirrorAnimations(this, ObjectAction.JUMP_BACK, ObjectAction.JUMP_BACK, 190);
 		imageUtil.mirrorAnimations(this, ObjectAction.ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
 		imageUtil.mirrorAnimations(this, ObjectAction.AIR_ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
+	
+		animated = true;
 	}
 
 	public void tick() {
@@ -50,7 +56,7 @@ public class Player extends GameObject {
 			}
 		} else if (action == ObjectAction.ATTACK_FRONT || action == ObjectAction.ATTACK_BACK) {
 			if (jumpUtil.isJumping()) {
-				if (perscpective == 0) {
+				if (perspective == 0) {
 					changeAction(ObjectAction.AIR_ATTACK_FRONT);
 				} else {
 					changeAction(ObjectAction.AIR_ATTACK_BACK);
@@ -81,13 +87,43 @@ public class Player extends GameObject {
 		} else if (velX < 0) {
 			changeAction(ObjectAction.RUN_BACK);
 		}
+		
+		if (falling) {
+			velY = 5;
+		} else if (!jumpUtil.isJumping()) {
+			velY = 0;
+		}
+		
+		collision();
+	}
+	
+	private void collision() {
+		Handler handler = Handler.getInstance();
+		for (int i = 0; i < handler.getObjects().size(); i++) {
+			GameObject tempObject = handler.getObjects().get(i);
+			if (tempObject.getType() == ObjectType.BLOCK) {
+				if (getBounds().intersects(tempObject.getBounds())) {
+					falling = false;
+				}
+			}
+		}
 	}
 
 	public void render(Graphics g) {
+		g.setColor(Color.cyan);
+		g.drawRect((int)x + 89, (int)y + 24, 46, 70);
 	}
 
 	public Rectangle getBounds() {
-		return null;
+		return new Rectangle((int)x + 89, (int)y + 24, 46, 70);
+	}
+
+	public boolean isFalling() {
+		return falling;
+	}
+
+	public void setFalling(boolean falling) {
+		this.falling = falling;
 	}
 
 }

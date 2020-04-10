@@ -14,7 +14,8 @@ public abstract class GameObject {
 	protected float x, y;
 	protected ObjectType type;
 	protected float velX, velY;
-	protected int perscpective = 0;
+	protected int perspective = 0;
+	protected boolean animated = false;
 	protected ObjectAction action;
 	protected ObjectAction previousAction;
 	protected Map<ObjectAction, Animator> actionAnimations = new HashMap<ObjectAction, Animator>();
@@ -86,7 +87,7 @@ public abstract class GameObject {
 	}
 	
 	protected void perspectiveAction() {
-		if (perscpective == 0) {
+		if (perspective == 0) {
 			changeAction(ObjectAction.IDLE_FRONT);
 		} else {
 			changeAction(ObjectAction.IDLE_BACK);
@@ -101,12 +102,20 @@ public abstract class GameObject {
 		return previousAction;
 	}
 
-	public int getPerscpective() {
-		return perscpective;
+	public int getPerspective() {
+		return perspective;
 	}
 
-	public void setPerscpective(int perscpective) {
-		this.perscpective = perscpective;
+	public void setPerspective(int perspective) {
+		this.perspective = perspective;
+	}
+
+	public boolean isAnimated() {
+		return animated;
+	}
+
+	public void setAnimated(boolean animated) {
+		this.animated = animated;
 	}
 
 }
