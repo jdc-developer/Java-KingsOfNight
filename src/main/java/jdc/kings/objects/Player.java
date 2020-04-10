@@ -2,70 +2,37 @@ package jdc.kings.objects;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import jdc.kings.objects.enums.ObjectAction;
 import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.AttackUtil;
 import jdc.kings.utils.ImageUtil;
 import jdc.kings.utils.JumpUtil;
-import jdc.kings.view.Animator;
 
 public class Player extends GameObject {
 
 	public Player(int x, int y, ObjectType type) {
 		super(x, y, type);
-		bufferAnimations(ObjectAction.IDLE_FRONT, "/player/idle.png", 210, 140, 15, 100);
-		bufferAnimations(ObjectAction.RUN_FRONT, "/player/run.png", 225, 150, 8, 100);
-		bufferAnimations(ObjectAction.JUMP_FRONT, "/player/jump.png", 361, 150, 14, 190);
-		bufferAnimations(ObjectAction.JUMP_BACK, "/player/jump_back.png", 361, 150, 14, 190);
-		bufferAnimations(ObjectAction.ATTACK, "/player/attack.png", 249, 140, 9, 100);
-		mirrorAnimation(ObjectAction.IDLE_FRONT, ObjectAction.IDLE_BACK, 100);
-		mirrorAnimation(ObjectAction.RUN_FRONT, ObjectAction.RUN_BACK, 100);
-		mirrorAnimation(ObjectAction.JUMP_BACK, ObjectAction.JUMP_BACK, 190);
-	}
-	
-	private void mirrorAnimation(ObjectAction actionToMirror, ObjectAction newAction, int speed) {
-		Animator animatorToMirror = actionAnimations.get(actionToMirror);
-		List<BufferedImage> mirrorImages = new ArrayList<>();
-		for (BufferedImage image : animatorToMirror.getFrames()) {
-			int width = image.getWidth();
-			int height = image.getHeight();
-			
-			BufferedImage mImg = new BufferedImage(width, height,BufferedImage.TYPE_INT_ARGB);
-	        for(int xx = width-1;xx>0;xx--){
-	            for(int yy = 0;yy < height;yy++){
-	            	mImg.setRGB(width-xx, yy, image.getRGB(xx, yy));
-	            }
-	        }
-	        mirrorImages.add(mImg);
-		}
-		Animator mirroredAnimator = new Animator(mirrorImages);
-		mirroredAnimator.setSpeed(speed);
-		actionAnimations.put(newAction, mirroredAnimator);
-	}
-	
-	private void bufferAnimations(ObjectAction action, String path, int width, int height,
-			int frames, int speed) {
-		ImageUtil imageLoader = ImageUtil.getInstance();
-		List<BufferedImage> images = new ArrayList<>();
-		imageLoader.loadImage(path);
-		for (int i = 1; i <= frames; i++) {
-			BufferedImage image = imageLoader.grabImage(1, i, width, height);
-			images.add(image);
-		}
-		Animator animator = new Animator(images);
-		animator.setSpeed(100);
-		actionAnimations.put(action, animator);
+		ImageUtil imageUtil = ImageUtil.getInstance();
+		
+		imageUtil.bufferAnimations(this, ObjectAction.IDLE_FRONT, "/player/idle.png", 210, 140, 15, 100);
+		imageUtil.bufferAnimations(this, ObjectAction.RUN_FRONT, "/player/run.png", 225, 150, 8, 100);
+		imageUtil.bufferAnimations(this, ObjectAction.JUMP_FRONT, "/player/jump.png", 361, 150, 14, 190);
+		imageUtil.bufferAnimations(this, ObjectAction.JUMP_BACK, "/player/jump_back.png", 361, 150, 14, 190);
+		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_FRONT, "/player/attack.png", 249, 140, 9, 100);
+		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_BACK, "/player/attack_back.png", 249, 140, 9, 100);
+		
+		imageUtil.mirrorAnimations(this, ObjectAction.IDLE_FRONT, ObjectAction.IDLE_BACK, 100);
+		imageUtil.mirrorAnimations(this, ObjectAction.RUN_FRONT, ObjectAction.RUN_BACK, 100);
+		imageUtil.mirrorAnimations(this, ObjectAction.JUMP_BACK, ObjectAction.JUMP_BACK, 190);
+		imageUtil.mirrorAnimations(this, ObjectAction.ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
 	}
 
 	public void tick() {
 		x += velX;
 		y += velY;
 		
-		if (action == ObjectAction.ATTACK) {
+		if (action == ObjectAction.ATTACK_FRONT || action == ObjectAction.ATTACK_BACK) {
 			AttackUtil attackUtil = AttackUtil.getInstance();
 			if (!attackUtil.isAttacking()) {
 				attackUtil.setAttack();

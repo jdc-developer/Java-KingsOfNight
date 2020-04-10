@@ -82,7 +82,11 @@ public class KeyInput extends KeyAdapter {
 						
 					}
 					if (action == KeyAction.ATTACK) {
-						tempObject.changeAction(ObjectAction.ATTACK);
+						if (tempObject.getPerscpective() == 0) {
+							tempObject.changeAction(ObjectAction.ATTACK_FRONT);
+						} else {
+							tempObject.changeAction(ObjectAction.ATTACK_BACK);
+						}
 					}
 				}
 			}
