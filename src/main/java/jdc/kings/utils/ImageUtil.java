@@ -30,7 +30,7 @@ public class ImageUtil {
 	}
 	
 	public BufferedImage grabImage(int col, int row, int width, int height) {
-		return sprite.getSubimage((row * 64) - 64, (col * 64) - 64, width, height);
+		return sprite.getSubimage((row * width) - width, (col * height) - height, width, height);
 	}
 
 }

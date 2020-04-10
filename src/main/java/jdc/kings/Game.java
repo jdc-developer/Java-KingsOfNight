@@ -4,15 +4,11 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
+import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
-import jdc.kings.objects.enums.ObjectAction;
 import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.Constants;
-import jdc.kings.utils.ImageUtil;
 import jdc.kings.view.Animator;
 import jdc.kings.view.Handler;
 import jdc.kings.view.Window;
@@ -25,7 +21,6 @@ public class Game extends Canvas implements Runnable {
 	private Thread thread;
 	private static Game instance;
 	private static Handler handler;
-	private static ImageUtil imageLoader;
 	static Animator anim;
 	
 	private Game() {};
@@ -37,18 +32,12 @@ public class Game extends Canvas implements Runnable {
 	public static void main(String[] args) {
 		instance = new Game();
 		handler = Handler.getInstance();
-		imageLoader = ImageUtil.getInstance();
+		KeyInput keyInput = KeyInput.getInstance();
+		instance.addKeyListener(keyInput);
+		
 		Window.createWindow();
 		
-		imageLoader.loadImage("/player/idle.png");
-		List<BufferedImage> images = new ArrayList<>();
-		for (int i = 1; i <= 15; i++) {
-			BufferedImage image = imageLoader.grabImage(1, i, 64, 64);
-			images.add(image);
-		}
-		Animator playerAnimator = new Animator(images);
-		Player player = new Player(100, 100, ObjectType.PLAYER, playerAnimator);
-		player.getActionImages().put(ObjectAction.IDLE, images);
+		Player player = new Player(200, 200, ObjectType.PLAYER);
 		handler.addObject(player);
 	}
 

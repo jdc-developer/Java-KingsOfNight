@@ -2,9 +2,7 @@ package jdc.kings.objects;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jdc.kings.objects.enums.ObjectAction;
@@ -16,17 +14,15 @@ public abstract class GameObject {
 	protected float x, y;
 	protected ObjectType type;
 	protected float velX, velY;
-	protected Map<ObjectAction, List<BufferedImage>> actionImages = new HashMap<ObjectAction, List<BufferedImage>>();
-	protected Animator animator;
+	protected ObjectAction action;
+	protected ObjectAction previousAction;
+	protected Map<ObjectAction, Animator> actionAnimations = new HashMap<ObjectAction, Animator>();
 	
-	public GameObject(float x, float y, ObjectType type, Animator animator) {
+	public GameObject(float x, float y, ObjectType type) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.type = type;
-		this.animator = animator;
-		animator.setSpeed(100);
-		animator.start();
 	}
 	
 	public abstract void tick();
@@ -73,20 +69,27 @@ public abstract class GameObject {
 		this.velY = velY;
 	}
 
-	public Map<ObjectAction, List<BufferedImage>> getActionImages() {
-		return actionImages;
+	public Map<ObjectAction, Animator> getActionAnimations() {
+		return actionAnimations;
 	}
 
-	public void setActionImages(Map<ObjectAction, List<BufferedImage>> actionImages) {
-		this.actionImages = actionImages;
+	public void setActionAnimations(Map<ObjectAction, Animator> actionAnimations) {
+		this.actionAnimations = actionAnimations;
+	}
+	
+	public void changeAction(ObjectAction action) {
+		if (this.action != action && this.action != null) {
+			previousAction = this.action;
+		}
+		this.action = action;
 	}
 
-	public Animator getAnimator() {
-		return animator;
+	public ObjectAction getAction() {
+		return action;
 	}
 
-	public void setAnimator(Animator animator) {
-		this.animator = animator;
+	public ObjectAction getPreviousAction() {
+		return previousAction;
 	}
 
 }

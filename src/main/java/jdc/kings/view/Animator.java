@@ -71,4 +71,12 @@ public class Animator {
 		return sprite;
 	}
 
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+
 }
