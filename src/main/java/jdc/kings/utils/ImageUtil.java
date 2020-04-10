@@ -62,11 +62,11 @@ public class ImageUtil {
 	}
 	
 	public void bufferAnimations(GameObject object, ObjectAction action, String path, int width, int height,
-			int frames, int speed) {
+			int initFrame, int endFrame, int speed) {
 		ImageUtil imageLoader = ImageUtil.getInstance();
 		List<BufferedImage> images = new ArrayList<>();
 		imageLoader.loadImage(path);
-		for (int i = 1; i <= frames; i++) {
+		for (int i = initFrame; i <= endFrame; i++) {
 			BufferedImage image = imageLoader.grabImage(1, i, width, height);
 			images.add(image);
 		}
