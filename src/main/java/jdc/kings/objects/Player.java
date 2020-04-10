@@ -21,19 +21,42 @@ public class Player extends GameObject {
 		imageUtil.bufferAnimations(this, ObjectAction.JUMP_BACK, "/player/jump_back.png", 361, 150, 14, 190);
 		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_FRONT, "/player/attack.png", 249, 140, 9, 100);
 		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_BACK, "/player/attack_back.png", 249, 140, 9, 100);
+		imageUtil.bufferAnimations(this, ObjectAction.AIR_ATTACK_FRONT, "/player/attack.png", 249, 140, 9, 100);
+		imageUtil.bufferAnimations(this, ObjectAction.AIR_ATTACK_BACK, "/player/attack_back.png", 249, 140, 9, 100);
 		
 		imageUtil.mirrorAnimations(this, ObjectAction.IDLE_FRONT, ObjectAction.IDLE_BACK, 100);
 		imageUtil.mirrorAnimations(this, ObjectAction.RUN_FRONT, ObjectAction.RUN_BACK, 100);
 		imageUtil.mirrorAnimations(this, ObjectAction.JUMP_BACK, ObjectAction.JUMP_BACK, 190);
 		imageUtil.mirrorAnimations(this, ObjectAction.ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
+		imageUtil.mirrorAnimations(this, ObjectAction.AIR_ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
 	}
 
 	public void tick() {
 		x += velX;
 		y += velY;
 		
-		if (action == ObjectAction.ATTACK_FRONT || action == ObjectAction.ATTACK_BACK) {
-			AttackUtil attackUtil = AttackUtil.getInstance();
+		JumpUtil jumpUtil = JumpUtil.getInstance();
+		AttackUtil attackUtil = AttackUtil.getInstance();
+		
+		if (action == ObjectAction.AIR_ATTACK_FRONT || action == ObjectAction.AIR_ATTACK_BACK) {
+			jumpUtil.jump(this);
+			attackUtil.attack();
+			
+			if (jumpUtil.isFinish() && !jumpUtil.isJumping()) {
+				perspectiveAction();
+			}
+			if (attackUtil.isFinish()) {
+				perspectiveAction();
+			}
+		} else if (action == ObjectAction.ATTACK_FRONT || action == ObjectAction.ATTACK_BACK) {
+			if (jumpUtil.isJumping()) {
+				if (perscpective == 0) {
+					changeAction(ObjectAction.AIR_ATTACK_FRONT);
+				} else {
+					changeAction(ObjectAction.AIR_ATTACK_BACK);
+				}
+			}
+			
 			if (!attackUtil.isAttacking()) {
 				attackUtil.setAttack();
 			}
@@ -43,7 +66,6 @@ public class Player extends GameObject {
 			}
 			
 		} else if (action == ObjectAction.JUMP_FRONT || action == ObjectAction.JUMP_BACK) {
-			JumpUtil jumpUtil = JumpUtil.getInstance();
 			if (!jumpUtil.isJumping()) {
 				jumpUtil.setJump(this);
 			}
