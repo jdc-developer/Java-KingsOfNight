@@ -14,6 +14,7 @@ public abstract class GameObject {
 	protected float x, y;
 	protected ObjectType type;
 	protected float velX, velY;
+	protected int perscpective = 0;
 	protected ObjectAction action;
 	protected ObjectAction previousAction;
 	protected Map<ObjectAction, Animator> actionAnimations = new HashMap<ObjectAction, Animator>();
@@ -83,6 +84,14 @@ public abstract class GameObject {
 		}
 		this.action = action;
 	}
+	
+	protected void perspectiveAction() {
+		if (perscpective == 0) {
+			changeAction(ObjectAction.IDLE_FRONT);
+		} else {
+			changeAction(ObjectAction.IDLE_BACK);
+		}
+	}
 
 	public ObjectAction getAction() {
 		return action;
@@ -90,6 +99,14 @@ public abstract class GameObject {
 
 	public ObjectAction getPreviousAction() {
 		return previousAction;
+	}
+
+	public int getPerscpective() {
+		return perscpective;
+	}
+
+	public void setPerscpective(int perscpective) {
+		this.perscpective = perscpective;
 	}
 
 }

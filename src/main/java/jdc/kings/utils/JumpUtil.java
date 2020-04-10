@@ -27,7 +27,7 @@ public class JumpUtil {
 	}
 	
 	public void jump(Player player) {
-		if (player.getY() == position - 120) {
+		if (player.getY() == position - Constants.PLAYER_JUMP_SIZE) {
 			player.setVelY(5);
 			finish = true;
 		}

@@ -6,6 +6,7 @@ public enum KeyAction {
 	DOWN,
 	LEFT,
 	RIGHT,
-	JUMP;
+	JUMP,
+	ATTACK;
 
 }

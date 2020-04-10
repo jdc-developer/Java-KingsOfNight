@@ -79,4 +79,12 @@ public class Animator {
 		this.running = running;
 	}
 
+	public List<BufferedImage> getFrames() {
+		return frames;
+	}
+
+	public void setFrames(List<BufferedImage> frames) {
+		this.frames = frames;
+	}
+
 }
