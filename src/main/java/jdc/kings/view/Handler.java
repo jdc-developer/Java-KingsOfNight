@@ -2,10 +2,8 @@ package jdc.kings.view;
 
 import java.awt.Graphics;
 import java.util.LinkedList;
-import java.util.Map;
 
 import jdc.kings.objects.GameObject;
-import jdc.kings.objects.enums.ObjectAction;
 
 public class Handler {
 
@@ -31,30 +29,7 @@ public class Handler {
 	public void render(Graphics g) {
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject tempObject = objects.get(i);
-			if (tempObject.isAnimated()) {
-				ObjectAction action = tempObject.getAction();
-				ObjectAction previousAction = tempObject.getPreviousAction();
-				
-				Map<ObjectAction, Animator> actionAnimations = tempObject.getActionAnimations();
-				Animator animator = actionAnimations.get(tempObject.getAction());
-				
-				if (previousAction != null && previousAction != action) {
-					Animator previousAnimator = actionAnimations.get(previousAction);
-					if (previousAnimator.isRunning()) {
-						previousAnimator.stop();
-					}
-				}
-				
-				if (animator != null) {
-					if (!animator.isRunning()) {
-						animator.start();
-					}
-					animator.update(System.currentTimeMillis());
-					g.drawImage(animator.getSprite(), (int)tempObject.getX(), (int)tempObject.getY(), null);
-				}
-			} else {
-				tempObject.render(g);
-			}
+			tempObject.render(g);
 		}
 	}
 	

@@ -1,35 +1,38 @@
 package jdc.kings.objects;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
 
-import jdc.kings.objects.enums.ObjectAction;
-import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.view.Animator;
 
 public abstract class GameObject {
 	
-	protected float x, y;
-	protected ObjectType type;
-	protected float velX, velY;
-	protected int perspective = 0;
-	protected boolean animated = false;
-	protected ObjectAction action;
-	protected ObjectAction previousAction;
-	protected Map<ObjectAction, Animator> actionAnimations = new HashMap<ObjectAction, Animator>();
+	protected float x;
+	protected float y;
+	protected float velX;
+	protected float velY;
 	
-	public GameObject(float x, float y, ObjectType type) {
+	protected int width;
+	protected int height;
+	
+	protected Animator animator;
+	protected boolean facingRight = true;
+	protected int currentAction;
+	protected int previousAction;
+	
+	protected boolean left;
+	protected boolean right;
+	protected boolean up;
+	protected boolean down;
+	protected boolean jumping;
+	protected boolean falling;
+	
+	public GameObject(float x, float y) {
 		super();
 		this.x = x;
 		this.y = y;
-		this.type = type;
 	}
 	
 	public abstract void tick();
-	public abstract void render(Graphics g);
-	public abstract Rectangle getBounds();
 
 	public float getX() {
 		return x;
@@ -47,14 +50,6 @@ public abstract class GameObject {
 		this.y = y;
 	}
 
-	public ObjectType getType() {
-		return type;
-	}
-
-	public void setType(ObjectType type) {
-		this.type = type;
-	}
-
 	public float getVelX() {
 		return velX;
 	}
@@ -70,52 +65,55 @@ public abstract class GameObject {
 	public void setVelY(float velY) {
 		this.velY = velY;
 	}
-
-	public Map<ObjectAction, Animator> getActionAnimations() {
-		return actionAnimations;
-	}
-
-	public void setActionAnimations(Map<ObjectAction, Animator> actionAnimations) {
-		this.actionAnimations = actionAnimations;
-	}
 	
-	public void changeAction(ObjectAction action) {
-		if (this.action != action && this.action != null) {
-			previousAction = this.action;
-		}
-		this.action = action;
+	public int getWidth() {
+		return width;
 	}
-	
-	protected void perspectiveAction() {
-		if (perspective == 0) {
-			changeAction(ObjectAction.IDLE_FRONT);
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setLeft(boolean left) {
+		this.left = left;
+	}
+
+	public void setRight(boolean right) {
+		this.right = right;
+	}
+
+	public void setUp(boolean up) {
+		this.up = up;
+	}
+
+	public void setDown(boolean down) {
+		this.down = down;
+	}
+
+	public void render(Graphics g) {
+		if (facingRight) {
+			g.drawImage(animator.getImage(),
+					(int)(x),
+					(int)(y),
+					null);
 		} else {
-			changeAction(ObjectAction.IDLE_BACK);
+			g.drawImage(animator.getImage(),
+					(int)(x) + width,
+					(int)(y),
+					-width * 2,
+					height,
+					null);
 		}
-	}
-
-	public ObjectAction getAction() {
-		return action;
-	}
-
-	public ObjectAction getPreviousAction() {
-		return previousAction;
-	}
-
-	public int getPerspective() {
-		return perspective;
-	}
-
-	public void setPerspective(int perspective) {
-		this.perspective = perspective;
-	}
-
-	public boolean isAnimated() {
-		return animated;
-	}
-
-	public void setAnimated(boolean animated) {
-		this.animated = animated;
+		
+		animator.update(System.currentTimeMillis());
 	}
 
 }

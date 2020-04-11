@@ -7,15 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import jdc.kings.input.enums.KeyAction;
-import jdc.kings.objects.GameObject;
-import jdc.kings.objects.enums.ObjectAction;
-import jdc.kings.objects.enums.ObjectType;
+import jdc.kings.objects.Player;
 import jdc.kings.utils.Constants;
-import jdc.kings.view.Handler;
 
 public class KeyInput extends KeyAdapter {
 	
 	private static KeyInput instance;
+	private Player player;
 	private List<Key> keys = new ArrayList<>();
 	
 	private KeyInput() {
@@ -36,6 +34,10 @@ public class KeyInput extends KeyAdapter {
 		return instance;
 	}
 	
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
 	private Key findKey(int keyPressed) {
 		for (Key key : keys) {
 			if (key.getMapping() == keyPressed) {
@@ -46,65 +48,37 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		Handler handler = Handler.getInstance();
-		List<GameObject> objects = handler.getObjects();
 		int keyPressed = e.getKeyCode();
 		Key key = findKey(keyPressed);
 		
 		if (key != null) {
 			key.setPressed(true);
-			
-			for (int i = 0; i < objects.size(); i++) {
-				GameObject tempObject = objects.get(i);
-				if (tempObject.getType() == ObjectType.PLAYER) {
-					KeyAction action = key.getAction();
-					
-					if (action == KeyAction.RIGHT) {
-						tempObject.setPerspective(0);
-						tempObject.setVelX(Constants.PLAYER_SPEED);
-					}
-					if (action == KeyAction.LEFT) {
-						tempObject.setPerspective(1);
-						tempObject.setVelX(-Constants.PLAYER_SPEED);
-					}
-					if (action == KeyAction.JUMP) {
-						if (tempObject.getPerspective() == 0) {
-							tempObject.changeAction(ObjectAction.JUMP_FRONT);
-						} else {
-							tempObject.changeAction(ObjectAction.JUMP_BACK);
-						}
-						
-					}
-					if (action == KeyAction.ATTACK) {
-						if (tempObject.getPerspective() == 0) {
-							tempObject.changeAction(ObjectAction.ATTACK_FRONT);
-						} else {
-							tempObject.changeAction(ObjectAction.ATTACK_BACK);
-						}
-					}
-				}
+			KeyAction action = key.getAction();
+			if (action == KeyAction.RIGHT) {
+				player.setVelX(Constants.PLAYER_SPEED);
+				player.setRight(true);
+			}
+			if (action == KeyAction.LEFT) {
+				player.setVelX(-Constants.PLAYER_SPEED);
+				player.setLeft(true);
 			}
 		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		Handler handler = Handler.getInstance();
-		List<GameObject> objects = handler.getObjects();
 		int keyPressed = e.getKeyCode();
 		Key key = findKey(keyPressed);
 		
 		if (key != null) {
-			key.setPressed(false);
-			
-			for (int i = 0; i < objects.size(); i++) {
-				GameObject tempObject = objects.get(i);
-				if (tempObject.getType() == ObjectType.PLAYER) {
-					KeyAction action = key.getAction();
-					
-					if (action == KeyAction.RIGHT || action == KeyAction.LEFT) {
-						tempObject.setVelX(0);
-					}
-				}
+			key.setPressed(true);
+			KeyAction action = key.getAction();
+			if (action == KeyAction.RIGHT) {
+				player.setVelX(0);
+				player.setRight(false);
+			}
+			if (action == KeyAction.LEFT) {
+				player.setVelX(0);
+				player.setLeft(false);
 			}
 		}
 	}

@@ -6,9 +6,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
-import jdc.kings.objects.Block;
 import jdc.kings.objects.Player;
-import jdc.kings.objects.enums.ObjectType;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Handler;
 import jdc.kings.view.Window;
@@ -36,22 +34,9 @@ public class Game extends Canvas implements Runnable {
 		
 		Window.createWindow();
 		
-		int x = 200;
-		for (int i = 0; i < 20; i++) {
-			Block block = new Block(x, 350, ObjectType.BLOCK);
-			handler.addObject(block);
-			x += 17;
-		}
-		
-		int y = 350;
-		for (int i = 0; i < 10; i++) {
-			Block block = new Block(x, y, ObjectType.BLOCK);
-			handler.addObject(block);
-			y -= 16;
-		}
-		
-		Player player = new Player(200, 200, ObjectType.PLAYER);
+		Player player = new Player(200, 200);
 		handler.addObject(player);
+		keyInput.setPlayer(player);
 	}
 
 	public void run() {

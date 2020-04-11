@@ -1,105 +1,57 @@
 package jdc.kings.objects;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
-import jdc.kings.objects.enums.ObjectAction;
-import jdc.kings.objects.enums.ObjectType;
-import jdc.kings.utils.AttackUtil;
-import jdc.kings.utils.ImageUtil;
-import jdc.kings.utils.JumpUtil;
+import jdc.kings.utils.SpriteLoader;
+import jdc.kings.view.Animator;
 
 public class Player extends GameObject {
 	
-	private boolean falling = true;
-
-	public Player(int x, int y, ObjectType type) {
-		super(x, y, type);
-		ImageUtil imageUtil = ImageUtil.getInstance();
-		
-		imageUtil.bufferAnimations(this, ObjectAction.IDLE_FRONT, "/player/idle.png", 210, 140, 1, 15, 100);
-		imageUtil.bufferAnimations(this, ObjectAction.RUN_FRONT, "/player/run.png", 225, 150, 1, 8, 100);
-		imageUtil.bufferAnimations(this, ObjectAction.JUMP_FRONT, "/player/jump.png", 361, 150, 1, 14, 190);
-		imageUtil.bufferAnimations(this, ObjectAction.JUMP_BACK, "/player/jump_back.png", 361, 150, 1,  14, 190);
-		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_FRONT, "/player/attack.png", 249, 140, 1, 9, 100);
-		imageUtil.bufferAnimations(this, ObjectAction.ATTACK_BACK, "/player/attack_back.png", 249, 140, 1, 9, 100);
-		imageUtil.bufferAnimations(this, ObjectAction.AIR_ATTACK_FRONT, "/player/attack.png", 249, 140, 1, 9, 100);
-		imageUtil.bufferAnimations(this, ObjectAction.AIR_ATTACK_BACK, "/player/attack_back.png", 249, 140, 1, 9, 100);
-		
-		imageUtil.mirrorAnimations(this, ObjectAction.IDLE_FRONT, ObjectAction.IDLE_BACK, 100);
-		imageUtil.mirrorAnimations(this, ObjectAction.RUN_FRONT, ObjectAction.RUN_BACK, 100);
-		imageUtil.mirrorAnimations(this, ObjectAction.JUMP_BACK, ObjectAction.JUMP_BACK, 190);
-		imageUtil.mirrorAnimations(this, ObjectAction.ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
-		imageUtil.mirrorAnimations(this, ObjectAction.AIR_ATTACK_BACK, ObjectAction.ATTACK_BACK, 100);
+	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
-		animated = true;
+	private static final int IDLE = 0;
+	private static final int WALKING = 1;
+	private static final int JUMPING = 2;
+	private static final int FALLING = 3;
+
+	public Player(int x, int y) {
+		super(x, y);
+		width = 63;
+		height = 74;
+		
+		SpriteLoader loader = SpriteLoader.getInstance();
+		sprites.add(loader.loadAction("/player/idle.png", this, 15, 22, 38, 26, 30));
+		sprites.add(loader.loadAction("/player/walking.png", this, 8, 40, 66, 30, 30));
+		
+		animator = new Animator(sprites.get(0));
+		currentAction = IDLE;
+		animator.setSpeed(100);
+		animator.start();
 	}
 
 	public void tick() {
 		x += velX;
 		y += velY;
 		
-		JumpUtil jumpUtil = JumpUtil.getInstance();
-		AttackUtil attackUtil = AttackUtil.getInstance();
-		
-		if (action == ObjectAction.AIR_ATTACK_FRONT || action == ObjectAction.AIR_ATTACK_BACK) {
-			jumpUtil.jump(this);
-			attackUtil.attack();
-			
-			if (jumpUtil.isFinish() && !jumpUtil.isJumping()) {
-				perspectiveAction();
+		if (left || right) {
+			if (currentAction != WALKING) {
+				currentAction = WALKING;
+				animator.setFrames(sprites.get(WALKING));
+				animator.setSpeed(100);
+				width = 30;
 			}
-			if (attackUtil.isFinish()) {
-				perspectiveAction();
+		} else {
+			if (currentAction != IDLE) {
+				currentAction = IDLE;
+				animator.setFrames(sprites.get(IDLE));
+				animator.setSpeed(100);
+				width = 30;
 			}
-		} else if (action == ObjectAction.ATTACK_FRONT || action == ObjectAction.ATTACK_BACK) {
-			if (jumpUtil.isJumping()) {
-				if (perspective == 0) {
-					changeAction(ObjectAction.AIR_ATTACK_FRONT);
-				} else {
-					changeAction(ObjectAction.AIR_ATTACK_BACK);
-				}
-			}
-			
-			if (!attackUtil.isAttacking()) {
-				attackUtil.setAttack();
-			}
-			attackUtil.attack();
-			if (attackUtil.isFinish()) {
-				perspectiveAction();
-			}
-			
-		} else if (action == ObjectAction.JUMP_FRONT || action == ObjectAction.JUMP_BACK) {
-			if (!jumpUtil.isJumping()) {
-				jumpUtil.setJump(this);
-			}
-			jumpUtil.jump(this);
-			if (jumpUtil.isFinish() && !jumpUtil.isJumping()) {
-				perspectiveAction();
-			}
-			
-		} else if (velX == 0 && velY == 0) {
-			perspectiveAction();
-		} else if (velX > 0) {
-			changeAction(ObjectAction.RUN_FRONT);
-		} else if (velX < 0) {
-			changeAction(ObjectAction.RUN_BACK);
 		}
-	}
-
-	public void render(Graphics g) {
-	}
-
-	public Rectangle getBounds() {
-		return new Rectangle((int)x + 89, (int)y + 24, 46, 80);
-	}
-
-	public boolean isFalling() {
-		return falling;
-	}
-
-	public void setFalling(boolean falling) {
-		this.falling = falling;
+		if (right) facingRight = true;
+		if (left) facingRight = false;
 	}
 
 }
