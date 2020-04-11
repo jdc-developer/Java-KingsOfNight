@@ -22,7 +22,7 @@ public class KeyInput extends KeyAdapter {
 		Key key3 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
 		Key key4 = new Key(KeyEvent.VK_D, KeyAction.RIGHT, false);
 		Key key5 = new Key(KeyEvent.VK_SPACE, KeyAction.JUMP, false);
-		Key key6 = new Key(KeyEvent.VK_U, KeyAction.ATTACK, false);
+		Key key6 = new Key(KeyEvent.VK_J, KeyAction.ATTACK, false);
 		
 		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6));
 	}
@@ -62,6 +62,12 @@ public class KeyInput extends KeyAdapter {
 				player.setVelX(-Constants.PLAYER_SPEED);
 				player.setLeft(true);
 			}
+			if (action == KeyAction.JUMP) {
+				player.setJumping(true);
+			}
+			if (action == KeyAction.ATTACK) {
+				player.setStabbing(true);
+			}
 		}
 	}
 	
@@ -79,6 +85,9 @@ public class KeyInput extends KeyAdapter {
 			if (action == KeyAction.LEFT) {
 				player.setVelX(0);
 				player.setLeft(false);
+			}
+			if (action == KeyAction.JUMP) {
+				player.setJumping(false);
 			}
 		}
 	}

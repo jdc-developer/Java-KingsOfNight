@@ -1,6 +1,7 @@
 package jdc.kings.objects;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import jdc.kings.view.Animator;
 
@@ -25,6 +26,14 @@ public abstract class GameObject {
 	protected boolean down;
 	protected boolean jumping;
 	protected boolean falling;
+	
+	protected float moveSpeed;
+	protected float maxSpeed;
+	protected float stopSpeed;
+	protected float fallSpeed;
+	protected float maxFallSpeed;
+	protected float jumpStart;
+	protected float stopJumpSpeed;
 	
 	public GameObject(float x, float y) {
 		super();
@@ -98,17 +107,26 @@ public abstract class GameObject {
 		this.down = down;
 	}
 
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
+	}
+
+	public void setFalling(boolean falling) {
+		this.falling = falling;
+	}
+
 	public void render(Graphics g) {
 		if (facingRight) {
 			g.drawImage(animator.getImage(),
-					(int)(x),
-					(int)(y),
+					(int)(x - width / 2),
+					(int)(y - height / 2),
 					null);
 		} else {
-			g.drawImage(animator.getImage(),
-					(int)(x) + width,
-					(int)(y),
-					-width * 2,
+			BufferedImage image = animator.getImage();
+			g.drawImage(image,
+					(int)(x - width / 2 + width),
+					(int)(y - height / 2),
+					-image.getWidth(),
 					height,
 					null);
 		}
