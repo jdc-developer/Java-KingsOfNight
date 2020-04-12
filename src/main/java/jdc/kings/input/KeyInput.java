@@ -68,11 +68,9 @@ public class KeyInput extends KeyAdapter {
 			key.setPressed(true);
 			KeyAction action = key.getAction();
 			if (action == KeyAction.RIGHT) {
-				player.setVelX(Constants.PLAYER_SPEED);
 				player.setRight(true);
 			}
 			if (action == KeyAction.LEFT) {
-				player.setVelX(-Constants.PLAYER_SPEED);
 				player.setLeft(true);
 			}
 			if (action == KeyAction.JUMP) {

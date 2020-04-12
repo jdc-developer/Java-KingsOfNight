@@ -9,6 +9,7 @@ public class Handler {
 
 	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
 	private static Handler instance;
+	private TileMap tileMap;
 	
 	private Handler() {};
 	
@@ -27,6 +28,7 @@ public class Handler {
 	}
 	
 	public void render(Graphics g) {
+		tileMap.render(g);
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject tempObject = objects.get(i);
 			tempObject.render(g);
@@ -40,9 +42,9 @@ public class Handler {
 	public void removeObject(GameObject object) {
 		this.objects.remove(object);
 	}
-	
-	public LinkedList<GameObject> getObjects() {
-		return objects;
+
+	public void setTileMap(TileMap tileMap) {
+		this.tileMap = tileMap;
 	}
 	
 }

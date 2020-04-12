@@ -9,6 +9,7 @@ import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Handler;
+import jdc.kings.view.TileMap;
 import jdc.kings.view.Window;
 
 public class Game extends Canvas implements Runnable {
@@ -28,7 +29,15 @@ public class Game extends Canvas implements Runnable {
 	
 	public static void main(String[] args) {
 		instance = new Game();
+		
+		TileMap tileMap = new TileMap(16);
+		tileMap.loadTiles("/tilesets/castle.png");
+		tileMap.loadMap("/maps/level1.map");
+		tileMap.setPosition(0, 0);
+		tileMap.setTween(1);
+		
 		handler = Handler.getInstance();
+		handler.setTileMap(tileMap);
 		KeyInput keyInput = KeyInput.getInstance();
 		instance.addKeyListener(keyInput);
 		

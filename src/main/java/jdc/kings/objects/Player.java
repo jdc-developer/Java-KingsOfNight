@@ -61,15 +61,15 @@ public class Player extends GameObject {
 		sliceRange = 120;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/player/idle.png", this, 0, 15, 22, 38, 26, 30, 0, 0));
-		sprites.add(loader.loadAction("/player/walking.png", this, 0, 8, 40, 66, 30, 30, 0, 0));
-		sprites.add(loader.loadAction("/player/jumping_and_falling.png", this, 0, 7, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/player/jumping_and_falling.png", this, 8, 10, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/player/stabbing.png", this, 0, 9, 54, 94, 50, 30, 50, 0));
-		sprites.add(loader.loadAction("/player/cutting.png", this, 0, 5, 60, 94, 50, 33, 50, 0));
-		sprites.add(loader.loadAction("/player/slicing.png", this, 0, 7, 48, 96, 51, 28, 50, 0));
-		sprites.add(loader.loadAction("/player/rolling.png", this, 0, 9, 54, 153, 27, 30, 0, 0));
-		sprites.add(loader.loadAction("/player/shield.png", this, 0, 7, 39, 72, 24, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 22, 38, 26, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/walking.png", this, 0, 8, 40, 66, 30, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 0, 7, 54, 118, 26, 31, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 8, 10, 54, 118, 26, 31, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/stabbing.png", this, 0, 9, 54, 94, 50, 30, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/cutting.png", this, 0, 5, 60, 94, 50, 33, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/slicing.png", this, 0, 7, 48, 96, 51, 28, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/rolling.png", this, 0, 9, 54, 153, 27, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/shield.png", this, 0, 7, 39, 72, 24, 30, 0, 0));
 		
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;
@@ -103,7 +103,7 @@ public class Player extends GameObject {
 			}
 		}
 		
-		if ((currentAction == STABBING || currentAction == CUTTING) &&
+		if ((currentAction == STABBING || currentAction == CUTTING || currentAction == SHIELD) &&
 				!(jumping || falling)) {
 			velX = 0;
 		}
