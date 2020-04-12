@@ -21,15 +21,16 @@ public class SpriteLoader {
 		return instance;
 	}
 	
-	public BufferedImage[] loadAction(String path, GameObject object, int frames, int startFrom,
+	public BufferedImage[] loadAction(String path, GameObject object, int startFrom, int goTo,
 			int gap1, int gap2, int frameWidth, int frameHeight, int plusWidth, int plusHeight) {
 		BufferedImage[] bi = null;
 		try {
 			BufferedImage spriteSheet = ImageIO.read(getClass()
 					.getResourceAsStream(path));
-			bi = new BufferedImage[frames];
+			bi = new BufferedImage[goTo - startFrom];
 			
-			for (int j = startFrom; j < frames; j++) {
+			int count = 0;
+			for (int j = startFrom; j < goTo; j++) {
 				int gap = gap1;
 				 if (j == 1) {
 					gap += + gap2;
@@ -41,8 +42,8 @@ public class SpriteLoader {
 						0,
 						frameWidth,
 						frameHeight);
-				bi[j] = resize(temp, object.getWidth() + plusWidth, object.getHeight() + plusHeight);
-				
+				bi[count] = resize(temp, object.getWidth() + plusWidth, object.getHeight() + plusHeight);
+				count++;
 			}
 			
 			
