@@ -8,7 +8,6 @@ import java.util.List;
 
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Player;
-import jdc.kings.utils.Constants;
 
 public class KeyInput extends KeyAdapter {
 	

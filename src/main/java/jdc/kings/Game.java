@@ -7,6 +7,7 @@ import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
+import jdc.kings.objects.enemies.HellHound;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Handler;
 import jdc.kings.view.TileMap;
@@ -39,16 +40,22 @@ public class Game extends Canvas implements Runnable {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 100);
 		
+		HellHound hellHound = new HellHound(tileMap);
+		hellHound.setPosition(1000, 200);
+		hellHound.setPlayer(player);
+		
 		handler = Handler.getInstance();
 		handler.setTileMap(tileMap);
+		
 		handler.addObject(player);
+		handler.addObject(hellHound);
 		handler.setPlayer(player);
+		handler.getEnemies().add(hellHound);
+		
 		KeyInput keyInput = KeyInput.getInstance();
-		instance.addKeyListener(keyInput);
-		
-		Window.createWindow();
-		
 		keyInput.setPlayer(player);
+		instance.addKeyListener(keyInput);
+		Window.createWindow();
 	}
 
 	public void run() {

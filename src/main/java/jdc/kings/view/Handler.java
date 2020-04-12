@@ -1,8 +1,11 @@
 package jdc.kings.view;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
+import jdc.kings.objects.Enemy;
 import jdc.kings.objects.GameObject;
 import jdc.kings.objects.Player;
 import jdc.kings.utils.Constants;
@@ -13,6 +16,7 @@ public class Handler {
 	private static Handler instance;
 	private TileMap tileMap;
 	private Player player;
+	private List<Enemy> enemies = new ArrayList<>();
 	
 	private Handler() {};
 	
@@ -27,6 +31,8 @@ public class Handler {
 		tileMap.setPosition(
 				Constants.WIDTH / Constants.SCALE - player.getX(),
 				Constants.HEIGHT / Constants.SCALE - player.getY());
+		
+		player.checkAttack(enemies);
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject tempObject = objects.get(i);
 			tempObject.tick();
@@ -55,6 +61,10 @@ public class Handler {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public List<Enemy> getEnemies() {
+		return enemies;
 	}
 	
 }

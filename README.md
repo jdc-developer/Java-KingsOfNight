@@ -23,6 +23,9 @@ https://oco.itch.io/medieval-fantasy-character-pack
 * **Tileset do castelo** -
 https://alcoholism.itch.io/dark-castle-tileset
 
+* **Hell Hound** -
+https://opengameart.org/content/hell-hound-character
+
 # English:
 
 # Java-KingsOfNight
@@ -50,3 +53,6 @@ https://oco.itch.io/medieval-fantasy-character-pack
 
 * **Castle tileset** -
 https://alcoholism.itch.io/dark-castle-tileset
+
+* **Hell Hound** -
+https://opengameart.org/content/hell-hound-character

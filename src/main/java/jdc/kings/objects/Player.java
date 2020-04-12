@@ -24,6 +24,9 @@ public class Player extends GameObject {
 	
 	private boolean rolling;
 	private boolean shield;
+	private long attackTimer;
+	private long holdTimer;
+	private long rollTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
@@ -41,25 +44,27 @@ public class Player extends GameObject {
 		super(tm);
 		width = 63;
 		height = 74;
-		cwidth = 60;
-		cheight = 60;
+		cwidth = 45;
+		cheight = 45;
 		
 		moveSpeed = 2.6f;
 		maxSpeed = 4.6f;
 		stopSpeed = 0.4f;
 		fallSpeed = 0.15f;
-		maxFallSpeed = 4.0f;
+		maxFallSpeed = 5.0f;
 		jumpStart = -7.8f;
 		stopJumpSpeed = 0.3f;
 		
 		stabDamage = 12;
-		stabRange = 40;
+		stabRange = 70;
 		
 		cutDamage = 8;
-		cutRange = 80;
+		cutRange = 106;
 		
 		sliceDamage = 15;
 		sliceRange = 120;
+		
+		health = maxHealth = 50;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 22, 38, 26, 30, 0, 0));
@@ -175,7 +180,24 @@ public class Player extends GameObject {
 		}
 		
 		if (currentAction == SHIELD) {
-			animator.holdLastFrame();
+			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
+			if (elapsed > 500) {
+				animator.holdLastFrame();
+			}
+		}
+		
+		if (currentAction == JUMPING) {
+			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
+			if (elapsed > 500) {
+				animator.holdLastFrame();
+			}
+		}
+		
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed > 1000) {
+				flinching = false;
+			}
 		}
 		
 		if (stabbing) {
@@ -214,6 +236,7 @@ public class Player extends GameObject {
 				animator.setSpeed(80);
 				width = 63;
 				
+				rollTimer = System.nanoTime();
 				maxSpeed = 5.5f;
 				if (facingRight) right = true;
 				else left = true;
@@ -224,6 +247,7 @@ public class Player extends GameObject {
 				animator.setFrames(sprites.get(SHIELD));
 				animator.setSpeed(100);
 				width = 63;
+				holdTimer = System.nanoTime();
 			}
 		} else if (velY > 0) {
 			if (currentAction != FALLING) {
@@ -238,6 +262,7 @@ public class Player extends GameObject {
 				animator.setFrames(sprites.get(JUMPING));
 				animator.setSpeed(100);
 				width = 63;
+				holdTimer = System.nanoTime();
 			}
 		} else if (left || right) {
 			if (currentAction != WALKING) {
@@ -257,9 +282,68 @@ public class Player extends GameObject {
 		if (right) facingRight = true;
 		if (left) facingRight = false;
 	}
+	
+	public void checkAttack(List<Enemy> enemies) {
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			if (stabbing || cutting || slicing) {
+				int range = 0;
+				int damage = 0;
+				
+				if (stabbing) {
+					long elapsed = (System.nanoTime() - attackTimer) / 1000000;
+					if (elapsed > 250) {
+						range = stabRange;
+						damage = stabDamage;
+					}
+				} else if (cutting) {
+					range = cutRange;
+					damage = cutDamage;
+				} else if (slicing) {
+					long elapsed = (System.nanoTime() - attackTimer) / 1000000;
+					if (elapsed > 250) {
+						range = sliceRange;
+						damage = sliceDamage;
+					}
+				}
+				
+				 if (facingRight) {
+					 if (
+							 e.getX() > x &&
+							 e.getX() < x + range &&
+							 e.getY() > y - height / 2 &&
+							 e.getY() < y + height / 2) {
+						 if (damage > 0) {
+							 e.hit(damage);
+						 }
+					 }
+				 } else {
+					 if (
+							 e.getX() < x &&
+							 e.getX() > x - range &&
+							 e.getY() > y - height / 2 &&
+							 e.getY() < y + height / 2) {
+						 if (damage > 0) {
+							 e.hit(damage);
+						 }
+					 }
+				 }
+			}
+			
+			if (intersects(e)) {
+				long elapsed = (System.nanoTime() - rollTimer) / 1000000;
+				if (rolling && elapsed < 100) {
+					hit(e.getDamage());
+				} else if (!rolling) {
+					hit(e.getDamage());
+				}
+			}
+		}
+	}
 
 	public void setStabbing(boolean stabbing) {
 		this.stabbing = stabbing;
+		attackTimer = System.nanoTime();
 	}
 
 	public void setCutting(boolean cutting) {
@@ -268,6 +352,7 @@ public class Player extends GameObject {
 
 	public void setSlicing(boolean slicing) {
 		this.slicing = slicing;
+		attackTimer = System.nanoTime();
 	}
 
 	public void setRolling(boolean rolling) {

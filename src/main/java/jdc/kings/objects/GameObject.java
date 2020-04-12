@@ -1,5 +1,6 @@
 package jdc.kings.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -57,6 +58,13 @@ public abstract class GameObject {
 	protected float maxFallSpeed;
 	protected float jumpStart;
 	protected float stopJumpSpeed;
+	
+	protected int health;
+	protected int maxHealth;
+	protected boolean dead;
+	
+	protected boolean flinching;
+	protected long flinchTimer;
 	
 	public GameObject(TileMap tm) {
 		tileMap = tm;
@@ -151,6 +159,18 @@ public abstract class GameObject {
 		this.falling = falling;
 	}
 	
+	public boolean isFacingRight() {
+		return facingRight;
+	}
+
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public float getMoveSpeed() {
+		return moveSpeed;
+	}
+
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -250,6 +270,13 @@ public abstract class GameObject {
 
 	public void render(Graphics g) {
 		setMapPosition();
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed / 100 % 2 == 0) {
+				return;
+			}
+		}
+		
 		if (facingRight) {
 			g.drawImage(animator.getImage(),
 					(int)(x + xmap - width / 2),
@@ -264,7 +291,22 @@ public abstract class GameObject {
 					height,
 					null);
 		}
+		
+		g.setColor(Color.white);
+		g.drawRect((int)(x + xmap - width / 2 + width),
+				(int)(y + ymap - height / 2),
+				cwidth,
+				cheight);
 		animator.update(System.currentTimeMillis());
+	}
+	
+	public void hit(int damage) {
+		if (dead || flinching) return;
+		health -= damage;
+		if (health < 0) health = 0;
+		if (health == 0) dead = true;
+		flinching = true;
+		flinchTimer = System.nanoTime();
 	}
 
 }

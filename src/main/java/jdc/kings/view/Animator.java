@@ -35,7 +35,7 @@ public class Animator {
 	
 	public void update(long time) {
 		if (running) {
-			if (holdLastFrame && playedOnce) {
+			if (holdLastFrame) {
 				currentFrame = frames.length - 1;
 				previousTime = time;
 			} else {
