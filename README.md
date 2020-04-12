@@ -1,4 +1,4 @@
-ï»¿# Java-KingsOfNight
+# Java-KingsOfNight
 Jogo 2D de plataforma/RPG desenvolvido em Java. PropÃ³sito de estudo e aprendizado.
 
 ## Autoria
@@ -7,25 +7,25 @@ Jogo 2D de plataforma/RPG desenvolvido em Java. PropÃ³sito de estudo e aprendiza
 
 ## Reconhecimento
 
-Devo agradecer estes dois caras que me ensinaram quase tudo que sei sobre desenvolvimento de jogos, portanto, criei este jogo utilizando seus métodos:
+Devo agradecer estes dois caras que me ensinaram quase tudo que sei sobre desenvolvimento de jogos. Utilizei parte de seu código para construir a base do projeto.
 
-* **ForeignGuyMike**
+* **ForeignGuyMike** -
 https://www.youtube.com/watch?v=9dzhgsVaiSo
 
-* **RealTutsGML**
+* **RealTutsGML** -
 https://www.youtube.com/watch?v=1gir2R7G9ws
 
 ## Arte
 
-* **O herói mais foda**
+* **O herói mais foda** -
 https://oco.itch.io/medieval-fantasy-character-pack
 
-* **Tileset do castelo**
+* **Tileset do castelo** -
 https://alcoholism.itch.io/dark-castle-tileset
 
 # English:
 
-ï»¿# Java-KingsOfNight
+# Java-KingsOfNight
 
 2D platform/RPG game designed in Java. Purposes of study and learnship.
 
@@ -35,18 +35,18 @@ https://alcoholism.itch.io/dark-castle-tileset
 
 ## Acknowledgments
 
-I must give my thanks to these two guys who taught me mostly of what I know about game development, thus I designed this mostly following their methods:
+I must give my thanks to these two guys who taught me mostly of what I know about game development, I've used some of their code for the basis of the project.
 
-* **ForeignGuyMike**
+* **ForeignGuyMike** -
 https://www.youtube.com/watch?v=9dzhgsVaiSo
 
-* **RealTutsGML**
+* **RealTutsGML** -
 https://www.youtube.com/watch?v=1gir2R7G9ws
 
 ## Artwork
 
-* **The coolest hero**
+* **The coolest hero** -
 https://oco.itch.io/medieval-fantasy-character-pack
 
-* **Castle tileset**
+* **Castle tileset** -
 https://alcoholism.itch.io/dark-castle-tileset
