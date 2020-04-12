@@ -25,8 +25,10 @@ public class KeyInput extends KeyAdapter {
 		Key key6 = new Key(KeyEvent.VK_K, KeyAction.STABBING, false);
 		Key key7 = new Key(KeyEvent.VK_J, KeyAction.CUTTING, false);
 		Key key8 = new Key(KeyEvent.VK_H, KeyAction.SLICING, false);
+		Key key9 = new Key(KeyEvent.VK_U, KeyAction.ROLLING, false);
+		Key key10 = new Key(KeyEvent.VK_I, KeyAction.SHIELD, false);
 		
-		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8));
+		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8, key9, key10));
 	}
 	
 	public static KeyInput getInstance() {
@@ -43,6 +45,15 @@ public class KeyInput extends KeyAdapter {
 	private Key findKey(int keyPressed) {
 		for (Key key : keys) {
 			if (key.getMapping() == keyPressed) {
+				return key;
+			}
+		}
+		return null;
+	}
+	
+	public Key findKey(KeyAction action) {
+		for (Key key : keys) {
+			if (key.getAction() == action) {
 				return key;
 			}
 		}
@@ -76,6 +87,12 @@ public class KeyInput extends KeyAdapter {
 			if (action == KeyAction.SLICING) {
 				player.setSlicing(true);
 			}
+			if (action == KeyAction.ROLLING) {
+				player.setRolling(true);
+			}
+			if (action == KeyAction.SHIELD) {
+				player.setShield(true);
+			}
 		}
 	}
 	
@@ -87,15 +104,18 @@ public class KeyInput extends KeyAdapter {
 			key.setPressed(true);
 			KeyAction action = key.getAction();
 			if (action == KeyAction.RIGHT) {
-				player.setVelX(0);
 				player.setRight(false);
+				player.setVelX(0);
 			}
 			if (action == KeyAction.LEFT) {
-				player.setVelX(0);
 				player.setLeft(false);
+				player.setVelX(0);
 			}
 			if (action == KeyAction.JUMP) {
 				player.setJumping(false);
+			}
+			if (action == KeyAction.SHIELD) {
+				player.setShield(false);
 			}
 		}
 	}

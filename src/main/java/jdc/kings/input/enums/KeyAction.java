@@ -9,6 +9,8 @@ public enum KeyAction {
 	JUMP,
 	STABBING,
 	CUTTING,
-	SLICING;
+	SLICING,
+	ROLLING,
+	SHIELD;
 
 }

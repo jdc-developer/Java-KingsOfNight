@@ -16,6 +16,7 @@ public class Animator {
 	
 	private boolean playedOnce;
 	private volatile boolean running = false;
+	private boolean holdLastFrame = false;
 	
 	private long previousTime, speed;
 	
@@ -29,18 +30,25 @@ public class Animator {
 		currentFrame = 0;
 		previousTime = 0;
 		playedOnce = false;
+		holdLastFrame = false;
 	}
 	
 	public void update(long time) {
 		if (running) {
-			if (time - previousTime >= speed) {
-				currentFrame++;
+			if (holdLastFrame && playedOnce) {
+				currentFrame = frames.length - 1;
 				previousTime = time;
+			} else {
+				if (time - previousTime >= speed) {
+					currentFrame++;
+					previousTime = time;
+				}
+				if (currentFrame == frames.length) {
+					currentFrame = 0;
+					playedOnce = true;
+				}
 			}
-			if (currentFrame == frames.length) {
-				currentFrame = 0;
-				playedOnce = true;
-			}
+			
 		}
 	}
 	
@@ -74,6 +82,10 @@ public class Animator {
 
 	public boolean isRunning() {
 		return running;
+	}
+	
+	public void holdLastFrame() {
+		holdLastFrame = true;
 	}
 
 }
