@@ -98,7 +98,7 @@ public class KeyInput extends KeyAdapter {
 		Key key = findKey(keyPressed);
 		
 		if (key != null) {
-			key.setPressed(true);
+			key.setPressed(false);
 			KeyAction action = key.getAction();
 			if (action == KeyAction.RIGHT) {
 				player.setRight(false);

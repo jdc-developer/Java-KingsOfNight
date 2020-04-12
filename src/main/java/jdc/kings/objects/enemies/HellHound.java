@@ -3,8 +3,10 @@ package jdc.kings.objects.enemies;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -13,6 +15,7 @@ public class HellHound extends Enemy {
 	
 	private boolean running;
 	private long turnAroundTimer;
+	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
@@ -29,6 +32,8 @@ public class HellHound extends Enemy {
 		maxSpeed = 6f;
 		fallSpeed = 0.2f;
 		maxFallSpeed = 10.0f;
+		jumpStart = -4.8f;
+		stopJumpSpeed = 1.3f;
 		
 		width = 60;
 		height = 60;
@@ -63,8 +68,18 @@ public class HellHound extends Enemy {
 			}
 		}
 		
+		if (jumping && !falling) {
+			velY = jumpStart;
+			falling = true;
+		}
+		
 		if (falling) {
 			velY += fallSpeed;
+			
+			if (velY > 0) jumping = false;
+			if (velY < 0 && !jumping) velY += stopJumpSpeed;
+			
+			if (velY > maxFallSpeed) velY = maxFallSpeed;
 		}
 	}
 	
@@ -75,6 +90,10 @@ public class HellHound extends Enemy {
 		setPosition(xtemp, ytemp);
 		playerPosition();
 		
+		if (currentAction == JUMPING) {
+			if (animator.hasPlayedOnce()) jumping = false;
+		}
+		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if (elapsed > 400) {
@@ -82,7 +101,15 @@ public class HellHound extends Enemy {
 			}
 		}
 		
-		if (left || right) {
+		if (jumping) {
+			if (currentAction != JUMPING) {
+				currentAction = JUMPING;
+				turnAroundTimer = System.nanoTime();
+				animator.setFrames(sprites.get(JUMPING));
+				animator.setSpeed(100);
+				width = 60;
+			}
+		} else if (left || right) {
 			if (currentAction != WALKING && !running) {
 				currentAction = WALKING;
 				animator.setFrames(sprites.get(WALKING));
@@ -104,6 +131,7 @@ public class HellHound extends Enemy {
 				width = 60;
 			}
 		}
+		
 		if (right) facingRight = true;
 		if (left) facingRight = false;
 		
@@ -112,23 +140,37 @@ public class HellHound extends Enemy {
 	
 	private void playerPosition() {
 		float distance = this.x - player.getX();
-		if (distance <= 650  && distance > 0) {
+		if (distance <= 650  && distance > 0 && !jumping) {
 			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 1000) {
+			if (elapsed > 900) {
 				running = true;
 				left = true;
 				right = false;
 				turnAroundTimer = System.nanoTime();
 			}
-		} else if (distance >= -650 && distance < 0) {
+		} else if (distance >= -650 && distance < 0 && !jumping) {
 			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 1000) {
+			if (elapsed > 900) {
 				running = true;
 				right = true;
 				left = false;
 				turnAroundTimer = System.nanoTime();
 			}
 		}
+		
+		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
+		if (elapsed > 150) {
+			Random random = Constants.random;
+			int r = random.nextInt(3);
+			randomTimer = System.nanoTime();
+			
+			if (distance <= 100 && distance > 0 && r == 1) {
+				jumping = true;
+			} else if (distance >= -100 && distance < 0 && r == 1) {
+				jumping = true;
+			}
+		}
+		
 	}
 
 }

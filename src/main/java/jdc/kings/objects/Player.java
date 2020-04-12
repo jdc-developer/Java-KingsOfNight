@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdc.kings.input.Key;
+import jdc.kings.input.KeyInput;
+import jdc.kings.input.enums.KeyAction;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -171,10 +174,15 @@ public class Player extends GameObject {
 			if (animator.hasPlayedOnce()) {
 				rolling = false;
 				maxSpeed = 4.6f;
-				if (previousAction != WALKING && previousAction != FALLING &&
-						previousAction != JUMPING) {
-					if (facingRight) right = false;
-					else left = false;
+				
+				KeyInput keyInput = KeyInput.getInstance();
+				Key rightKey = keyInput.findKey(KeyAction.RIGHT);
+				Key leftKey = keyInput.findKey(KeyAction.LEFT);
+				
+				if (facingRight && !rightKey.isPressed()) {
+					right = false;
+				} else if (!leftKey.isPressed()) {
+					left = false;
 				}
 			}
 		}
@@ -258,6 +266,7 @@ public class Player extends GameObject {
 			}
 		} else if (velY < 0) {
 			if (currentAction != JUMPING) {
+				previousAction = currentAction;
 				currentAction = JUMPING;
 				animator.setFrames(sprites.get(JUMPING));
 				animator.setSpeed(100);
