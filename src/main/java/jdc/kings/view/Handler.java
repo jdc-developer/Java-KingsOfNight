@@ -4,12 +4,15 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 
 import jdc.kings.objects.GameObject;
+import jdc.kings.objects.Player;
+import jdc.kings.utils.Constants;
 
 public class Handler {
 
 	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
 	private static Handler instance;
 	private TileMap tileMap;
+	private Player player;
 	
 	private Handler() {};
 	
@@ -21,6 +24,9 @@ public class Handler {
 	}
 	
 	public void tick() {
+		tileMap.setPosition(
+				Constants.WIDTH / Constants.SCALE - player.getX(),
+				Constants.HEIGHT / Constants.SCALE - player.getY());
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject tempObject = objects.get(i);
 			tempObject.tick();
@@ -45,6 +51,10 @@ public class Handler {
 
 	public void setTileMap(TileMap tileMap) {
 		this.tileMap = tileMap;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 	
 }

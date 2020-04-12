@@ -18,18 +18,19 @@ import jdc.kings.utils.Constants;
  */
 public class TileMap {
 	
-	private double x;
-	private double y;
+	private float x;
+	private float y;
 	
 	private int xmin;
 	private int ymin;
 	private int xmax;
 	private int ymax;
 	
-	private double tween;
+	private float tween;
 	
 	private int[][] map;
 	private int tileSize;
+	private int increaseSize;
 	private int numRows;
 	private int numCols;
 	private int width;
@@ -45,11 +46,12 @@ public class TileMap {
 	private int numRowsToDraw;
 	private int numColsToDraw;
 	
-	public TileMap(int tileSize) {
+	public TileMap(int tileSize, int increaseSize) {
+		this.increaseSize = increaseSize;
 		this.tileSize = tileSize;
 		numRowsToDraw = Constants.HEIGHT / tileSize + 2;
 		numColsToDraw = Constants.WIDTH / tileSize + 2;
-		tween = 0.07;
+		tween = 0.07f;
 	}
 	
 	public void loadTiles(String s) {
@@ -61,6 +63,7 @@ public class TileMap {
 			
 			BufferedImage subImage;
 			
+			int count = 0;
 			for (int row = 0; row < numTilesRows; row++) {
 				for (int col = 0; col < numTilesAcross; col++) {
 					subImage = tileSet.getSubimage(
@@ -68,7 +71,12 @@ public class TileMap {
 							row * tileSize,
 							tileSize,
 							tileSize);
-					tiles[row][col] = new Tile(subImage, Tile.NORMAL);
+					int type = Tile.NORMAL;
+					if (count <= 4 && count > 0) {
+						type = Tile.BLOCKED;
+					}
+					tiles[row][col] = new Tile(subImage, type);
+					count++;
 				}
 			}
 			
@@ -87,9 +95,9 @@ public class TileMap {
 			width = numCols * tileSize;
 			height = numRows * tileSize;
 			
-			xmin = Constants.WIDTH - width;
+			xmin = Constants.WIDTH / Constants.SCALE - width;
 			xmax = 0;
-			ymin = Constants.HEIGHT - height;
+			ymin = Constants.HEIGHT / Constants.SCALE - height;
 			ymax = 0;
 			
 			String delims = "\\s+";
@@ -107,11 +115,11 @@ public class TileMap {
 		}
 	}
 
-	public double getX() {
+	public float getX() {
 		return x;
 	}
 
-	public double getY() {
+	public float getY() {
 		return y;
 	}
 
@@ -135,12 +143,16 @@ public class TileMap {
 		return numCols;
 	}
 	
-	public double getTween() {
+	public float getTween() {
 		return tween;
 	}
 
-	public void setTween(double tween) {
+	public void setTween(float tween) {
 		this.tween = tween;
+	}
+
+	public int getIncreaseSize() {
+		return increaseSize;
 	}
 
 	public int getType(int row, int col) {
@@ -150,13 +162,13 @@ public class TileMap {
 		return tiles[r][c].getType();
 	}
 	
-	public void setPosition(double x, double y) {
+	public void setPosition(float x, float y) {
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 		
 		fixBounds();
-		colOffset = (int) - this.x / tileSize;
-		rowOffset = (int) - this.y / tileSize;
+		colOffset = (int) - this.x / (tileSize + increaseSize);
+		rowOffset = (int) - this.y / (tileSize + increaseSize);
 	}
 
 	private void fixBounds() {
@@ -177,10 +189,10 @@ public class TileMap {
 				int r = rc / numTilesAcross;
 				int c = rc % numTilesAcross;
  				g.drawImage(tiles[r][c].getImage(),
-						(int)x + col * (tileSize + 20),
-						(int)y + row * (tileSize + 20),
-						tileSize + 20,
-						tileSize + 20,
+						(int)x + col * (tileSize + increaseSize),
+						(int)y + row * (tileSize + increaseSize),
+						tileSize + increaseSize,
+						tileSize + increaseSize,
 						null);
 			}
 		}

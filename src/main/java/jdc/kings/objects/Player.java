@@ -1,13 +1,12 @@
 package jdc.kings.objects;
 
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
+import jdc.kings.view.TileMap;
 
 public class Player extends GameObject {
 	
@@ -38,17 +37,19 @@ public class Player extends GameObject {
 	private static final int ROLLING = 7;
 	private static final int SHIELD = 8;
 
-	public Player(int x, int y) {
-		super(x, y);
+	public Player(TileMap tm) {
+		super(tm);
 		width = 63;
 		height = 74;
+		cwidth = 60;
+		cheight = 60;
 		
 		moveSpeed = 2.6f;
 		maxSpeed = 4.6f;
 		stopSpeed = 0.4f;
 		fallSpeed = 0.15f;
 		maxFallSpeed = 4.0f;
-		jumpStart = -8.8f;
+		jumpStart = -7.8f;
 		stopJumpSpeed = 0.3f;
 		
 		stabDamage = 12;
@@ -78,7 +79,6 @@ public class Player extends GameObject {
 	}
 	
 	private void getNextPosition() {
-		
 		if (left) {
 			velX -= moveSpeed;
 			if (velX < -maxSpeed) {
@@ -129,20 +129,33 @@ public class Player extends GameObject {
 
 	public void tick() {
 		getNextPosition();
-		x += velX;
-		y += velY;
+		checkTileMapCollision();
+		setPosition(xtemp, ytemp);
 		
 		if (currentAction == STABBING) {
 			if (animator.hasPlayedOnce()) stabbing = false;
+			if (previousAction == ROLLING) {
+				rolling = false;
+				maxSpeed = 4.6f;
+				if (facingRight) right = false;
+				else left = false;
+			}
 		}
 		
 		if (currentAction == CUTTING) {
 			if (animator.hasPlayedOnce()) cutting = false;
+			if (previousAction == ROLLING) {
+				rolling = false;
+				maxSpeed = 4.6f;
+				if (facingRight) right = false;
+				else left = false;
+			}
 		}
 		
 		if (currentAction == SLICING) {
 			if (animator.hasPlayedOnce()) {
 				slicing = false;
+				rolling = false;
 				maxSpeed = 4.6f;
 				if (facingRight) right = false;
 				else left = false;
@@ -153,7 +166,8 @@ public class Player extends GameObject {
 			if (animator.hasPlayedOnce()) {
 				rolling = false;
 				maxSpeed = 4.6f;
-				if (previousAction != WALKING) {
+				if (previousAction != WALKING && previousAction != FALLING &&
+						previousAction != JUMPING) {
 					if (facingRight) right = false;
 					else left = false;
 				}
@@ -166,6 +180,7 @@ public class Player extends GameObject {
 		
 		if (stabbing) {
 			if (currentAction != STABBING) {
+				previousAction = currentAction;
 				currentAction = STABBING;
 				animator.setFrames(sprites.get(STABBING));
 				animator.setSpeed(85);
@@ -173,6 +188,7 @@ public class Player extends GameObject {
 			}
 		} else if (cutting) {
 			if (currentAction != CUTTING) {
+				previousAction = currentAction;
 				currentAction = CUTTING;
 				animator.setFrames(sprites.get(CUTTING));
 				animator.setSpeed(80);
@@ -180,6 +196,7 @@ public class Player extends GameObject {
 			}
 		} else if (slicing) {
 			if (currentAction != SLICING) {
+				previousAction = currentAction;
 				currentAction = SLICING;
 				animator.setFrames(sprites.get(SLICING));
 				animator.setSpeed(100);

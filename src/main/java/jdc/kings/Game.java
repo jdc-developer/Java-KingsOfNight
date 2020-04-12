@@ -30,21 +30,24 @@ public class Game extends Canvas implements Runnable {
 	public static void main(String[] args) {
 		instance = new Game();
 		
-		TileMap tileMap = new TileMap(16);
+		TileMap tileMap = new TileMap(16, 20);
 		tileMap.loadTiles("/tilesets/castle.png");
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
 		
+		Player player = new Player(tileMap);
+		player.setPosition(100, 100);
+		
 		handler = Handler.getInstance();
 		handler.setTileMap(tileMap);
+		handler.addObject(player);
+		handler.setPlayer(player);
 		KeyInput keyInput = KeyInput.getInstance();
 		instance.addKeyListener(keyInput);
 		
 		Window.createWindow();
 		
-		Player player = new Player(200, 200);
-		handler.addObject(player);
 		keyInput.setPlayer(player);
 	}
 

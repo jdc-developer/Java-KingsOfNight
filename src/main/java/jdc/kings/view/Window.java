@@ -16,10 +16,11 @@ private static final long serialVersionUID = 1L;
 		JFrame frame = new JFrame(Constants.TITLE);
 		
 		Game game = Game.getInstance();
+		Dimension dimension = new Dimension(Constants.WIDTH, Constants.HEIGHT);
 		
-		frame.setPreferredSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
-		frame.setMaximumSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
-		frame.setMinimumSize(new Dimension(Constants.WIDTH, Constants.HEIGHT));
+		frame.setPreferredSize(dimension);
+		frame.setMaximumSize(dimension);
+		frame.setMinimumSize(dimension);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
