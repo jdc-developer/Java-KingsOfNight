@@ -1,5 +1,5 @@
 # Java-KingsOfNight
-Jogo 2D de plataforma/RPG desenvolvido em Java. Propósito de estudo e aprendizado.
+Jogo 2D de Plataforma/RPG desenvolvido em Java. Propósito de estudo e aprendizado.
 
 ## Autoria
 
@@ -27,7 +27,7 @@ https://alcoholism.itch.io/dark-castle-tileset
 
 # Java-KingsOfNight
 
-2D platform/RPG game designed in Java. Purposes of study and learnship.
+2D Platform/RPG game designed in Java. Purposes of study and learnship.
 
 ## Authorship
 
