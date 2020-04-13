@@ -47,8 +47,6 @@ public class Game extends Canvas implements Runnable {
 		handler = Handler.getInstance();
 		handler.setTileMap(tileMap);
 		
-		handler.addObject(player);
-		handler.addObject(hellHound);
 		handler.setPlayer(player);
 		handler.getEnemies().add(hellHound);
 		

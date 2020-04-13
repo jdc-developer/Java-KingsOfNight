@@ -5,6 +5,8 @@ import jdc.kings.view.TileMap;
 public class Enemy extends GameObject {
 	
 	protected int damage;
+	protected int shieldDamage;
+	protected int shieldCost;
 	protected Player player;
 
 	public Enemy(TileMap tm) {

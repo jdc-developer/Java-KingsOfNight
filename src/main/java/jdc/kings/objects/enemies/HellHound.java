@@ -41,7 +41,10 @@ public class HellHound extends Enemy {
 		cheight = 35;
 		
 		health = maxHealth = 15;
-		damage = 5;
+		damage = 7;
+		
+		shieldDamage = 1;
+		shieldCost = 3;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 11, 22, 40, 24, 0, 0));
@@ -89,6 +92,7 @@ public class HellHound extends Enemy {
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 		playerPosition();
+		checkPlayerDamage();
 		
 		if (currentAction == JUMPING) {
 			if (animator.hasPlayedOnce()) jumping = false;
@@ -136,6 +140,26 @@ public class HellHound extends Enemy {
 		if (left) facingRight = false;
 		
 		animator.update(System.currentTimeMillis());
+	}
+	
+	private void checkPlayerDamage() {
+		if (intersects(player)) {
+			if (player.isShield()) {
+				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight())) {
+					player.shieldDamage(shieldDamage, damage, shieldCost);
+				} else {
+					player.hit(damage);
+				}
+			} else if (player.isRolling()) {
+				long elapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;
+				if (elapsed < 100) {
+					player.hit(damage);
+				}
+			} else {
+				player.hit(damage);
+			}
+			
+		}
 	}
 	
 	private void playerPosition() {

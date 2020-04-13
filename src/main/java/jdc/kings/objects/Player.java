@@ -31,6 +31,11 @@ public class Player extends GameObject {
 	private long holdTimer;
 	private long rollTimer;
 	
+	private int rollCost;
+	private int stabCost;
+	private int cutCost;
+	private int sliceCost;
+	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
@@ -68,6 +73,12 @@ public class Player extends GameObject {
 		sliceRange = 120;
 		
 		health = maxHealth = 50;
+		stamina = maxStamina = 20;
+		
+		rollCost = 5;
+		stabCost = 4;
+		cutCost = 3;
+		sliceCost = 6;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 22, 38, 26, 30, 0, 0));
@@ -125,6 +136,14 @@ public class Player extends GameObject {
 			falling = true;
 		}
 		
+		if (stamina < maxStamina) {
+			stamina += 0.04f;
+		}
+		
+		if (stamina < 0) {
+			stamina = 0;
+		}
+		
 		if (falling) {
 			velY += fallSpeed;
 			
@@ -165,6 +184,7 @@ public class Player extends GameObject {
 				slicing = false;
 				rolling = false;
 				maxSpeed = 4.6f;
+				
 				if (facingRight) right = false;
 				else left = false;
 			}
@@ -212,42 +232,66 @@ public class Player extends GameObject {
 			if (currentAction != STABBING) {
 				previousAction = currentAction;
 				currentAction = STABBING;
-				animator.setFrames(sprites.get(STABBING));
-				animator.setSpeed(85);
-				width = 63;
+				if (stamina >= stabCost) {
+					animator.setFrames(sprites.get(STABBING));
+					animator.setSpeed(85);
+					width = 63;
+					stamina -= stabCost;
+				} else {
+					stabbing = false;
+				}
 			}
 		} else if (cutting) {
 			if (currentAction != CUTTING) {
 				previousAction = currentAction;
 				currentAction = CUTTING;
-				animator.setFrames(sprites.get(CUTTING));
-				animator.setSpeed(80);
-				width = 63;
+				if (stamina >= cutCost) {
+					animator.setFrames(sprites.get(CUTTING));
+					animator.setSpeed(80);
+					width = 63;
+					stamina -= sliceCost;
+				} else {
+					cutting = false;
+				}
 			}
 		} else if (slicing) {
 			if (currentAction != SLICING) {
 				previousAction = currentAction;
 				currentAction = SLICING;
-				animator.setFrames(sprites.get(SLICING));
-				animator.setSpeed(100);
-				width = 63;
-				
-				maxSpeed = 1f;
-				if (facingRight) right = true;
-				else left = true;
+				if (stamina >= sliceCost) {
+					animator.setFrames(sprites.get(SLICING));
+					animator.setSpeed(100);
+					width = 63;
+					
+					stamina -= sliceCost;
+					maxSpeed = 1f;
+					
+					if (facingRight) right = true;
+					else left = true;
+				} else {
+					slicing = false;
+				}
 			}
 		} else if (rolling) {
 			if (currentAction != ROLLING) {
 				previousAction = currentAction;
 				currentAction = ROLLING;
-				animator.setFrames(sprites.get(ROLLING));
-				animator.setSpeed(80);
-				width = 63;
 				
-				rollTimer = System.nanoTime();
-				maxSpeed = 5.5f;
-				if (facingRight) right = true;
-				else left = true;
+				if (stamina >= rollCost) {
+					animator.setFrames(sprites.get(ROLLING));
+					animator.setSpeed(80);
+					width = 63;
+					
+					stamina -= rollCost;
+					rollTimer = System.nanoTime();
+					maxSpeed = 5.5f;
+					
+					if (facingRight) right = true;
+					else left = true;
+				} else {
+					rolling = false;
+				}
+				
 			}
 		} else if (shield) {
 			if (currentAction != SHIELD) {
@@ -339,14 +383,7 @@ public class Player extends GameObject {
 				 }
 			}
 			
-			if (intersects(e)) {
-				long elapsed = (System.nanoTime() - rollTimer) / 1000000;
-				if (rolling && elapsed < 100) {
-					hit(e.getDamage());
-				} else if (!rolling) {
-					hit(e.getDamage());
-				}
-			}
+			
 		}
 	}
 
@@ -368,8 +405,31 @@ public class Player extends GameObject {
 		this.rolling = rolling;
 	}
 
+	public boolean isRolling() {
+		return rolling;
+	}
+
 	public void setShield(boolean shield) {
 		this.shield = shield;
+	}
+
+	public boolean isShield() {
+		return shield;
+	}
+	
+	public long getRollTimer() {
+		return rollTimer;
+	}
+
+	public void shieldDamage(int shieldDamage, int damage, int cost) {
+		if (stamina < cost) {
+			hit(damage);
+		} else {
+			if (!flinching) {
+				stamina -= cost;
+			}
+			hit(shieldDamage);
+		}
 	}
 
 }

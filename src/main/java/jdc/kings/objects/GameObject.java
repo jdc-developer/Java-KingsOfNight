@@ -1,6 +1,5 @@
 package jdc.kings.objects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -60,7 +59,9 @@ public abstract class GameObject {
 	protected float stopJumpSpeed;
 	
 	protected int health;
+	protected float stamina;
 	protected int maxHealth;
+	protected float maxStamina;
 	protected boolean dead;
 	
 	protected boolean flinching;
@@ -169,6 +170,14 @@ public abstract class GameObject {
 
 	public float getMoveSpeed() {
 		return moveSpeed;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public float getStamina() {
+		return stamina;
 	}
 
 	public void setPosition(float x, float y) {
@@ -291,12 +300,6 @@ public abstract class GameObject {
 					height,
 					null);
 		}
-		
-		g.setColor(Color.white);
-		g.drawRect((int)(x + xmap - width / 2 + width),
-				(int)(y + ymap - height / 2),
-				cwidth,
-				cheight);
 		animator.update(System.currentTimeMillis());
 	}
 	

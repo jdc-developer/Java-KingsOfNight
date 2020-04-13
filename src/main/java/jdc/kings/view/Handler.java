@@ -1,22 +1,20 @@
 package jdc.kings.view;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.GameObject;
 import jdc.kings.objects.Player;
 import jdc.kings.utils.Constants;
 
 public class Handler {
 
-	private LinkedList<GameObject> objects = new LinkedList<GameObject>();
 	private static Handler instance;
 	private TileMap tileMap;
 	private Player player;
-	private List<Enemy> enemies = new ArrayList<>();
+	private LinkedList<Enemy> enemies = new LinkedList<>();
+	private HUD hud;
 	
 	private Handler() {};
 	
@@ -33,26 +31,27 @@ public class Handler {
 				Constants.HEIGHT / Constants.SCALE - player.getY());
 		
 		player.checkAttack(enemies);
-		for (int i = 0; i < objects.size(); i++) {
-			GameObject tempObject = objects.get(i);
-			tempObject.tick();
+		player.tick();
+		
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.tick();
+			if (e.isDead()) {
+				enemies.remove(i);
+				i--;
+			}
 		}
 	}
 	
 	public void render(Graphics g) {
 		tileMap.render(g);
-		for (int i = 0; i < objects.size(); i++) {
-			GameObject tempObject = objects.get(i);
-			tempObject.render(g);
+		player.render(g);
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.render(g);
 		}
-	}
-	
-	public void addObject(GameObject object) {
-		this.objects.add(object);
-	}
-	
-	public void removeObject(GameObject object) {
-		this.objects.remove(object);
+		
+		hud.render(g);
 	}
 
 	public void setTileMap(TileMap tileMap) {
@@ -61,6 +60,7 @@ public class Handler {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+		hud = new HUD(this.player);
 	}
 
 	public List<Enemy> getEnemies() {
