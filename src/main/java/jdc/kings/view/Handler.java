@@ -12,6 +12,7 @@ public class Handler {
 
 	private static Handler instance;
 	private TileMap tileMap;
+	private Background background;
 	private Player player;
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private HUD hud;
@@ -30,6 +31,8 @@ public class Handler {
 				Constants.WIDTH / Constants.SCALE - player.getX(),
 				Constants.HEIGHT / Constants.SCALE - player.getY());
 		
+		background.setPosition(tileMap.getX(), tileMap.getY());
+		
 		player.checkAttack(enemies);
 		player.tick();
 		
@@ -44,6 +47,7 @@ public class Handler {
 	}
 	
 	public void render(Graphics g) {
+		background.render(g);
 		tileMap.render(g);
 		player.render(g);
 		for (int i = 0; i < enemies.size(); i++) {
@@ -65,6 +69,10 @@ public class Handler {
 
 	public List<Enemy> getEnemies() {
 		return enemies;
+	}
+
+	public void setBackground(Background background) {
+		this.background = background;
 	}
 	
 }

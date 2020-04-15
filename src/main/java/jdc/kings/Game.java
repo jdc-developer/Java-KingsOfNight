@@ -9,6 +9,7 @@ import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enemies.HellHound;
 import jdc.kings.utils.Constants;
+import jdc.kings.view.Background;
 import jdc.kings.view.Handler;
 import jdc.kings.view.TileMap;
 import jdc.kings.view.Window;
@@ -45,7 +46,10 @@ public class Game extends Canvas implements Runnable {
 		hellHound.setPosition(1000, 200);
 		hellHound.setPlayer(player);
 		
+		Background background = new Background("/backgrounds/level1-bg.gif", 0.1f);
+		
 		handler = Handler.getInstance();
+		handler.setBackground(background);
 		handler.setTileMap(tileMap);
 		
 		handler.setPlayer(player);
@@ -102,14 +106,14 @@ public class Game extends Canvas implements Runnable {
 		bs.show();
 	}
 
-	private void tick() {
+	private void tick() {/*
 		TileMap tileMap = new TileMap(32, 20);
 		int[] blocks = {91, 92, 95, 96, 63};
 		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
-		handler.setTileMap(tileMap);
+		handler.setTileMap(tileMap);*/
 		handler.tick();
 	}
 	
