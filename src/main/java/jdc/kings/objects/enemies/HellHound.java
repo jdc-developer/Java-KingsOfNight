@@ -145,7 +145,9 @@ public class HellHound extends Enemy {
 	private void checkPlayerDamage() {
 		if (intersects(player)) {
 			if (player.isShield()) {
-				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight())) {
+				long elapsed = (System.nanoTime() - player.getHoldTimer()) / 1000000;
+				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight()) &&
+						(elapsed > 200)) {
 					player.shieldDamage(shieldDamage, damage, shieldCost);
 				} else {
 					player.hit(damage);
@@ -185,7 +187,7 @@ public class HellHound extends Enemy {
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
 		if (elapsed > 150) {
 			Random random = Constants.random;
-			int r = random.nextInt(3);
+			int r = random.nextInt(4);
 			randomTimer = System.nanoTime();
 			
 			if (distance <= 100 && distance > 0 && r == 1) {

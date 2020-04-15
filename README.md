@@ -26,6 +26,8 @@ https://alcoholism.itch.io/dark-castle-tileset
 * **Hell Hound** -
 https://opengameart.org/content/hell-hound-character
 
+* **HUD** - https://opengameart.org/content/health-and-mana-gui
+
 # English:
 
 # Java-KingsOfNight

@@ -54,7 +54,7 @@ public class TileMap {
 		tween = 0.07f;
 	}
 	
-	public void loadTiles(String s) {
+	public void loadTiles(String s, int[] blocks) {
 		try {
 			tileSet = ImageIO.read(getClass().getResourceAsStream(s));
 			numTilesAcross = tileSet.getWidth() / tileSize;
@@ -63,7 +63,7 @@ public class TileMap {
 			
 			BufferedImage subImage;
 			
-			int count = 0;
+			int count = 1;
 			for (int row = 0; row < numTilesRows; row++) {
 				for (int col = 0; col < numTilesAcross; col++) {
 					subImage = tileSet.getSubimage(
@@ -72,8 +72,10 @@ public class TileMap {
 							tileSize,
 							tileSize);
 					int type = Tile.NORMAL;
-					if (count <= 4 && count > 0) {
-						type = Tile.BLOCKED;
+					for (int i = 0; i < blocks.length; i++) {
+						if (count == blocks[i]) {
+							type = Tile.BLOCKED;
+						}
 					}
 					tiles[row][col] = new Tile(subImage, type);
 					count++;

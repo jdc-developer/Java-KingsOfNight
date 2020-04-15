@@ -421,6 +421,10 @@ public class Player extends GameObject {
 		return rollTimer;
 	}
 
+	public long getHoldTimer() {
+		return holdTimer;
+	}
+
 	public void shieldDamage(int shieldDamage, int damage, int cost) {
 		if (stamina < cost) {
 			hit(damage);

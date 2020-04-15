@@ -31,8 +31,9 @@ public class Game extends Canvas implements Runnable {
 	public static void main(String[] args) {
 		instance = new Game();
 		
-		TileMap tileMap = new TileMap(16, 20);
-		tileMap.loadTiles("/tilesets/castle.png");
+		TileMap tileMap = new TileMap(32, 20);
+		int[] blocks = {91, 92, 95, 96, 63};
+		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
@@ -102,6 +103,13 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void tick() {
+		TileMap tileMap = new TileMap(32, 20);
+		int[] blocks = {91, 92, 95, 96, 63};
+		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
+		tileMap.loadMap("/maps/level1.map");
+		tileMap.setPosition(0, 0);
+		tileMap.setTween(1);
+		handler.setTileMap(tileMap);
 		handler.tick();
 	}
 	
