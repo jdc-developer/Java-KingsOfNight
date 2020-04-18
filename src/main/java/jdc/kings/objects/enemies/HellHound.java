@@ -89,10 +89,9 @@ public class HellHound extends Enemy {
 	@Override
 	public void tick() {
 		getNextPosition();
-		checkTileMapCollision();
-		setPosition(xtemp, ytemp);
 		playerPosition();
 		checkPlayerDamage();
+		super.tick();
 		
 		if (currentAction == JUMPING) {
 			if (animator.hasPlayedOnce()) jumping = false;
@@ -148,17 +147,17 @@ public class HellHound extends Enemy {
 				long elapsed = (System.nanoTime() - player.getHoldTimer()) / 1000000;
 				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight()) &&
 						(elapsed > 200)) {
-					player.shieldDamage(shieldDamage, damage, shieldCost);
+					player.shieldDamage(shieldDamage, damage, shieldCost, !facingRight);
 				} else {
-					player.hit(damage);
+					player.hit(damage, !facingRight, false);
 				}
 			} else if (player.isRolling()) {
 				long elapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;
 				if (elapsed < 100) {
-					player.hit(damage);
+					player.hit(damage, !facingRight, false);
 				}
 			} else {
-				player.hit(damage);
+				player.hit(damage, !facingRight, false);
 			}
 			
 		}

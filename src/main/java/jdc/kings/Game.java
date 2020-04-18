@@ -33,17 +33,17 @@ public class Game extends Canvas implements Runnable {
 		instance = new Game();
 		
 		TileMap tileMap = new TileMap(32, 20);
-		int[] blocks = {91, 92, 95, 96, 63};
+		int[] blocks = {7, 37, 31, 25};
 		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(100, 100);
+		player.setPosition(100, 600);
 		
 		HellHound hellHound = new HellHound(tileMap);
-		hellHound.setPosition(1000, 200);
+		hellHound.setPosition(1000, 600);
 		hellHound.setPlayer(player);
 		
 		Background background = new Background("/backgrounds/level1-bg.gif", 0.1f);
@@ -108,7 +108,7 @@ public class Game extends Canvas implements Runnable {
 
 	private void tick() {/*
 		TileMap tileMap = new TileMap(32, 20);
-		int[] blocks = {91, 92, 95, 96, 63};
+		int[] blocks = {81, 91, 92, 95, 96, 63};
 		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);

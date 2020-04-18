@@ -19,7 +19,6 @@ public class Background {
 	private float moveScale;
 	
 	public Background(String s, float ms) {
-		
 		try {
 			image = new ImageIcon(getClass().getResource(s)).getImage();
 			moveScale = ms;
@@ -46,7 +45,6 @@ public class Background {
 	}
 	
 	public void render(Graphics g) {
-		
 		g.drawImage(image, (int)x, (int)y, Constants.WIDTH,
 				Constants.HEIGHT, null);
 		

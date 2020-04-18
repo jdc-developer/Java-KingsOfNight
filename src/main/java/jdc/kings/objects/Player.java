@@ -156,8 +156,7 @@ public class Player extends GameObject {
 
 	public void tick() {
 		getNextPosition();
-		checkTileMapCollision();
-		setPosition(xtemp, ytemp);
+		super.tick();
 		
 		if (currentAction == STABBING) {
 			if (animator.hasPlayedOnce()) stabbing = false;
@@ -343,18 +342,19 @@ public class Player extends GameObject {
 				int range = 0;
 				int damage = 0;
 				
+				long elapsed = (System.nanoTime() - attackTimer) / 1000000;
 				if (stabbing) {
-					long elapsed = (System.nanoTime() - attackTimer) / 1000000;
-					if (elapsed > 250) {
+					if (elapsed > 250 && elapsed < 400) {
 						range = stabRange;
 						damage = stabDamage;
 					}
 				} else if (cutting) {
-					range = cutRange;
-					damage = cutDamage;
+					if (elapsed < 150) {
+						range = cutRange;
+						damage = cutDamage;
+					}
 				} else if (slicing) {
-					long elapsed = (System.nanoTime() - attackTimer) / 1000000;
-					if (elapsed > 250) {
+					if (elapsed > 250 && elapsed < 400) {
 						range = sliceRange;
 						damage = sliceDamage;
 					}
@@ -367,7 +367,7 @@ public class Player extends GameObject {
 							 e.getY() > y - height / 2 &&
 							 e.getY() < y + height / 2) {
 						 if (damage > 0) {
-							 e.hit(damage);
+							 e.hit(damage, !facingRight, false);
 						 }
 					 }
 				 } else {
@@ -377,7 +377,7 @@ public class Player extends GameObject {
 							 e.getY() > y - height / 2 &&
 							 e.getY() < y + height / 2) {
 						 if (damage > 0) {
-							 e.hit(damage);
+							 e.hit(damage, !facingRight, false);
 						 }
 					 }
 				 }
@@ -394,6 +394,7 @@ public class Player extends GameObject {
 
 	public void setCutting(boolean cutting) {
 		this.cutting = cutting;
+		attackTimer = System.nanoTime();
 	}
 
 	public void setSlicing(boolean slicing) {
@@ -425,14 +426,14 @@ public class Player extends GameObject {
 		return holdTimer;
 	}
 
-	public void shieldDamage(int shieldDamage, int damage, int cost) {
+	public void shieldDamage(int shieldDamage, int damage, int cost, boolean right) {
 		if (stamina < cost) {
-			hit(damage);
+			hit(damage, right, false);
 		} else {
 			if (!flinching) {
 				stamina -= cost;
 			}
-			hit(shieldDamage);
+			hit(shieldDamage, right, true);
 		}
 	}
 

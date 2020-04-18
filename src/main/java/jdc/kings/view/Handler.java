@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
 
+import jdc.kings.objects.Blood;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.utils.Constants;
@@ -14,7 +15,9 @@ public class Handler {
 	private TileMap tileMap;
 	private Background background;
 	private Player player;
+	
 	private LinkedList<Enemy> enemies = new LinkedList<>();
+	private LinkedList<Blood> bloodLosses = new LinkedList<>();
 	private HUD hud;
 	
 	private Handler() {};
@@ -40,7 +43,17 @@ public class Handler {
 			Enemy e = enemies.get(i);
 			e.tick();
 			if (e.isDead()) {
+				bloodLosses.add(
+						new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));
 				enemies.remove(i);
+				i--;
+			}
+		}
+		
+		for(int i = 0; i < bloodLosses.size(); i++) {
+			bloodLosses.get(i).tick();
+			if(bloodLosses.get(i).shouldRemove()) {
+				bloodLosses.remove(i);
 				i--;
 			}
 		}
@@ -50,9 +63,16 @@ public class Handler {
 		background.render(g);
 		tileMap.render(g);
 		player.render(g);
+		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			e.render(g);
+		}
+		
+		for(int i = 0; i < bloodLosses.size(); i++) {
+			bloodLosses.get(i).setMapPosition(
+				(int)tileMap.getX(), (int)tileMap.getY());
+			bloodLosses.get(i).render(g);
 		}
 		
 		hud.render(g);

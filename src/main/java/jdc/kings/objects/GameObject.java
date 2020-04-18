@@ -3,6 +3,7 @@ package jdc.kings.objects;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Animator;
@@ -39,6 +40,8 @@ public abstract class GameObject {
 	protected boolean bottomRight;
 	
 	protected Animator animator;
+	private LinkedList<Blood> bloodLosses = new LinkedList<>();
+	
 	protected boolean facingRight = true;
 	protected int currentAction;
 	protected int previousAction;
@@ -85,8 +88,6 @@ public abstract class GameObject {
 				cwidth,
 				cheight);
 	}
-	
-	public abstract void tick();
 
 	public float getX() {
 		return x;
@@ -180,6 +181,14 @@ public abstract class GameObject {
 		return stamina;
 	}
 
+	public boolean isFlinching() {
+		return flinching;
+	}
+
+	public long getFlinchTimer() {
+		return flinchTimer;
+	}
+
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
@@ -232,6 +241,11 @@ public abstract class GameObject {
 			} else {
 				xtemp += velX;
 			}
+			
+			if (x <= 25) {
+				velX = 0;
+				xtemp = 25;
+			}
 		}
 		if (velX > 0) {
 			if (topRight || bottomRight) {
@@ -276,16 +290,21 @@ public abstract class GameObject {
 				y + ymap + height < 0 ||
 				y + ymap - height > Constants.HEIGHT;
 	}
+	
+	public void tick() {
+		checkTileMapCollision();
+		setPosition(xtemp, ytemp);
+		for(int i = 0; i < bloodLosses.size(); i++) {
+			bloodLosses.get(i).tick();
+			if(bloodLosses.get(i).shouldRemove()) {
+				bloodLosses.remove(i);
+				i--;
+			}
+		}
+	}
 
 	public void render(Graphics g) {
 		setMapPosition();
-		if (flinching) {
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed / 100 % 2 == 0) {
-				return;
-			}
-		}
-		
 		if (facingRight) {
 			g.drawImage(animator.getImage(),
 					(int)(x + xmap - width / 2),
@@ -300,16 +319,28 @@ public abstract class GameObject {
 					height,
 					null);
 		}
+		
+		for(int i = 0; i < bloodLosses.size(); i++) {
+			bloodLosses.get(i).setMapPosition(
+				(int)tileMap.getX(), (int)tileMap.getY());
+			bloodLosses.get(i).render(g);
+		}
+		
 		animator.update(System.currentTimeMillis());
 	}
 	
-	public void hit(int damage) {
+	public void hit(int damage, boolean right, boolean shield) {
 		if (dead || flinching) return;
 		health -= damage;
 		if (health < 0) health = 0;
 		if (health == 0) dead = true;
 		flinching = true;
 		flinchTimer = System.nanoTime();
+		
+		if (!shield) {
+			bloodLosses.add(
+					new Blood((int)x, (int)y, 128, 128,  0, right));
+		}
 	}
 
 }

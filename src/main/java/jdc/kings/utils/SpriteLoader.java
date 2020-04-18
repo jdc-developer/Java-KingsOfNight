@@ -53,6 +53,30 @@ public class SpriteLoader {
 		return bi;
 	}
 	
+	public BufferedImage[] loadActionByRows(String path, int startFrom, int goTo, int row, int frameWidth, int frameHeight) {
+		BufferedImage[] bi = null;
+		try {
+			BufferedImage spriteSheet = ImageIO.read(getClass()
+					.getResourceAsStream(path));
+			bi = new BufferedImage[goTo - startFrom];
+			
+			int count = 0;
+			for (int j = startFrom; j < goTo; j++) {
+				bi[count] = spriteSheet.getSubimage(
+						j * frameWidth, 
+						row * frameHeight,
+						frameWidth,
+						frameHeight);
+				count++;
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bi;
+	}
+	
 	private static BufferedImage resize(BufferedImage img, int newW, int newH) { 
 	    Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
 	    BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
