@@ -1,12 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>jdc-developer</groupId>
-  <artifactId>Java-KingsofNight</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Java-KingsOfNight</name>
-  <description>Kings of Night é um jogo 2D RPG desenvolvido em Java.</description>
-  <organization>
-      <name>Jorge Do Carmo</name>
-      <url>https://www.linkedin.com/in/jorge-do-carmo-861b06b2/</url>
-  </organization>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>jdc-developer</groupId>
+	<artifactId>Java-KingsofNight</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Java-KingsOfNight</name>
+	<description>Kings of Night é um jogo 2D RPG desenvolvido em Java.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>jdc.kings.Game</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
+
+	<organization>
+		<name>Jorge Do Carmo</name>
+		<url>https://www.linkedin.com/in/jorge-do-carmo-861b06b2/</url>
+	</organization>
 </project>
