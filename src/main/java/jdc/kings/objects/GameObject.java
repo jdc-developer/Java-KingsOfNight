@@ -40,7 +40,7 @@ public abstract class GameObject {
 	protected boolean bottomRight;
 	
 	protected Animator animator;
-	private LinkedList<Blood> bloodLosses = new LinkedList<>();
+	protected LinkedList<Blood> bloodLosses = new LinkedList<>();
 	
 	protected boolean facingRight = true;
 	protected int currentAction;
@@ -52,6 +52,7 @@ public abstract class GameObject {
 	protected boolean down;
 	protected boolean jumping;
 	protected boolean falling;
+	protected boolean shielding;
 	
 	protected float moveSpeed;
 	protected float maxSpeed;
@@ -60,6 +61,9 @@ public abstract class GameObject {
 	protected float maxFallSpeed;
 	protected float jumpStart;
 	protected float stopJumpSpeed;
+	protected float flinchXSpeed;
+	protected float maxFlinchXSpeed;
+	protected float flinchYSpeed;
 	
 	protected int health;
 	protected float stamina;
@@ -69,6 +73,7 @@ public abstract class GameObject {
 	
 	protected boolean flinching;
 	protected long flinchTimer;
+	protected int flinchDirection;
 	
 	public GameObject(TileMap tm) {
 		tileMap = tm;
@@ -294,6 +299,19 @@ public abstract class GameObject {
 	public void tick() {
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
+		
+		if (flinchDirection == 2) {
+			velX -= flinchXSpeed;
+			if (velX < -maxFlinchXSpeed) {
+				velX = -maxFlinchXSpeed;
+			}
+		} else if (flinchDirection == 1) {
+			velX += flinchXSpeed;
+			if (velX > maxFlinchXSpeed) {
+				velX = maxFlinchXSpeed;
+			}
+		}
+		
 		for(int i = 0; i < bloodLosses.size(); i++) {
 			bloodLosses.get(i).tick();
 			if(bloodLosses.get(i).shouldRemove()) {
@@ -330,16 +348,27 @@ public abstract class GameObject {
 	}
 	
 	public void hit(int damage, boolean right, boolean shield) {
-		if (dead || flinching) return;
+		if (dead || flinching || shielding) return;
 		health -= damage;
 		if (health < 0) health = 0;
 		if (health == 0) dead = true;
-		flinching = true;
-		flinchTimer = System.nanoTime();
 		
 		if (!shield) {
+			flinching = true;
+			flinchTimer = System.nanoTime();
+			
 			bloodLosses.add(
 					new Blood((int)x, (int)y, 128, 128,  0, right));
+			
+			velY -= flinchYSpeed;
+			if (right) {
+				flinchDirection = 2;
+			} else {
+				flinchDirection = 1;
+			}
+		} else {
+			shielding = true;
+			flinchTimer = System.nanoTime();
 		}
 	}
 

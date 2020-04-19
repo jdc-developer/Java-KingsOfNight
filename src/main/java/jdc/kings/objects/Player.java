@@ -62,6 +62,9 @@ public class Player extends GameObject {
 		maxFallSpeed = 5.0f;
 		jumpStart = -7.8f;
 		stopJumpSpeed = 0.3f;
+		flinchYSpeed = 5.5f;
+		flinchXSpeed = 2.8f;
+		maxFlinchXSpeed = 4f;
 		
 		stabDamage = 12;
 		stabRange = 70;
@@ -225,6 +228,20 @@ public class Player extends GameObject {
 			if (elapsed > 1000) {
 				flinching = false;
 			}
+			
+			if (elapsed > 500) {
+				flinchDirection = 0;
+			} else {
+				right = false;
+				left = false;
+			}
+		}
+		
+		if (shielding) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed > 500) {
+				shielding = false;
+			}
 		}
 		
 		if (stabbing) {
@@ -349,7 +366,7 @@ public class Player extends GameObject {
 						damage = stabDamage;
 					}
 				} else if (cutting) {
-					if (elapsed < 150) {
+					if (elapsed > 50 && elapsed < 250) {
 						range = cutRange;
 						damage = cutDamage;
 					}
@@ -430,7 +447,7 @@ public class Player extends GameObject {
 		if (stamina < cost) {
 			hit(damage, right, false);
 		} else {
-			if (!flinching) {
+			if (!shielding) {
 				stamina -= cost;
 			}
 			hit(shieldDamage, right, true);

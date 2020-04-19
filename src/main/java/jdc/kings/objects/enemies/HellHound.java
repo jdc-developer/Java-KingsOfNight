@@ -34,17 +34,20 @@ public class HellHound extends Enemy {
 		maxFallSpeed = 10.0f;
 		jumpStart = -4.8f;
 		stopJumpSpeed = 1.3f;
+		flinchYSpeed = 2.5f;
+		flinchXSpeed = 2f;
+		maxFlinchXSpeed = 3.5f;
 		
 		width = 60;
 		height = 60;
 		cwidth = 35;
 		cheight = 35;
 		
-		health = maxHealth = 15;
+		health = maxHealth = 20;
 		damage = 7;
 		
 		shieldDamage = 1;
-		shieldCost = 3;
+		shieldCost = 4;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 11, 22, 40, 24, 0, 0));
@@ -99,8 +102,15 @@ public class HellHound extends Enemy {
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 400) {
+			if (elapsed > 1000) {
 				flinching = false;
+			}
+			
+			if (elapsed > 100) {
+				flinchDirection = 0;
+			} else {
+				right = false;
+				left = false;
 			}
 		}
 		
@@ -148,6 +158,9 @@ public class HellHound extends Enemy {
 				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight()) &&
 						(elapsed > 200)) {
 					player.shieldDamage(shieldDamage, damage, shieldCost, !facingRight);
+					flinching = true;
+					flinchDirection = player.isFacingRight() ? 1 : 2;
+					flinchTimer = System.nanoTime();
 				} else {
 					player.hit(damage, !facingRight, false);
 				}
