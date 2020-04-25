@@ -34,16 +34,16 @@ public class Blood {
 		
 		switch(bloodIndex) {
 			case 0:
-				sprites = loader.loadActionByRows("/sprites/blood/blood.png", 0, 4, 0, width, height);
+				sprites = loader.loadAction("/sprites/blood/blood.png", null, 0, 4, 0, 1, 0, 0, width, height, 0, 0);
 				break;
 			case 1:
-				sprites = loader.loadActionByRows("/sprites/blood/blood.png", 0, 4, 1, width, height);
+				sprites = loader.loadAction("/sprites/blood/blood.png", null, 0, 4, 1, 2, 0, 0, width, height, 0, 0);
 				break;
 			case 2:
-				sprites = loader.loadActionByRows("/sprites/blood/blood-explosion.png", 0, 10, 0, width, height);
+				sprites = loader.loadAction("/sprites/blood/blood-explosion.png", null, 0, 10, 0, 1, 0, 0, width, height, 0, 0);
 				break;
 			case 3:
-				sprites = loader.loadActionByRows("/sprites/blood/blood.png", 0, 4, 3, width, height);
+				sprites = loader.loadAction("/sprites/blood/blood.png", null, 0, 4, 2, 3, 0, 0, width, height, 0, 0);
 				break;
 		}
 

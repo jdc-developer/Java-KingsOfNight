@@ -1,5 +1,6 @@
 package jdc.kings.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -337,6 +338,9 @@ public abstract class GameObject {
 					height,
 					null);
 		}
+		
+		g.setColor(Color.white);
+		g.drawRect((int)(x + xmap - width), (int)(y + ymap - height), cwidth, cheight);
 		
 		for(int i = 0; i < bloodLosses.size(); i++) {
 			bloodLosses.get(i).setMapPosition(

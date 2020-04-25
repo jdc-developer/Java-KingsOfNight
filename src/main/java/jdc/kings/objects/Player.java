@@ -53,7 +53,7 @@ public class Player extends GameObject {
 		width = 63;
 		height = 74;
 		cwidth = 45;
-		cheight = 45;
+		cheight = 74;
 		
 		moveSpeed = 2.6f;
 		maxSpeed = 4.6f;
@@ -84,15 +84,15 @@ public class Player extends GameObject {
 		sliceCost = 6;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 22, 38, 26, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/walking.png", this, 0, 8, 40, 66, 30, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 0, 7, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 8, 10, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/stabbing.png", this, 0, 9, 54, 94, 50, 30, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/cutting.png", this, 0, 5, 60, 94, 50, 33, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/slicing.png", this, 0, 7, 48, 96, 51, 28, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/rolling.png", this, 0, 9, 54, 153, 27, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/shield.png", this, 0, 7, 39, 72, 24, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 0, 1, 22, 38, 26, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/walking.png", this, 0, 8, 0, 1, 40, 66, 30, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 0, 7, 0, 1, 54, 118, 26, 31, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 8, 10, 0, 1, 54, 118, 26, 31, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/stabbing.png", this, 0, 9, 0, 1, 54, 94, 50, 30, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/cutting.png", this, 0, 5, 0, 1, 60, 94, 50, 33, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/slicing.png", this, 0, 7, 0, 1, 48, 96, 51, 28, 50, 0));
+		sprites.add(loader.loadAction("/sprites/player/rolling.png", this, 0, 9, 0, 1, 54, 153, 27, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/shield.png", this, 0, 7, 0, 1, 39, 72, 24, 30, 0, 0));
 		
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;

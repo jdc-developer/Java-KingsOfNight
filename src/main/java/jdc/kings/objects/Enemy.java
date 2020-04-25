@@ -25,9 +25,4 @@ public class Enemy extends GameObject {
 		this.player = player;
 	}
 
-	@Override
-	public void tick() {
-		super.tick();
-	}
-
 }

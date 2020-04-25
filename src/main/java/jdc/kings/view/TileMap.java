@@ -1,5 +1,6 @@
 package jdc.kings.view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -196,6 +197,12 @@ public class TileMap {
 						tileSize + increaseSize,
 						tileSize + increaseSize,
 						null);
+ 				
+ 				g.setColor(Color.white);
+ 				g.drawRect((int)x + col * (tileSize + increaseSize),
+						(int)y + row * (tileSize + increaseSize),
+						tileSize + increaseSize,
+						tileSize + increaseSize);
 			}
 		}
 	}

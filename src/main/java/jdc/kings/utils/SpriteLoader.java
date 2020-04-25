@@ -21,55 +21,37 @@ public class SpriteLoader {
 		return instance;
 	}
 	
-	public BufferedImage[] loadAction(String path, GameObject object, int startFrom, int goTo,
+	public BufferedImage[] loadAction(String path, GameObject object, int startFrom, int goTo, int startRow, int endRow,
 			int gap1, int gap2, int frameWidth, int frameHeight, int plusWidth, int plusHeight) {
 		BufferedImage[] bi = null;
 		try {
 			BufferedImage spriteSheet = ImageIO.read(getClass()
 					.getResourceAsStream(path));
-			bi = new BufferedImage[goTo - startFrom];
+			bi = new BufferedImage[(goTo - startFrom) * endRow];
 			
 			int count = 0;
-			for (int j = startFrom; j < goTo; j++) {
-				int gap = gap1;
-				 if (j == 1) {
-					gap += + gap2;
-				} else if (j > 1) {
-					gap = gap2 * j + gap1;
+			for (int i = startRow; i < endRow; i++) {
+				for (int j = startFrom; j < goTo; j++) {
+					int gap = gap1;
+					 if (j == 1) {
+						gap += + gap2;
+					} else if (j > 1) {
+						gap = gap2 * j + gap1;
+					}
+					BufferedImage temp = spriteSheet.getSubimage(
+							j * frameWidth + gap, 
+							i * frameHeight,
+							frameWidth,
+							frameHeight);
+					if (object != null) {
+						bi[count] = resize(temp, object.getWidth() + plusWidth, object.getHeight() + plusHeight);
+					} else {
+						bi[count] = temp;
+					}
+					
+					count++;
 				}
-				BufferedImage temp = spriteSheet.getSubimage(
-						j * frameWidth + gap, 
-						0,
-						frameWidth,
-						frameHeight);
-				bi[count] = resize(temp, object.getWidth() + plusWidth, object.getHeight() + plusHeight);
-				count++;
 			}
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return bi;
-	}
-	
-	public BufferedImage[] loadActionByRows(String path, int startFrom, int goTo, int row, int frameWidth, int frameHeight) {
-		BufferedImage[] bi = null;
-		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass()
-					.getResourceAsStream(path));
-			bi = new BufferedImage[goTo - startFrom];
-			
-			int count = 0;
-			for (int j = startFrom; j < goTo; j++) {
-				bi[count] = spriteSheet.getSubimage(
-						j * frameWidth, 
-						row * frameHeight,
-						frameWidth,
-						frameHeight);
-				count++;
-			}
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

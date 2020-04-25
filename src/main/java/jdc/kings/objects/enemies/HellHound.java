@@ -41,7 +41,7 @@ public class HellHound extends Enemy {
 		width = 60;
 		height = 60;
 		cwidth = 35;
-		cheight = 35;
+		cheight = 60;
 		
 		health = maxHealth = 20;
 		damage = 7;
@@ -50,10 +50,10 @@ public class HellHound extends Enemy {
 		shieldCost = 4;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 11, 22, 40, 24, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/walking.png", this, 0, 12, 9, 19, 45, 26, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/jumping.png", this, 0, 6, 11, 14, 47, 39, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/running.png", this, 0, 5, 9, 22, 45, 29, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/hellhound/walking.png", this, 0, 12, 0, 1, 9, 19, 45, 26, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/hellhound/jumping.png", this, 0, 6, 0, 1, 11, 14, 47, 39, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/hellhound/running.png", this, 0, 5, 0, 1, 9, 22, 45, 29, 0, 0));
 	
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;
@@ -147,8 +147,6 @@ public class HellHound extends Enemy {
 		
 		if (right) facingRight = true;
 		if (left) facingRight = false;
-		
-		animator.update(System.currentTimeMillis());
 	}
 	
 	private void checkPlayerDamage() {
