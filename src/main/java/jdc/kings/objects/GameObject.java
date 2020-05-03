@@ -1,11 +1,14 @@
 package jdc.kings.objects;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
+import jdc.kings.objects.interactions.Attack;
+import jdc.kings.objects.interactions.Blood;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Animator;
 import jdc.kings.view.Tile;
@@ -41,6 +44,8 @@ public abstract class GameObject {
 	protected boolean bottomRight;
 	
 	protected Animator animator;
+	protected Attack attack;
+	protected List<Attack> attacks = new ArrayList<>();
 	protected LinkedList<Blood> bloodLosses = new LinkedList<>();
 	
 	protected boolean facingRight = true;
@@ -70,10 +75,16 @@ public abstract class GameObject {
 	protected float stamina;
 	protected int maxHealth;
 	protected float maxStamina;
-	protected boolean dead;
 	
+	protected boolean rolling;
+	protected boolean shield;
+	protected boolean dead;
 	protected boolean flinching;
+	
 	protected long flinchTimer;
+	protected long holdTimer;
+	protected long rollTimer;
+	
 	protected int flinchDirection;
 	
 	public GameObject(TileMap tm) {
@@ -194,6 +205,30 @@ public abstract class GameObject {
 	public long getFlinchTimer() {
 		return flinchTimer;
 	}
+	
+	public void setRolling(boolean rolling) {
+		this.rolling = rolling;
+	}
+
+	public boolean isRolling() {
+		return rolling;
+	}
+
+	public void setShield(boolean shield) {
+		this.shield = shield;
+	}
+
+	public boolean isShield() {
+		return shield;
+	}
+	
+	public long getRollTimer() {
+		return rollTimer;
+	}
+
+	public long getHoldTimer() {
+		return holdTimer;
+	}
 
 	public void setPosition(float x, float y) {
 		this.x = x;
@@ -284,6 +319,11 @@ public abstract class GameObject {
         int tr = tileMap.getType(topTile, rightTile);
         int bl = tileMap.getType(bottomTile, leftTile);
         int br = tileMap.getType(bottomTile, rightTile);
+        
+    	if (currRow < bottomTile) {
+    		currRow = bottomTile - 1;
+    	}
+        
         topLeft = tl == Tile.BLOCKED;
         topRight = tr == Tile.BLOCKED;
         bottomLeft = bl == Tile.BLOCKED;
@@ -322,7 +362,7 @@ public abstract class GameObject {
 		}
 	}
 
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		setMapPosition();
 		if (facingRight) {
 			g.drawImage(animator.getImage(),
@@ -335,12 +375,9 @@ public abstract class GameObject {
 					(int)(x + xmap - width / 2 + width),
 					(int)(y + ymap - height / 2),
 					-image.getWidth(),
-					height,
+					image.getHeight(),
 					null);
 		}
-		
-		g.setColor(Color.white);
-		g.drawRect((int)(x + xmap - width), (int)(y + ymap - height), cwidth, cheight);
 		
 		for(int i = 0; i < bloodLosses.size(); i++) {
 			bloodLosses.get(i).setMapPosition(
@@ -373,6 +410,17 @@ public abstract class GameObject {
 		} else {
 			shielding = true;
 			flinchTimer = System.nanoTime();
+		}
+	}
+	
+	public void shieldDamage(int shieldDamage, int damage, int cost, boolean right) {
+		if (stamina < cost) {
+			hit(damage, right, false);
+		} else {
+			if (!shielding) {
+				stamina -= cost;
+			}
+			hit(shieldDamage, right, true);
 		}
 	}
 

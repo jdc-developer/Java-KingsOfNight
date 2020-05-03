@@ -7,34 +7,18 @@ import java.util.List;
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.enums.KeyAction;
+import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
 public class Player extends GameObject {
 	
-	private boolean stabbing;
-	private int stabDamage;
-	private int stabRange;
-	
-	private boolean cutting;
-	private int cutDamage;
-	private int cutRange;
-	
-	private boolean slicing;
-	private int sliceDamage;
-	private int sliceRange;
-	
-	private boolean rolling;
-	private boolean shield;
-	private long attackTimer;
-	private long holdTimer;
-	private long rollTimer;
-	
 	private int rollCost;
-	private int stabCost;
-	private int cutCost;
-	private int sliceCost;
+	
+	private boolean stabbing;
+	private boolean cutting;
+	private boolean slicing;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
@@ -66,22 +50,14 @@ public class Player extends GameObject {
 		flinchXSpeed = 2.8f;
 		maxFlinchXSpeed = 4f;
 		
-		stabDamage = 12;
-		stabRange = 70;
-		
-		cutDamage = 8;
-		cutRange = 106;
-		
-		sliceDamage = 15;
-		sliceRange = 120;
+		attacks.add(new Attack(12, 4, 4, 70, 4, 250, 400));
+		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
+		attacks.add(new Attack(15, 5, 4, 120, 6, 250, 400));
 		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
 		
 		rollCost = 5;
-		stabCost = 4;
-		cutCost = 3;
-		sliceCost = 6;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 0, 1, 22, 38, 26, 30, 0, 0));
@@ -225,7 +201,7 @@ public class Player extends GameObject {
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 1000) {
+			if (elapsed > 700) {
 				flinching = false;
 			}
 			
@@ -248,11 +224,14 @@ public class Player extends GameObject {
 			if (currentAction != STABBING) {
 				previousAction = currentAction;
 				currentAction = STABBING;
-				if (stamina >= stabCost) {
+				attack = attacks.get(0);
+				
+				if (stamina >= attack.getCost()) {
 					animator.setFrames(sprites.get(STABBING));
 					animator.setSpeed(85);
 					width = 63;
-					stamina -= stabCost;
+					stamina -= attack.getCost();
+					attack.setTimer(System.nanoTime());
 				} else {
 					stabbing = false;
 				}
@@ -261,11 +240,14 @@ public class Player extends GameObject {
 			if (currentAction != CUTTING) {
 				previousAction = currentAction;
 				currentAction = CUTTING;
-				if (stamina >= cutCost) {
+				attack = attacks.get(1);
+				
+				if (stamina >= attack.getCost()) {
 					animator.setFrames(sprites.get(CUTTING));
 					animator.setSpeed(80);
 					width = 63;
-					stamina -= sliceCost;
+					stamina -= attack.getCost();
+					attack.setTimer(System.nanoTime());
 				} else {
 					cutting = false;
 				}
@@ -274,13 +256,16 @@ public class Player extends GameObject {
 			if (currentAction != SLICING) {
 				previousAction = currentAction;
 				currentAction = SLICING;
-				if (stamina >= sliceCost) {
+				attack = attacks.get(2);
+				
+				if (stamina >= attack.getCost()) {
 					animator.setFrames(sprites.get(SLICING));
 					animator.setSpeed(100);
 					width = 63;
 					
-					stamina -= sliceCost;
+					stamina -= attack.getCost();
 					maxSpeed = 1f;
+					attack.setTimer(System.nanoTime());
 					
 					if (facingRight) right = true;
 					else left = true;
@@ -355,103 +340,23 @@ public class Player extends GameObject {
 	public void checkAttack(List<Enemy> enemies) {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			if (stabbing || cutting || slicing) {
-				int range = 0;
-				int damage = 0;
-				
-				long elapsed = (System.nanoTime() - attackTimer) / 1000000;
-				if (stabbing) {
-					if (elapsed > 250 && elapsed < 400) {
-						range = stabRange;
-						damage = stabDamage;
-					}
-				} else if (cutting) {
-					if (elapsed > 50 && elapsed < 250) {
-						range = cutRange;
-						damage = cutDamage;
-					}
-				} else if (slicing) {
-					if (elapsed > 250 && elapsed < 400) {
-						range = sliceRange;
-						damage = sliceDamage;
-					}
-				}
-				
-				 if (facingRight) {
-					 if (
-							 e.getX() > x &&
-							 e.getX() < x + range &&
-							 e.getY() > y - height / 2 &&
-							 e.getY() < y + height / 2) {
-						 if (damage > 0) {
-							 e.hit(damage, !facingRight, false);
-						 }
-					 }
-				 } else {
-					 if (
-							 e.getX() < x &&
-							 e.getX() > x - range &&
-							 e.getY() > y - height / 2 &&
-							 e.getY() < y + height / 2) {
-						 if (damage > 0) {
-							 e.hit(damage, !facingRight, false);
-						 }
-					 }
-				 }
+			if ((stabbing || cutting || slicing) && attack != null) {
+				attack.checkAttack(this, e);
 			}
-			
 			
 		}
 	}
 
 	public void setStabbing(boolean stabbing) {
 		this.stabbing = stabbing;
-		attackTimer = System.nanoTime();
 	}
 
 	public void setCutting(boolean cutting) {
 		this.cutting = cutting;
-		attackTimer = System.nanoTime();
 	}
 
 	public void setSlicing(boolean slicing) {
 		this.slicing = slicing;
-		attackTimer = System.nanoTime();
-	}
-
-	public void setRolling(boolean rolling) {
-		this.rolling = rolling;
-	}
-
-	public boolean isRolling() {
-		return rolling;
-	}
-
-	public void setShield(boolean shield) {
-		this.shield = shield;
-	}
-
-	public boolean isShield() {
-		return shield;
-	}
-	
-	public long getRollTimer() {
-		return rollTimer;
-	}
-
-	public long getHoldTimer() {
-		return holdTimer;
-	}
-
-	public void shieldDamage(int shieldDamage, int damage, int cost, boolean right) {
-		if (stamina < cost) {
-			hit(damage, right, false);
-		} else {
-			if (!shielding) {
-				stamina -= cost;
-			}
-			hit(shieldDamage, right, true);
-		}
 	}
 
 }

@@ -14,7 +14,6 @@ import jdc.kings.view.TileMap;
 public class HellHound extends Enemy {
 	
 	private boolean running;
-	private long turnAroundTimer;
 	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
@@ -48,6 +47,7 @@ public class HellHound extends Enemy {
 		
 		shieldDamage = 1;
 		shieldCost = 4;
+		sightDistance = 650;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
@@ -149,49 +149,12 @@ public class HellHound extends Enemy {
 		if (left) facingRight = false;
 	}
 	
-	private void checkPlayerDamage() {
-		if (intersects(player)) {
-			if (player.isShield()) {
-				long elapsed = (System.nanoTime() - player.getHoldTimer()) / 1000000;
-				if ((!facingRight && player.isFacingRight()) || (facingRight && !player.isFacingRight()) &&
-						(elapsed > 200)) {
-					player.shieldDamage(shieldDamage, damage, shieldCost, !facingRight);
-					flinching = true;
-					flinchDirection = player.isFacingRight() ? 1 : 2;
-					flinchTimer = System.nanoTime();
-				} else {
-					player.hit(damage, !facingRight, false);
-				}
-			} else if (player.isRolling()) {
-				long elapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;
-				if (elapsed < 100) {
-					player.hit(damage, !facingRight, false);
-				}
-			} else {
-				player.hit(damage, !facingRight, false);
-			}
-			
-		}
-	}
-	
-	private void playerPosition() {
-		float distance = this.x - player.getX();
-		if (distance <= 650  && distance > 0 && !jumping) {
-			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 900) {
-				running = true;
-				left = true;
-				right = false;
-				turnAroundTimer = System.nanoTime();
-			}
-		} else if (distance >= -650 && distance < 0 && !jumping) {
-			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 900) {
-				running = true;
-				right = true;
-				left = false;
-				turnAroundTimer = System.nanoTime();
-			}
+	public void playerPosition() {
+		super.playerPosition();
+		if (playerDistance <= sightDistance  && playerDistance > 0) {
+			running = true;
+		} else if (playerDistance >= -sightDistance && playerDistance < 0) {
+			running = true;
 		}
 		
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
@@ -200,13 +163,12 @@ public class HellHound extends Enemy {
 			int r = random.nextInt(4);
 			randomTimer = System.nanoTime();
 			
-			if (distance <= 100 && distance > 0 && r == 1) {
+			if (playerDistance <= 100 && playerDistance > 0 && r == 1) {
 				jumping = true;
-			} else if (distance >= -100 && distance < 0 && r == 1) {
+			} else if (playerDistance >= -100 && playerDistance < 0 && r == 1) {
 				jumping = true;
 			}
 		}
-		
 	}
 
 }

@@ -2,7 +2,7 @@ package jdc.kings;
 
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
@@ -41,10 +41,10 @@ public class Game extends Canvas implements Runnable {
 		
 		Player player = new Player(tileMap);
 		player.setPosition(100, 500);
-		/*
+		
 		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
 		skeleton.setPosition(500, 600);
-		skeleton.setPlayer(player);*/
+		skeleton.setPlayer(player);
 		
 		Background background = new Background("/backgrounds/level1-bg.gif", 0.1f);
 		
@@ -52,8 +52,8 @@ public class Game extends Canvas implements Runnable {
 		handler.setBackground(background);
 		handler.setTileMap(tileMap);
 		
-		handler.setPlayer(player);/*
-		handler.getEnemies().add(skeleton);*/
+		handler.setPlayer(player);
+		handler.getEnemies().add(skeleton);
 		
 		KeyInput keyInput = KeyInput.getInstance();
 		keyInput.setPlayer(player);
@@ -68,7 +68,7 @@ public class Game extends Canvas implements Runnable {
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
-        int frames = 0;
+        //int frames = 0;
         while(running) {
            long now = System.nanoTime();
            delta += (now - lastTime) / ns;
@@ -79,12 +79,12 @@ public class Game extends Canvas implements Runnable {
            }
            if(running)
                render();
-           frames++;
+           //frames++;
             
            if(System.currentTimeMillis() - timer > 1000) {
                timer += 1000;
                //System.out.println("FPS: "+ frames);
-               frames = 0;
+               //frames = 0;
            }
         }
         stop();
@@ -97,7 +97,7 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 		
-		Graphics g = bs.getDrawGraphics();
+		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
 		

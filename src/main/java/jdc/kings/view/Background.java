@@ -31,7 +31,7 @@ public class Background {
 	
 	public void setPosition(float x, float y) {
 		this.x = (x * moveScale) % Constants.WIDTH;
-		this.y = (y * moveScale) % Constants.HEIGHT - 64;
+		this.y = (y * moveScale) % Constants.HEIGHT;
 	}
 	
 	public void setVector(float velX, float velY) {

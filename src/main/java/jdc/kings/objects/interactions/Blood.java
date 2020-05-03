@@ -1,4 +1,4 @@
-package jdc.kings.objects;
+package jdc.kings.objects.interactions;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

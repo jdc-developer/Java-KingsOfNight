@@ -1,12 +1,12 @@
 package jdc.kings.view;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.List;
 
-import jdc.kings.objects.Blood;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
+import jdc.kings.objects.interactions.Blood;
 import jdc.kings.utils.Constants;
 
 public class Handler {
@@ -59,7 +59,7 @@ public class Handler {
 		}
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		background.render(g);
 		tileMap.render(g);
 		player.render(g);
