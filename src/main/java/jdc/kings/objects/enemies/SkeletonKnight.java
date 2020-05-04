@@ -3,9 +3,11 @@ package jdc.kings.objects.enemies;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Attack;
+import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -13,12 +15,15 @@ import jdc.kings.view.TileMap;
 public class SkeletonKnight extends Enemy {
 	
 	private boolean cutting;
+	private boolean slicing;
+	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int CUTTING = 2;
+	private static final int SLICING = 3;
 
 	public SkeletonKnight(TileMap tm) {
 		super(tm);
@@ -27,8 +32,8 @@ public class SkeletonKnight extends Enemy {
 		moveSpeed = 0.35f;
 		maxSpeed = 0.4f;
 		fallSpeed = 0.2f;
-		maxFallSpeed = 2f;
-		jumpStart = -4.8f;
+		maxFallSpeed = 5f;
+		jumpStart = -0.8f;
 		stopJumpSpeed = 1.3f;
 		flinchYSpeed = 5.5f;
 		flinchXSpeed = 2f;
@@ -40,6 +45,7 @@ public class SkeletonKnight extends Enemy {
 		cheight = 105;
 		
 		attacks.add(new Attack(8, 2, 4, 66, 0, 250, 500));
+		attacks.add(new Attack(10, 3, 5, 100, 0, 250, 500));
 		
 		health = maxHealth = 20;
 		damage = 7;
@@ -52,7 +58,8 @@ public class SkeletonKnight extends Enemy {
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0));
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 325, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/cutting.png", this, 0, 5, 0, 2, 0, 0, 246, 265, 50, 10));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/cutting.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/slicing.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
 	
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;
@@ -126,10 +133,22 @@ public class SkeletonKnight extends Enemy {
 				cutting = false;
 				height = 110;
 				width = 70;
+				
+				maxSpeed = 0.4f;
 			}
 		}
 		
-		if (cutting) {
+		if (currentAction == SLICING) {
+			if (animator.hasPlayedOnce()) {
+				slicing = false;
+				height = 110;
+				width = 70;
+				
+				maxSpeed = 0.4f;
+			}
+		}
+		
+		if (cutting && !slicing) {
 			attack = attacks.get(0);
 			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
 			if (currentAction != CUTTING && elapsed > 1500) {
@@ -140,6 +159,24 @@ public class SkeletonKnight extends Enemy {
 				animator.setSpeed(100);
 				width = 105;
 				height = 130;
+			}
+		} else if (slicing && !cutting) {
+			attack = attacks.get(1);
+			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
+			if (currentAction != SLICING && elapsed > 1500) {
+				currentAction = SLICING;
+				attack.setTimer(System.nanoTime());
+				
+				animator.setFrames(sprites.get(SLICING));
+				animator.setSpeed(150);
+				width = 105;
+				height = 130;
+				
+				maxSpeed = 2f;
+				jumping = true;
+				
+				if (facingRight) right = true;
+				else left = true;
 			}
 		} else if (left || right) {
 			if (currentAction != WALKING) {
@@ -170,10 +207,30 @@ public class SkeletonKnight extends Enemy {
 	
 	public void playerPosition() {
 		super.playerPosition();
-		if (playerDistance <= 66 && playerDistance > 0) {
-			cutting = true;
-		} else if (playerDistance >= -66 && playerDistance < 0) {
-			cutting = true;
+		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
+		if (elapsed > 500) {
+			Random random = Constants.random;
+			int r = random.nextInt(2);
+			randomTimer = System.nanoTime();
+			
+			if (playerDistance <= 100 && playerDistance > 0) {
+				if (r == 1) {
+					cutting = true;
+					slicing = false;
+				} else {
+					slicing = true;
+					cutting = false;
+				}
+				cutting = true;
+			} else if (playerDistance >= -100 && playerDistance < 0) {
+				if (r == 1) {
+					cutting = true;
+					slicing = false;
+				} else {
+					slicing = true;
+					cutting = false;
+				}
+			}
 		}
 	}
 

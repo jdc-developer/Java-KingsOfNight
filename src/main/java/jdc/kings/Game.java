@@ -33,14 +33,14 @@ public class Game extends Canvas implements Runnable {
 		instance = new Game();
 		
 		TileMap tileMap = new TileMap(32, 20);
-		int[] blocks = {7, 37, 31, 25};
+		int[] blocks = {7, 37, 31, 25, 1};
 		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(100, 500);
+		player.setPosition(19000, 700);
 		
 		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
 		skeleton.setPosition(500, 600);
@@ -68,7 +68,7 @@ public class Game extends Canvas implements Runnable {
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
-        //int frames = 0;
+        int frames = 0;
         while(running) {
            long now = System.nanoTime();
            delta += (now - lastTime) / ns;
@@ -79,12 +79,12 @@ public class Game extends Canvas implements Runnable {
            }
            if(running)
                render();
-           //frames++;
+           frames++;
             
            if(System.currentTimeMillis() - timer > 1000) {
                timer += 1000;
-               //System.out.println("FPS: "+ frames);
-               //frames = 0;
+               System.out.println("FPS: "+ frames);
+               frames = 0;
            }
         }
         stop();
@@ -106,14 +106,7 @@ public class Game extends Canvas implements Runnable {
 		bs.show();
 	}
 
-	private void tick() {/*
-		TileMap tileMap = new TileMap(32, 20);
-		int[] blocks = {81, 91, 92, 95, 96, 63};
-		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
-		tileMap.loadMap("/maps/level1.map");
-		tileMap.setPosition(0, 0);
-		tileMap.setTween(1);
-		handler.setTileMap(tileMap);*/
+	private void tick() {
 		handler.tick();
 	}
 	
