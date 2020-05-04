@@ -2,7 +2,7 @@ package jdc.kings;
 
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
@@ -97,7 +97,7 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 		
-		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
 		

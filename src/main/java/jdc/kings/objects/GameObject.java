@@ -1,6 +1,6 @@
 package jdc.kings.objects;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -362,7 +362,7 @@ public abstract class GameObject {
 		}
 	}
 
-	public void render(Graphics2D g) {
+	public void render(Graphics g) {
 		setMapPosition();
 		if (facingRight) {
 			g.drawImage(animator.getImage(),

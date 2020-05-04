@@ -1,6 +1,6 @@
 package jdc.kings.view;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class Handler {
 		}
 	}
 	
-	public void render(Graphics2D g) {
+	public void render(Graphics g) {
 		background.render(g);
 		tileMap.render(g);
 		player.render(g);
