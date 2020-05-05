@@ -33,14 +33,15 @@ public class Game extends Canvas implements Runnable {
 		instance = new Game();
 		
 		TileMap tileMap = new TileMap(32, 20);
-		int[] blocks = {7, 37, 31, 25, 1};
-		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", blocks);
+		int[] normal = {7, 37, 31, 25, 1};
+		
+		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", normal);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(19000, 700);
+		player.setPosition(100, 700);
 		
 		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
 		skeleton.setPosition(500, 600);
