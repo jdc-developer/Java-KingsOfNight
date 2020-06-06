@@ -1,37 +1,41 @@
 package jdc.kings.objects.enemies;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.Constants;
+import jdc.kings.objects.interactions.Arrow;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
-public class SkeletonKnight extends Enemy {
+public class SkeletonArcher extends Enemy {
 	
-	private boolean cutting;
-	private boolean slicing;
+	private boolean firing;
+	private boolean evading;
 	private long randomTimer;
 	
+	private int fire;
+	private int maxFire;
+	private int fireCost;
+	
+	private List<Arrow> arrows = new ArrayList<>();
 	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
-	private static final int CUTTING = 2;
-	private static final int SLICING = 3;
+	private static final int FIRING = 2;
+	private static final int EVADING = 3;
 	private static final int DYING = 4;
 
-	public SkeletonKnight(TileMap tm) {
+	public SkeletonArcher(TileMap tm) {
 		super(tm);
 		facingRight = false;
 		
-		moveSpeed = 0.35f;
-		maxSpeed = 0.4f;
+		moveSpeed = 1f;
+		maxSpeed = 1.4f;
 		fallSpeed = 0.2f;
 		maxFallSpeed = 5f;
 		jumpStart = -0.8f;
@@ -42,15 +46,15 @@ public class SkeletonKnight extends Enemy {
 		maxFlinchXSpeed = 1.5f;
 		
 		width = 70;
-		height = 110;
+		height = 90;
 		cwidth = 35;
-		cheight = 105;
-		
-		attacks.add(new Attack(8, 2, 4, 66, 0, 250, 500));
-		attacks.add(new Attack(10, 3, 5, 100, 0, 250, 500));
+		cheight = 80;
 		
 		health = maxHealth = 20;
 		damage = 7;
+		fire = maxFire = 2500;
+		fireCost = 200;
+		arrows = new ArrayList<>();
 		
 		shieldDamage = 1;
 		shieldCost = 4;
@@ -58,11 +62,11 @@ public class SkeletonKnight extends Enemy {
 		sightDistance = 650;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 325, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/cutting.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/slicing.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/dying.png", this, 0, 7, 0, 1, 0, 0, 200, 186, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 346, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 307, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/firing.png", this, 0, 5, 0, 2, 0, 0, 200, 283, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/evading.png", this, 0, 5, 0, 2, 0, 0, 200, 275, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/dying.png", this, 0, 6, 0, 1, 0, 0, 200, 301, 0, 0));
 	
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;
@@ -83,7 +87,7 @@ public class SkeletonKnight extends Enemy {
 			}
 		}
 		
-		if (currentAction == CUTTING &&
+		if (currentAction == FIRING &&
 				!(jumping || falling)) {
 			velX = 0;
 		}
@@ -112,6 +116,27 @@ public class SkeletonKnight extends Enemy {
 			super.tick();
 		}
 		
+		fire += 1;
+		if (fire > maxFire) fire = maxFire;
+		if (firing && currentAction != FIRING) {
+			if (fire > fireCost) {
+				fire -= fireCost;
+				animator.setFrames(sprites.get(FIRING));
+				animator.setSpeed(100);
+				Arrow arrow = new Arrow(tileMap, facingRight);
+				arrow.setPosition(x, y);
+				arrows.add(arrow);
+			}
+		}
+		
+		for (int i = 0; i < arrows.size(); i++) {
+			arrows.get(i).tick();
+			if (arrows.get(i).shouldRemove()) {
+				arrows.remove(i);
+				i--;
+			}
+		}
+		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if (elapsed > 400) {
@@ -125,11 +150,9 @@ public class SkeletonKnight extends Enemy {
 				left = false;
 			}
 			
-			if (cutting) {
+			if (firing) {
 				animator.setFrames(sprites.get(IDLE));
-				cutting = false;
-				height = 110;
-				width = 70;
+				firing = false;
 			}
 		}
 		
@@ -138,27 +161,18 @@ public class SkeletonKnight extends Enemy {
 			if (elapsed > 500) {
 				animator.holdLastFrame();
 			}
-			height = 110;
-			width = 70;
 		}
 		
-		if (currentAction == CUTTING) {
+		if (currentAction == FIRING) {
 			if (animator.hasPlayedOnce()) {
-				cutting = false;
-				height = 110;
-				width = 70;
-				
-				maxSpeed = 0.4f;
+				firing = false;
 			}
 		}
 		
-		if (currentAction == SLICING) {
+		if (currentAction == EVADING) {
 			if (animator.hasPlayedOnce()) {
-				slicing = false;
-				height = 110;
-				width = 70;
-				
-				maxSpeed = 0.4f;
+				evading = false;
+				maxSpeed = 1.4f;
 			}
 		}
 		
@@ -168,33 +182,13 @@ public class SkeletonKnight extends Enemy {
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
-				width = 105;
-				height = 130;
 			}
-		} else if (cutting && !slicing) {
-			attack = attacks.get(0);
-			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
-			if (currentAction != CUTTING && elapsed > 1500) {
-				currentAction = CUTTING;
-				attack.setTimer(System.nanoTime());
+		} else if (evading && !firing) {
+			if (currentAction != EVADING) {
+				currentAction = EVADING;
 				
-				animator.setFrames(sprites.get(CUTTING));
-				animator.setSpeed(100);
-				width = 105;
-				height = 130;
-			}
-		} else if (slicing && !cutting) {
-			attack = attacks.get(1);
-			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
-			if (currentAction != SLICING && elapsed > 1500) {
-				currentAction = SLICING;
-				attack.setTimer(System.nanoTime());
-				
-				animator.setFrames(sprites.get(SLICING));
+				animator.setFrames(sprites.get(EVADING));
 				animator.setSpeed(150);
-				width = 105;
-				height = 130;
-				
 				maxSpeed = 2f;
 				jumping = true;
 				
@@ -221,9 +215,17 @@ public class SkeletonKnight extends Enemy {
 		if (left) facingRight = false;
 	}
 	
+	@Override
+	public void render(Graphics g) {
+		for (int i = 0; i < arrows.size(); i++) {
+			arrows.get(i).render(g);
+		}
+		super.render(g);
+	}
+	
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
-		if (cutting && attack != null) {
+		if (firing && attack != null) {
 			attack.checkAttack(this, player);
 		}
 	}
@@ -232,26 +234,11 @@ public class SkeletonKnight extends Enemy {
 		super.playerPosition();
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
 		if (elapsed > 500) {
-			Random random = Constants.random;
-			int r = random.nextInt(2);
-			randomTimer = System.nanoTime();
 			
 			if (playerDistance <= 100 && playerDistance > 0) {
-				if (r == 1) {
-					cutting = true;
-					slicing = false;
-				} else {
-					slicing = true;
-					cutting = false;
-				}
+				firing = true;
 			} else if (playerDistance >= -100 && playerDistance < 0) {
-				if (r == 1) {
-					cutting = true;
-					slicing = false;
-				} else {
-					slicing = true;
-					cutting = false;
-				}
+				firing = true;
 			}
 		}
 	}

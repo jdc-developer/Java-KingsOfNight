@@ -43,10 +43,12 @@ public class Handler {
 			Enemy e = enemies.get(i);
 			e.tick();
 			if (e.isDead()) {
-				bloodLosses.add(
-						new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));
-				enemies.remove(i);
-				i--;
+				if (e.bleeds()) {
+					bloodLosses.add(
+							new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));
+					enemies.remove(i);
+					i--;
+				}
 			}
 		}
 		

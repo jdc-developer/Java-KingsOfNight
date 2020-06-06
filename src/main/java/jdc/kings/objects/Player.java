@@ -45,6 +45,7 @@ public class Player extends GameObject {
 		fallSpeed = 0.15f;
 		maxFallSpeed = 5.0f;
 		jumpStart = -7.8f;
+		maxJumpSpeed = 5.8f;
 		stopJumpSpeed = 0.3f;
 		flinchYSpeed = 5.5f;
 		flinchXSpeed = 2.8f;
@@ -56,6 +57,7 @@ public class Player extends GameObject {
 		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
+		bleeds = true;
 		
 		rollCost = 5;
 		
@@ -163,8 +165,15 @@ public class Player extends GameObject {
 				rolling = false;
 				maxSpeed = 4.6f;
 				
-				if (facingRight) right = false;
-				else left = false;
+				KeyInput keyInput = KeyInput.getInstance();
+				Key rightKey = keyInput.findKey(KeyAction.RIGHT);
+				Key leftKey = keyInput.findKey(KeyAction.LEFT);
+				
+				if (facingRight && !rightKey.isPressed()) {
+					right = false;
+				} else if (!leftKey.isPressed()) {
+					left = false;
+				}
 			}
 		}
 		
@@ -222,11 +231,11 @@ public class Player extends GameObject {
 		
 		if (stabbing) {
 			if (currentAction != STABBING) {
-				previousAction = currentAction;
-				currentAction = STABBING;
 				attack = attacks.get(0);
 				
 				if (stamina >= attack.getCost()) {
+					previousAction = currentAction;
+					currentAction = STABBING;
 					animator.setFrames(sprites.get(STABBING));
 					animator.setSpeed(85);
 					width = 63;
@@ -238,11 +247,11 @@ public class Player extends GameObject {
 			}
 		} else if (cutting) {
 			if (currentAction != CUTTING) {
-				previousAction = currentAction;
-				currentAction = CUTTING;
 				attack = attacks.get(1);
 				
 				if (stamina >= attack.getCost()) {
+					previousAction = currentAction;
+					currentAction = CUTTING;
 					animator.setFrames(sprites.get(CUTTING));
 					animator.setSpeed(80);
 					width = 63;
@@ -254,11 +263,11 @@ public class Player extends GameObject {
 			}
 		} else if (slicing) {
 			if (currentAction != SLICING) {
-				previousAction = currentAction;
-				currentAction = SLICING;
 				attack = attacks.get(2);
 				
 				if (stamina >= attack.getCost()) {
+					previousAction = currentAction;
+					currentAction = SLICING;
 					animator.setFrames(sprites.get(SLICING));
 					animator.setSpeed(100);
 					width = 63;
@@ -275,10 +284,9 @@ public class Player extends GameObject {
 			}
 		} else if (rolling) {
 			if (currentAction != ROLLING) {
-				previousAction = currentAction;
-				currentAction = ROLLING;
-				
 				if (stamina >= rollCost) {
+					previousAction = currentAction;
+					currentAction = ROLLING;
 					animator.setFrames(sprites.get(ROLLING));
 					animator.setSpeed(80);
 					width = 63;

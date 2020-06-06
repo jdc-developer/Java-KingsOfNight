@@ -43,6 +43,7 @@ public class HellHound extends Enemy {
 		cheight = 60;
 		
 		health = maxHealth = 20;
+		bleeds = true;
 		damage = 7;
 		
 		shieldDamage = 1;

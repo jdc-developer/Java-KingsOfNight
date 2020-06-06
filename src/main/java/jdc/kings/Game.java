@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
-import jdc.kings.objects.enemies.SkeletonKnight;
+import jdc.kings.objects.enemies.SkeletonArcher;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.Handler;
@@ -43,8 +43,8 @@ public class Game extends Canvas implements Runnable {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 700);
 		
-		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
-		skeleton.setPosition(500, 600);
+		SkeletonArcher skeleton = new SkeletonArcher(tileMap);
+		skeleton.setPosition(800, 600);
 		skeleton.setPlayer(player);
 		
 		Background background = new Background("/backgrounds/level1-bg.gif", 0.1f);

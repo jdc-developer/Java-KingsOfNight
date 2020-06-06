@@ -64,6 +64,7 @@ public abstract class GameObject {
 	protected float maxSpeed;
 	protected float stopSpeed;
 	protected float fallSpeed;
+	protected float maxJumpSpeed;
 	protected float maxFallSpeed;
 	protected float jumpStart;
 	protected float stopJumpSpeed;
@@ -80,6 +81,7 @@ public abstract class GameObject {
 	protected boolean shield;
 	protected boolean dead;
 	protected boolean flinching;
+	protected boolean bleeds;
 	
 	protected long flinchTimer;
 	protected long holdTimer;
@@ -212,6 +214,10 @@ public abstract class GameObject {
 
 	public boolean isRolling() {
 		return rolling;
+	}
+	
+	public boolean bleeds() {
+		return bleeds;
 	}
 
 	public void setShield(boolean shield) {
@@ -394,14 +400,20 @@ public abstract class GameObject {
 		if (health < 0) health = 0;
 		if (health == 0) dead = true;
 		
-		if (!shield) {
+		if (!shield && !dead) {
 			flinching = true;
 			flinchTimer = System.nanoTime();
 			
-			bloodLosses.add(
-					new Blood((int)x, (int)y, 128, 128,  0, right));
+			if (bleeds) {
+				bloodLosses.add(
+						new Blood((int)x, (int)y, 128, 128,  0, right));
+			}
 			
 			velY -= flinchYSpeed;
+			
+			if (velY < -maxJumpSpeed) {
+				velY = -maxJumpSpeed;
+			}
 			if (right) {
 				flinchDirection = 2;
 			} else {
