@@ -88,9 +88,9 @@ public class Attack {
 		this.endTime = endTime;
 	}
 	
-	public void checkAttack(GameObject attacking, GameObject attacked) {
+	public void checkAttack(GameObject attacking, GameObject attacked, boolean ranged) {
 		long elapsed = (System.nanoTime() - timer) / 1000000;
-		if (elapsed > startTime && elapsed < endTime) {
+		if ((elapsed > startTime && elapsed < endTime) || ranged) {
 			
 			if (attacked.isShield()) {
 				
@@ -99,21 +99,21 @@ public class Attack {
 						(shieldElapsed > 200)) {
 					attacked.shieldDamage(shieldDamage, damage, shieldCost, !attacking.isFacingRight());
 				} else {
-					consumateAttack(attacking, attacked);
+					consumateAttack(attacking, attacked, ranged);
 				}
 			} else if (attacked.isRolling()) {
 				
 				long rollElapsed = (System.nanoTime() - attacked.getRollTimer()) / 1000000;
 				if (rollElapsed < 100) {
-					consumateAttack(attacking, attacked);
+					consumateAttack(attacking, attacked, ranged);
 				}
 			} else {
-				consumateAttack(attacking, attacked);
+				consumateAttack(attacking, attacked, ranged);
 			}
 		}
 	}
 	
-	private void consumateAttack(GameObject attacking, GameObject attacked) {
+	private void consumateAttack(GameObject attacking, GameObject attacked, boolean ranged) {
 		if (attacking.isFacingRight()) {
 			 if (
 					 attacked.getX() > attacking.getX() &&
@@ -121,6 +121,8 @@ public class Attack {
 					 attacked.getY() > attacking.getY() - attacking.getHeight() / 2 &&
 					 attacked.getY() < attacking.getY() + attacking.getHeight() / 2) {
 				 
+				 attacked.hit(damage, !attacking.isFacingRight(), false);
+			 } else if (ranged) {
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
 			 }
 		 } else {
@@ -130,6 +132,8 @@ public class Attack {
 					 attacked.getY() > attacking.getY() - attacking.getHeight() / 2 &&
 					 attacked.getY() < attacking.getY() + attacking.getHeight() / 2) {
 				 
+				 attacked.hit(damage, !attacking.isFacingRight(), false);
+			 } else if (ranged) {
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
 			 }
 		 }

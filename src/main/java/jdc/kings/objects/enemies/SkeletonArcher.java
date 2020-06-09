@@ -7,6 +7,7 @@ import java.util.List;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Arrow;
+import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -14,12 +15,6 @@ import jdc.kings.view.TileMap;
 public class SkeletonArcher extends Enemy {
 	
 	private boolean firing;
-	private boolean evading;
-	private long randomTimer;
-	
-	private int fire;
-	private int maxFire;
-	private int fireCost;
 	
 	private List<Arrow> arrows = new ArrayList<>();
 	private List<BufferedImage[]> sprites = new ArrayList<>();
@@ -27,8 +22,7 @@ public class SkeletonArcher extends Enemy {
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int FIRING = 2;
-	private static final int EVADING = 3;
-	private static final int DYING = 4;
+	private static final int DYING = 3;
 
 	public SkeletonArcher(TileMap tm) {
 		super(tm);
@@ -41,7 +35,7 @@ public class SkeletonArcher extends Enemy {
 		jumpStart = -0.8f;
 		maxJumpSpeed = 3.5f;
 		stopJumpSpeed = 1.3f;
-		flinchYSpeed = 5.5f;
+		flinchYSpeed = 6.5f;
 		flinchXSpeed = 1f;
 		maxFlinchXSpeed = 1.5f;
 		
@@ -51,21 +45,22 @@ public class SkeletonArcher extends Enemy {
 		cheight = 80;
 		
 		health = maxHealth = 20;
+		stamina = maxStamina = 15;
 		damage = 7;
-		fire = maxFire = 2500;
-		fireCost = 200;
 		arrows = new ArrayList<>();
 		
 		shieldDamage = 1;
 		shieldCost = 4;
 		
-		sightDistance = 650;
+		sightXDistance = 650;
+		sightYDistance = 250;
+		
+		attacks.add(new Attack(4, 2, 3, 0, 4, 0, 0));
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 346, 0, 0));
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 307, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/firing.png", this, 0, 5, 0, 2, 0, 0, 200, 283, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/evading.png", this, 0, 5, 0, 2, 0, 0, 200, 275, 0, 0));
+		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/firing.png", this, 0, 5, 0, 2, 0, 0, 215, 283, 10, 0));
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/dying.png", this, 0, 6, 0, 1, 0, 0, 200, 301, 0, 0));
 	
 		animator = new Animator(sprites.get(0));
@@ -97,6 +92,14 @@ public class SkeletonArcher extends Enemy {
 			falling = true;
 		}
 		
+		if (stamina < maxStamina) {
+			stamina += 0.04f;
+		}
+		
+		if (stamina < 0) {
+			stamina = 0;
+		}
+		
 		if (falling) {
 			velY += fallSpeed;
 			
@@ -109,24 +112,11 @@ public class SkeletonArcher extends Enemy {
 	
 	@Override
 	public void tick() {
-		if (!dead) {
+		if (!dying) {
 			getNextPosition();
 			playerPosition();
 			checkPlayerDamage();
 			super.tick();
-		}
-		
-		fire += 1;
-		if (fire > maxFire) fire = maxFire;
-		if (firing && currentAction != FIRING) {
-			if (fire > fireCost) {
-				fire -= fireCost;
-				animator.setFrames(sprites.get(FIRING));
-				animator.setSpeed(100);
-				Arrow arrow = new Arrow(tileMap, facingRight);
-				arrow.setPosition(x, y);
-				arrows.add(arrow);
-			}
 		}
 		
 		for (int i = 0; i < arrows.size(); i++) {
@@ -160,40 +150,33 @@ public class SkeletonArcher extends Enemy {
 			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
 			if (elapsed > 500) {
 				animator.holdLastFrame();
+				dead = true;
 			}
 		}
 		
 		if (currentAction == FIRING) {
 			if (animator.hasPlayedOnce()) {
 				firing = false;
+				Arrow arrow = new Arrow(tileMap, facingRight);
+				arrow.setPosition(x, y - 10);
+				arrows.add(arrow);
 			}
 		}
 		
-		if (currentAction == EVADING) {
-			if (animator.hasPlayedOnce()) {
-				evading = false;
-				maxSpeed = 1.4f;
-			}
-		}
-		
-		if (dead) {
+		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
 			}
-		} else if (evading && !firing) {
-			if (currentAction != EVADING) {
-				currentAction = EVADING;
-				
-				animator.setFrames(sprites.get(EVADING));
-				animator.setSpeed(150);
-				maxSpeed = 2f;
-				jumping = true;
-				
-				if (facingRight) right = true;
-				else left = true;
+		} else if (firing) {
+			attack = attacks.get(0);
+			if (currentAction != FIRING && stamina >= attack.getCost()) {
+				stamina -= attack.getCost();
+				currentAction = FIRING;
+				animator.setFrames(sprites.get(FIRING));
+				animator.setSpeed(100);
 			}
 		} else if (left || right) {
 			if (currentAction != WALKING) {
@@ -225,21 +208,34 @@ public class SkeletonArcher extends Enemy {
 	
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
-		if (firing && attack != null) {
-			attack.checkAttack(this, player);
+		for (int j = 0; j < arrows.size(); j++) {
+			if (arrows.get(j).intersects(player)) {
+				attack.checkAttack(this, player, true);
+				if (player.isRolling()) {
+					
+					long rollElapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;
+					if (rollElapsed < 100) {
+						arrows.get(j).setHit();
+					}
+				} else {
+					arrows.get(j).setHit();
+				}
+				break;
+			}
 		}
 	}
 	
 	public void playerPosition() {
 		super.playerPosition();
-		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
-		if (elapsed > 500) {
-			
-			if (playerDistance <= 100 && playerDistance > 0) {
-				firing = true;
-			} else if (playerDistance >= -100 && playerDistance < 0) {
-				firing = true;
-			}
+		
+		if (playerXDistance <= 500 && playerXDistance > 0 &&
+				(playerYDistance <= 500 && playerYDistance > 0 ||
+				playerYDistance >= -250 && playerYDistance < 0)) {
+			firing = true;
+		} else if (playerXDistance >= -500 && playerXDistance < 0 &&
+				(playerYDistance <= 500 && playerYDistance > 0 ||
+				playerYDistance >= -250 && playerYDistance < 0)) {
+			firing = true;
 		}
 	}
 

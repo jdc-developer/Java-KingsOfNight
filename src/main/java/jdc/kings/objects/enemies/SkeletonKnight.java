@@ -46,16 +46,18 @@ public class SkeletonKnight extends Enemy {
 		cwidth = 35;
 		cheight = 105;
 		
-		attacks.add(new Attack(8, 2, 4, 66, 0, 250, 500));
-		attacks.add(new Attack(10, 3, 5, 100, 0, 250, 500));
+		attacks.add(new Attack(8, 2, 4, 66, 4, 250, 500));
+		attacks.add(new Attack(10, 3, 5, 100, 6, 250, 500));
 		
 		health = maxHealth = 20;
+		stamina = maxStamina = 15;
 		damage = 7;
 		
 		shieldDamage = 1;
 		shieldCost = 4;
 		
-		sightDistance = 650;
+		sightXDistance = 650;
+		sightYDistance = 150;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0));
@@ -93,6 +95,14 @@ public class SkeletonKnight extends Enemy {
 			falling = true;
 		}
 		
+		if (stamina < maxStamina) {
+			stamina += 0.04f;
+		}
+		
+		if (stamina < 0) {
+			stamina = 0;
+		}
+		
 		if (falling) {
 			velY += fallSpeed;
 			
@@ -105,7 +115,7 @@ public class SkeletonKnight extends Enemy {
 	
 	@Override
 	public void tick() {
-		if (!dead) {
+		if (!dying) {
 			getNextPosition();
 			playerPosition();
 			checkPlayerDamage();
@@ -137,6 +147,7 @@ public class SkeletonKnight extends Enemy {
 			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
 			if (elapsed > 500) {
 				animator.holdLastFrame();
+				dead = true;
 			}
 			height = 110;
 			width = 70;
@@ -162,7 +173,7 @@ public class SkeletonKnight extends Enemy {
 			}
 		}
 		
-		if (dead) {
+		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
 				animator.setFrames(sprites.get(DYING));
@@ -172,34 +183,40 @@ public class SkeletonKnight extends Enemy {
 				height = 130;
 			}
 		} else if (cutting && !slicing) {
-			attack = attacks.get(0);
-			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
-			if (currentAction != CUTTING && elapsed > 1500) {
-				currentAction = CUTTING;
-				attack.setTimer(System.nanoTime());
-				
-				animator.setFrames(sprites.get(CUTTING));
-				animator.setSpeed(100);
-				width = 105;
-				height = 130;
+			if (currentAction != CUTTING) {
+				attack = attacks.get(0);
+				long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
+				if (stamina >= attack.getCost() && elapsed > 1500) {
+					currentAction = CUTTING;
+					attack.setTimer(System.nanoTime());
+					
+					stamina -= attack.getCost();
+					animator.setFrames(sprites.get(CUTTING));
+					animator.setSpeed(100);
+					width = 105;
+					height = 130;
+				}
 			}
 		} else if (slicing && !cutting) {
-			attack = attacks.get(1);
-			long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
-			if (currentAction != SLICING && elapsed > 1500) {
-				currentAction = SLICING;
-				attack.setTimer(System.nanoTime());
-				
-				animator.setFrames(sprites.get(SLICING));
-				animator.setSpeed(150);
-				width = 105;
-				height = 130;
-				
-				maxSpeed = 2f;
-				jumping = true;
-				
-				if (facingRight) right = true;
-				else left = true;
+			if (currentAction != SLICING) {
+				attack = attacks.get(1);
+				long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
+				if (stamina >= attack.getCost() && elapsed > 1500) {
+					currentAction = SLICING;
+					attack.setTimer(System.nanoTime());
+					
+					stamina -= attack.getCost();
+					animator.setFrames(sprites.get(SLICING));
+					animator.setSpeed(150);
+					width = 105;
+					height = 130;
+					
+					maxSpeed = 2f;
+					jumping = true;
+					
+					if (facingRight) right = true;
+					else left = true;
+				}
 			}
 		} else if (left || right) {
 			if (currentAction != WALKING) {
@@ -224,7 +241,7 @@ public class SkeletonKnight extends Enemy {
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
 		if (cutting && attack != null) {
-			attack.checkAttack(this, player);
+			attack.checkAttack(this, player, false);
 		}
 	}
 	
@@ -236,7 +253,7 @@ public class SkeletonKnight extends Enemy {
 			int r = random.nextInt(2);
 			randomTimer = System.nanoTime();
 			
-			if (playerDistance <= 100 && playerDistance > 0) {
+			if (playerXDistance <= 100 && playerXDistance > 0) {
 				if (r == 1) {
 					cutting = true;
 					slicing = false;
@@ -244,7 +261,7 @@ public class SkeletonKnight extends Enemy {
 					slicing = true;
 					cutting = false;
 				}
-			} else if (playerDistance >= -100 && playerDistance < 0) {
+			} else if (playerXDistance >= -100 && playerXDistance < 0) {
 				if (r == 1) {
 					cutting = true;
 					slicing = false;

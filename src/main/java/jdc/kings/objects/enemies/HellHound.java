@@ -48,7 +48,8 @@ public class HellHound extends Enemy {
 		
 		shieldDamage = 1;
 		shieldCost = 4;
-		sightDistance = 650;
+		sightXDistance = 650;
+		sightYDistance = 350;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
@@ -78,6 +79,10 @@ public class HellHound extends Enemy {
 		if (jumping && !falling) {
 			velY = jumpStart;
 			falling = true;
+		}
+		
+		if (dying) {
+			dead = true;
 		}
 		
 		if (falling) {
@@ -152,9 +157,9 @@ public class HellHound extends Enemy {
 	
 	public void playerPosition() {
 		super.playerPosition();
-		if (playerDistance <= sightDistance  && playerDistance > 0) {
+		if (playerXDistance <= sightXDistance  && playerXDistance > 0) {
 			running = true;
-		} else if (playerDistance >= -sightDistance && playerDistance < 0) {
+		} else if (playerXDistance >= -sightXDistance && playerXDistance < 0) {
 			running = true;
 		}
 		
@@ -164,9 +169,9 @@ public class HellHound extends Enemy {
 			int r = random.nextInt(4);
 			randomTimer = System.nanoTime();
 			
-			if (playerDistance <= 100 && playerDistance > 0 && r == 1) {
+			if (playerXDistance <= 100 && playerXDistance > 0 && r == 1) {
 				jumping = true;
-			} else if (playerDistance >= -100 && playerDistance < 0 && r == 1) {
+			} else if (playerXDistance >= -100 && playerXDistance < 0 && r == 1) {
 				jumping = true;
 			}
 		}

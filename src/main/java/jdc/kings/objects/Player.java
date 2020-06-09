@@ -349,7 +349,7 @@ public class Player extends GameObject {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if ((stabbing || cutting || slicing) && attack != null) {
-				attack.checkAttack(this, e);
+				attack.checkAttack(this, e, false);
 			}
 			
 		}
@@ -365,6 +365,10 @@ public class Player extends GameObject {
 
 	public void setSlicing(boolean slicing) {
 		this.slicing = slicing;
+	}
+	
+	public boolean isAttacking() {
+		return stabbing || cutting || slicing;
 	}
 
 }

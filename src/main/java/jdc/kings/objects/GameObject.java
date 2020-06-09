@@ -80,6 +80,7 @@ public abstract class GameObject {
 	protected boolean rolling;
 	protected boolean shield;
 	protected boolean dead;
+	protected boolean dying;
 	protected boolean flinching;
 	protected boolean bleeds;
 	
@@ -226,6 +227,14 @@ public abstract class GameObject {
 
 	public boolean isShield() {
 		return shield;
+	}
+	
+	public boolean isDead() {
+		return dead;
+	}
+	
+	public boolean isDying() {
+		return dying;
 	}
 	
 	public long getRollTimer() {
@@ -398,9 +407,9 @@ public abstract class GameObject {
 		if (dead || flinching || shielding) return;
 		health -= damage;
 		if (health < 0) health = 0;
-		if (health == 0) dead = true;
+		if (health == 0) dying = true;
 		
-		if (!shield && !dead) {
+		if (!shield && !dead && !dying) {
 			flinching = true;
 			flinchTimer = System.nanoTime();
 			

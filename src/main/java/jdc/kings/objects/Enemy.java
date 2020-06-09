@@ -8,18 +8,16 @@ public class Enemy extends GameObject {
 	protected int shieldDamage;
 	protected int shieldCost;
 	
-	protected float playerDistance;
+	protected float playerXDistance;
+	protected float playerYDistance;
 	protected long turnAroundTimer;
-	protected int sightDistance;
+	protected int sightXDistance;
+	protected int sightYDistance;
 	
 	protected Player player;
 
 	public Enemy(TileMap tm) {
 		super(tm);
-	}
-	
-	public boolean isDead() {
-		return dead;
 	}
 
 	public int getDamage() {
@@ -57,15 +55,20 @@ public class Enemy extends GameObject {
 	}
 	
 	protected void playerPosition() {
-		playerDistance = this.x - player.getX();
-		if (playerDistance <= sightDistance  && playerDistance > 0 && !jumping) {
+		playerXDistance = this.x - player.getX();
+		playerYDistance = this.y - player.getY();
+		if (playerXDistance <= sightXDistance  && playerXDistance > 0 && !jumping &&
+				(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
+				playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
 			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
 			if (elapsed > 900) {
 				left = true;
 				right = false;
 				turnAroundTimer = System.nanoTime();
 			}
-		} else if (playerDistance >= -sightDistance && playerDistance < 0 && !jumping) {
+		} else if (playerXDistance >= -sightXDistance && playerXDistance < 0 && !jumping &&
+				(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
+				playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
 			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
 			if (elapsed > 900) {
 				right = true;

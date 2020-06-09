@@ -41,7 +41,6 @@ public class Handler {
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			e.tick();
 			if (e.isDead()) {
 				if (e.bleeds()) {
 					bloodLosses.add(
@@ -49,6 +48,8 @@ public class Handler {
 					enemies.remove(i);
 					i--;
 				}
+			} else {
+				e.tick();
 			}
 		}
 		

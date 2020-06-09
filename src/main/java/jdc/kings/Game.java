@@ -41,7 +41,7 @@ public class Game extends Canvas implements Runnable {
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(100, 700);
+		player.setPosition(100, 650);
 		
 		SkeletonArcher skeleton = new SkeletonArcher(tileMap);
 		skeleton.setPosition(800, 600);
@@ -84,7 +84,7 @@ public class Game extends Canvas implements Runnable {
             
            if(System.currentTimeMillis() - timer > 1000) {
                timer += 1000;
-               System.out.println("FPS: "+ frames);
+               //System.out.println("FPS: "+ frames);
                frames = 0;
            }
         }
