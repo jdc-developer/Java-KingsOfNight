@@ -202,6 +202,10 @@ public class SkeletonArcher extends Enemy {
 	public void render(Graphics g) {
 		for (int i = 0; i < arrows.size(); i++) {
 			arrows.get(i).render(g);
+			if (dead) {
+				arrows.remove(i);
+				i--;
+			}
 		}
 		super.render(g);
 	}

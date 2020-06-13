@@ -31,6 +31,7 @@ public class Player extends GameObject {
 	private static final int SLICING = 6;
 	private static final int ROLLING = 7;
 	private static final int SHIELD = 8;
+	private static final int DYING = 9;
 
 	public Player(TileMap tm) {
 		super(tm);
@@ -53,7 +54,7 @@ public class Player extends GameObject {
 		
 		attacks.add(new Attack(12, 4, 4, 70, 4, 250, 400));
 		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
-		attacks.add(new Attack(15, 5, 4, 120, 6, 250, 400));
+		attacks.add(new Attack(15, 5, 4, 106, 6, 250, 400));
 		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
@@ -71,6 +72,7 @@ public class Player extends GameObject {
 		sprites.add(loader.loadAction("/sprites/player/slicing.png", this, 0, 7, 0, 1, 48, 96, 51, 28, 50, 0));
 		sprites.add(loader.loadAction("/sprites/player/rolling.png", this, 0, 9, 0, 1, 54, 153, 27, 30, 0, 0));
 		sprites.add(loader.loadAction("/sprites/player/shield.png", this, 0, 7, 0, 1, 39, 72, 24, 30, 0, 0));
+		sprites.add(loader.loadAction("/sprites/player/dying.png", this, 0, 15, 0, 1, 34, 69, 29, 30, 0, 0));
 		
 		animator = new Animator(sprites.get(0));
 		currentAction = IDLE;
@@ -136,8 +138,10 @@ public class Player extends GameObject {
 	}
 
 	public void tick() {
-		getNextPosition();
-		super.tick();
+		if (!dying) {
+			getNextPosition();
+			super.tick();
+		}
 		
 		if (currentAction == STABBING) {
 			if (animator.hasPlayedOnce()) stabbing = false;
@@ -222,6 +226,14 @@ public class Player extends GameObject {
 			}
 		}
 		
+		if (currentAction == DYING) {
+			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
+			if (elapsed > 500) {
+				animator.holdLastFrame();
+				dead = true;
+			}
+		}
+		
 		if (shielding) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if (elapsed > 500) {
@@ -229,7 +241,14 @@ public class Player extends GameObject {
 			}
 		}
 		
-		if (stabbing) {
+		if (dying) {
+			if (currentAction != DYING) {
+				currentAction = DYING;
+				animator.setFrames(sprites.get(DYING));
+				animator.setSpeed(70);
+				holdTimer = System.nanoTime();
+			}
+		} else if (stabbing) {
 			if (currentAction != STABBING) {
 				attack = attacks.get(0);
 				

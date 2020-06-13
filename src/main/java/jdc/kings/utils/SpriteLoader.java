@@ -27,7 +27,7 @@ public class SpriteLoader {
 		try {
 			BufferedImage spriteSheet = ImageIO.read(getClass()
 					.getResourceAsStream(path));
-			bi = new BufferedImage[(goTo - startFrom) * endRow];
+			bi = new BufferedImage[(goTo - startFrom) * (endRow - startRow)];
 			
 			int count = 0;
 			for (int i = startRow; i < endRow; i++) {

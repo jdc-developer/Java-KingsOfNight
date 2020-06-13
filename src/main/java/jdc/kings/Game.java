@@ -7,7 +7,7 @@ import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Player;
-import jdc.kings.objects.enemies.SkeletonArcher;
+import jdc.kings.objects.enemies.bosses.SpiderBoss;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.Handler;
@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		SkeletonArcher skeleton = new SkeletonArcher(tileMap);
+		SpiderBoss skeleton = new SpiderBoss(tileMap);
 		skeleton.setPosition(800, 600);
 		skeleton.setPlayer(player);
 		
@@ -84,7 +84,7 @@ public class Game extends Canvas implements Runnable {
             
            if(System.currentTimeMillis() - timer > 1000) {
                timer += 1000;
-               //System.out.println("FPS: "+ frames);
+               System.out.println("FPS: "+ frames);
                frames = 0;
            }
         }
