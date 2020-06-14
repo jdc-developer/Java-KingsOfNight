@@ -84,11 +84,6 @@ public class SpiderBoss extends Enemy {
 			}
 		}
 		
-		if (jumping && !falling) {
-			velY = jumpStart;
-			falling = true;
-		}
-		
 		if (stamina < maxStamina) {
 			stamina += 0.04f;
 		}
@@ -113,12 +108,6 @@ public class SpiderBoss extends Enemy {
 			playerPosition();
 			checkPlayerDamage();
 			super.tick();
-		}
-		
-		if (jumping || falling) {
-			if (animator.hasPlayedOnce()) {
-				animator.holdLastFrame();
-			}
 		}
 		
 		if (flinching) {
@@ -238,17 +227,6 @@ public class SpiderBoss extends Enemy {
 				} else {
 					slicing = true;
 					slashing = false;
-				}
-			}
-			
-			r = random.nextInt(5);
-			if (playerXDistance <= 200 && playerXDistance > 0) {
-				if (r == 1) {
-					jumping = true;
-				}
-			} else if (playerXDistance >= -200 && playerXDistance < 0) {
-				if (r == 1) {
-					jumping = true;
 				}
 			}
 		}

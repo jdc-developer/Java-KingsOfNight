@@ -1,32 +1,25 @@
-package jdc.kings.view;
+package jdc.kings.state;
 
 import java.awt.Graphics;
-import java.util.LinkedList;
 import java.util.List;
 
+import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.utils.Constants;
+import jdc.kings.view.Background;
+import jdc.kings.view.HUD;
+import jdc.kings.view.TileMap;
 
-public class Handler {
+public class LevelState extends GameState {
 
-	private static Handler instance;
-	private TileMap tileMap;
-	private Background background;
-	private Player player;
-	
-	private LinkedList<Enemy> enemies = new LinkedList<>();
-	private LinkedList<Blood> bloodLosses = new LinkedList<>();
-	private HUD hud;
-	
-	private Handler() {};
-	
-	public static Handler getInstance() {
-		if (instance == null) {
-			instance = new Handler();
-		}
-		return instance;
+	public LevelState(TileMap tm, Player player, String background) {
+		this.player = player;
+		this.tileMap = tm;
+		this.background = new Background(background, 0.1f);
+		hud = new HUD(this.player);
+		KeyInput.getInstance().setPlayer(player);
 	}
 	
 	public void tick() {
@@ -81,21 +74,8 @@ public class Handler {
 		hud.render(g);
 	}
 
-	public void setTileMap(TileMap tileMap) {
-		this.tileMap = tileMap;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-		hud = new HUD(this.player);
-	}
-
 	public List<Enemy> getEnemies() {
 		return enemies;
-	}
-
-	public void setBackground(Background background) {
-		this.background = background;
 	}
 	
 }

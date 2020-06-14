@@ -39,7 +39,7 @@ public class Background {
 		this.velY = velY;
 	}
 	
-	public void update() {
+	public void tick() {
 		x += velX;
 		y += velY;
 	}

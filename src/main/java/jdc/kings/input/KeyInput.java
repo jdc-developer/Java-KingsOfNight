@@ -8,14 +8,19 @@ import java.util.List;
 
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Player;
+import jdc.kings.state.MenuState;
+import jdc.kings.state.StateManager;
 
 public class KeyInput extends KeyAdapter {
 	
 	private static KeyInput instance;
-	private Player player;
+	private StateManager manager;
+	private Player player;	
 	private List<Key> keys = new ArrayList<>();
 	
 	private KeyInput() {
+		manager = StateManager.getInstance();
+		
 		Key key1 = new Key(KeyEvent.VK_W, KeyAction.UP, false);
 		Key key2 = new Key(KeyEvent.VK_S, KeyAction.DOWN, false);
 		Key key3 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
@@ -36,7 +41,7 @@ public class KeyInput extends KeyAdapter {
 		}
 		return instance;
 	}
-	
+
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
@@ -60,10 +65,25 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyPressed(KeyEvent e) {
+		if (manager.getCurrentState() == StateManager.MENU) {
+			MenuState menu = (MenuState) manager.getState();
+			menu.keyPressed(e);
+		} else {
+			inGameKeyPressed(e);
+		}
+	}
+	
+	public void keyReleased(KeyEvent e) {
+		if (manager.getCurrentState() != StateManager.MENU) {
+			inGameKeyReleased(e);
+		}
+	}
+	
+	public void inGameKeyPressed(KeyEvent e) {
 		int keyPressed = e.getKeyCode();
 		Key key = findKey(keyPressed);
 		
-		if (key != null) {
+		if (key != null && !player.isDead()) {
 			key.setPressed(true);
 			KeyAction action = key.getAction();
 			if (action == KeyAction.RIGHT) {
@@ -93,7 +113,7 @@ public class KeyInput extends KeyAdapter {
 		}
 	}
 	
-	public void keyReleased(KeyEvent e) {
+	public void inGameKeyReleased(KeyEvent e) {
 		int keyPressed = e.getKeyCode();
 		Key key = findKey(keyPressed);
 		

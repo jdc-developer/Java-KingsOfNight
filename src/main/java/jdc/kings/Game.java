@@ -6,12 +6,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import jdc.kings.input.KeyInput;
-import jdc.kings.objects.Player;
-import jdc.kings.objects.enemies.bosses.SpiderBoss;
+import jdc.kings.state.StateManager;
 import jdc.kings.utils.Constants;
-import jdc.kings.view.Background;
-import jdc.kings.view.Handler;
-import jdc.kings.view.TileMap;
 import jdc.kings.view.Window;
 
 public class Game extends Canvas implements Runnable {
@@ -21,7 +17,7 @@ public class Game extends Canvas implements Runnable {
 	private boolean running = false;
 	private Thread thread;
 	private static Game instance;
-	private static Handler handler;
+	private static StateManager manager;
 	
 	private Game() {};
 	
@@ -31,34 +27,8 @@ public class Game extends Canvas implements Runnable {
 	
 	public static void main(String[] args) {
 		instance = new Game();
-		
-		TileMap tileMap = new TileMap(32, 20);
-		int[] normal = {7, 37, 31, 25, 1};
-		
-		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", normal);
-		tileMap.loadMap("/maps/level1.map");
-		tileMap.setPosition(0, 0);
-		tileMap.setTween(1);
-		
-		Player player = new Player(tileMap);
-		player.setPosition(100, 650);
-		
-		SpiderBoss skeleton = new SpiderBoss(tileMap);
-		skeleton.setPosition(800, 600);
-		skeleton.setPlayer(player);
-		
-		Background background = new Background("/backgrounds/level1-bg.gif", 0.1f);
-		
-		handler = Handler.getInstance();
-		handler.setBackground(background);
-		handler.setTileMap(tileMap);
-		
-		handler.setPlayer(player);
-		handler.getEnemies().add(skeleton);
-		
-		KeyInput keyInput = KeyInput.getInstance();
-		keyInput.setPlayer(player);
-		instance.addKeyListener(keyInput);
+		manager = StateManager.getInstance();
+		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
 	}
 
@@ -102,13 +72,13 @@ public class Game extends Canvas implements Runnable {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
 		
-		handler.render(g);
+		manager.render(g);
 		g.dispose();
 		bs.show();
 	}
 
 	private void tick() {
-		handler.tick();
+		manager.tick();
 	}
 	
 	public synchronized void start() {

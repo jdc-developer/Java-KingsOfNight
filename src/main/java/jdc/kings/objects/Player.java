@@ -105,7 +105,7 @@ public class Player extends GameObject {
 			}
 		}
 		
-		if ((currentAction == STABBING || currentAction == CUTTING || currentAction == SHIELD) &&
+		if ((currentAction == STABBING || currentAction == CUTTING || currentAction == SHIELD || currentAction == SLICING) &&
 				!(jumping || falling)) {
 			velX = 0;
 		}
@@ -138,10 +138,8 @@ public class Player extends GameObject {
 	}
 
 	public void tick() {
-		if (!dying) {
-			getNextPosition();
-			super.tick();
-		}
+		getNextPosition();
+		super.tick();
 		
 		if (currentAction == STABBING) {
 			if (animator.hasPlayedOnce()) stabbing = false;
@@ -167,17 +165,6 @@ public class Player extends GameObject {
 			if (animator.hasPlayedOnce()) {
 				slicing = false;
 				rolling = false;
-				maxSpeed = 4.6f;
-				
-				KeyInput keyInput = KeyInput.getInstance();
-				Key rightKey = keyInput.findKey(KeyAction.RIGHT);
-				Key leftKey = keyInput.findKey(KeyAction.LEFT);
-				
-				if (facingRight && !rightKey.isPressed()) {
-					right = false;
-				} else if (!leftKey.isPressed()) {
-					left = false;
-				}
 			}
 		}
 		
@@ -247,6 +234,7 @@ public class Player extends GameObject {
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(70);
 				holdTimer = System.nanoTime();
+				right = left = false;
 			}
 		} else if (stabbing) {
 			if (currentAction != STABBING) {
@@ -292,11 +280,7 @@ public class Player extends GameObject {
 					width = 63;
 					
 					stamina -= attack.getCost();
-					maxSpeed = 1f;
 					attack.setTimer(System.nanoTime());
-					
-					if (facingRight) right = true;
-					else left = true;
 				} else {
 					slicing = false;
 				}
