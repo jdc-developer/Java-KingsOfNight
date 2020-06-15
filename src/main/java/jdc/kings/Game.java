@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.Locale;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.state.StateManager;
@@ -19,6 +20,8 @@ public class Game extends Canvas implements Runnable {
 	private static Game instance;
 	private static StateManager manager;
 	
+	private static Locale locale;
+	
 	private Game() {};
 	
 	public static Game getInstance() {
@@ -27,6 +30,7 @@ public class Game extends Canvas implements Runnable {
 	
 	public static void main(String[] args) {
 		instance = new Game();
+		locale = new Locale("pt", "BR");
 		manager = StateManager.getInstance();
 		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
@@ -94,6 +98,14 @@ public class Game extends Canvas implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Locale getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(String language, String country) {
+		locale = new Locale(language, country);
 	}
 
 }

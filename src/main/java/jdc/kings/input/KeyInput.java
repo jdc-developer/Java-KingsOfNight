@@ -21,18 +21,16 @@ public class KeyInput extends KeyAdapter {
 	private KeyInput() {
 		manager = StateManager.getInstance();
 		
-		Key key1 = new Key(KeyEvent.VK_W, KeyAction.UP, false);
-		Key key2 = new Key(KeyEvent.VK_S, KeyAction.DOWN, false);
-		Key key3 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
-		Key key4 = new Key(KeyEvent.VK_D, KeyAction.RIGHT, false);
-		Key key5 = new Key(KeyEvent.VK_SPACE, KeyAction.JUMP, false);
-		Key key6 = new Key(KeyEvent.VK_K, KeyAction.STABBING, false);
-		Key key7 = new Key(KeyEvent.VK_J, KeyAction.CUTTING, false);
-		Key key8 = new Key(KeyEvent.VK_H, KeyAction.SLICING, false);
-		Key key9 = new Key(KeyEvent.VK_U, KeyAction.ROLLING, false);
-		Key key10 = new Key(KeyEvent.VK_I, KeyAction.SHIELD, false);
+		Key key1 = new Key(KeyEvent.VK_D, KeyAction.RIGHT, false);
+		Key key2 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
+		Key key3 = new Key(KeyEvent.VK_U, KeyAction.ROLLING, false);
+		Key key4 = new Key(KeyEvent.VK_I, KeyAction.SHIELD, false);
+		Key key5 = new Key(KeyEvent.VK_H, KeyAction.SLICING, false);
+		Key key6 = new Key(KeyEvent.VK_J, KeyAction.CUTTING, false);
+		Key key7 = new Key(KeyEvent.VK_K, KeyAction.STABBING, false);
+		Key key8 = new Key(KeyEvent.VK_SPACE, KeyAction.JUMP, false);
 		
-		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8, key9, key10));
+		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8));
 	}
 	
 	public static KeyInput getInstance() {
@@ -62,6 +60,10 @@ public class KeyInput extends KeyAdapter {
 			}
 		}
 		return null;
+	}
+	
+	public List<Key> getKeys() {
+		return keys;
 	}
 	
 	public void keyPressed(KeyEvent e) {
