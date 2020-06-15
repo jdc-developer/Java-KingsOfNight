@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
 import jdc.kings.view.TileMap;
@@ -15,6 +16,7 @@ public abstract class GameState {
 	protected TileMap tileMap;
 	protected Background background;
 	protected Player player;
+	protected AudioPlayer bgMusic;
 	
 	protected LinkedList<Enemy> enemies = new LinkedList<>();
 	protected LinkedList<Blood> bloodLosses = new LinkedList<>();

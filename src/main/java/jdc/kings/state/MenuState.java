@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.view.Background;
 
 public class MenuState extends GameState {
@@ -19,6 +22,8 @@ public class MenuState extends GameState {
 	
 	private Font titleFont;
 	private Font font;
+	
+	private Map<String, AudioPlayer> sfx;
 
 	public MenuState(StateManager manager) {
 		this.manager = manager;
@@ -27,6 +32,13 @@ public class MenuState extends GameState {
 			
 			titleFont = new Font("Century Gothic", Font.PLAIN, 68);
 			font = new Font("Arial", Font.PLAIN, 32);
+			
+			bgMusic = new AudioPlayer("/music/blood-ritual.mp3");
+			bgMusic.loop();
+			
+			sfx = new HashMap<>();
+			sfx.put("switch", new AudioPlayer("/sfx/switch.mp3"));
+			sfx.put("click", new AudioPlayer("/sfx/click.mp3"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,7 +74,7 @@ public class MenuState extends GameState {
 			manager.setState(StateManager.LEVELONE);
 		}
 		if (currentChoice == 1) {
-			
+			sfx.get("click").play();
 		}
 		if (currentChoice == 2) {
 			System.exit(0);
@@ -77,6 +89,7 @@ public class MenuState extends GameState {
 		}
 		
 		if (key == KeyEvent.VK_UP) {
+			sfx.get("switch").play();
 			currentChoice--;
 			if (currentChoice == -1) {
 				currentChoice = options.length - 1;
@@ -84,6 +97,7 @@ public class MenuState extends GameState {
 		}
 		
 		if (key == KeyEvent.VK_DOWN) {
+			sfx.get("switch").play();
 			currentChoice++;
 			if (currentChoice == options.length) {
 				currentChoice = 0;
