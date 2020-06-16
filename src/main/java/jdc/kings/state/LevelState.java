@@ -1,6 +1,8 @@
 package jdc.kings.state;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.List;
 
 import jdc.kings.input.KeyInput;
@@ -13,12 +15,18 @@ import jdc.kings.view.HUD;
 import jdc.kings.view.TileMap;
 
 public class LevelState extends GameState {
+	
+	private boolean death;
+	private DeathState deathState = null;
+	private Runnable deathStateThread;
+	private float alpha = 1.0f;
 
 	public LevelState(TileMap tm, Player player, String background) {
 		this.player = player;
 		this.tileMap = tm;
 		this.background = new Background(background, 0.1f);
 		hud = new HUD(this.player);
+		deathState = new DeathState();
 		KeyInput.getInstance().setPlayer(player);
 	}
 	
@@ -53,9 +61,30 @@ public class LevelState extends GameState {
 				i--;
 			}
 		}
+		
+		if (player.isDead()) {
+			if (!death) {
+				death = true;
+				deathStateThread = new Runnable() {
+					
+					@Override
+					public void run() {
+						deathState.loopMusic();
+					}
+				};
+				new Thread(deathStateThread).run();
+			} else {
+				deathState.tick();
+			}
+		}
 	}
 	
 	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		
+		g2d.setComposite(AlphaComposite.getInstance(
+	            AlphaComposite.SRC_OVER, alpha));
+		
 		background.render(g);
 		tileMap.render(g);
 		player.render(g);
@@ -72,10 +101,24 @@ public class LevelState extends GameState {
 		}
 		
 		hud.render(g);
+		
+		if (player.isDead()) {
+			if (death) {
+				deathState.render(g);
+				alpha -= 0.003f;
+			    if (alpha <= 0) {
+			        alpha = 0;
+			    }
+			}
+		}
 	}
 
 	public List<Enemy> getEnemies() {
 		return enemies;
+	}
+	
+	public DeathState getDeathState() {
+		return deathState;
 	}
 	
 }

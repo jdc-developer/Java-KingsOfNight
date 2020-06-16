@@ -57,23 +57,25 @@ public class Enemy extends GameObject {
 	protected void playerPosition() {
 		playerXDistance = this.x - player.getX();
 		playerYDistance = this.y - player.getY();
-		if (playerXDistance <= sightXDistance  && playerXDistance > 0 && !jumping &&
-				(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
-				playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
-			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 900) {
-				left = true;
-				right = false;
-				turnAroundTimer = System.nanoTime();
-			}
-		} else if (playerXDistance >= -sightXDistance && playerXDistance < 0 && !jumping &&
-				(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
-				playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
-			long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
-			if (elapsed > 900) {
-				right = true;
-				left = false;
-				turnAroundTimer = System.nanoTime();
+		if (!player.isDead()) {
+			if (playerXDistance <= sightXDistance  && playerXDistance > 0 && !jumping &&
+					(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
+					playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
+				long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
+				if (elapsed > 900) {
+					left = true;
+					right = false;
+					turnAroundTimer = System.nanoTime();
+				}
+			} else if (playerXDistance >= -sightXDistance && playerXDistance < 0 && !jumping &&
+					(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
+					playerYDistance >= -sightYDistance  && playerYDistance < 0)) {
+				long elapsed = (System.nanoTime() - turnAroundTimer) / 1000000;
+				if (elapsed > 900) {
+					right = true;
+					left = false;
+					turnAroundTimer = System.nanoTime();
+				}
 			}
 		}
 	}

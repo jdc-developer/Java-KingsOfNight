@@ -15,7 +15,6 @@ public class StateManager {
 	
 	private StateManager() {
 		gameStates = new GameState[STATES];
-		
 		currentState = MENU;
 		loadState(currentState);
 	}

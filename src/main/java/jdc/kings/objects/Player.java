@@ -2,12 +2,15 @@ package jdc.kings.objects;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.interactions.Attack;
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -21,6 +24,7 @@ public class Player extends GameObject {
 	private boolean slicing;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
+	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -56,7 +60,16 @@ public class Player extends GameObject {
 		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
 		attacks.add(new Attack(15, 5, 4, 106, 6, 250, 400));
 		
-		health = maxHealth = 50;
+		sfx.put("cutting", new AudioPlayer("/sfx/player/cutting.mp3"));
+		sfx.put("slicing", new AudioPlayer("/sfx/player/slicing.mp3"));
+		sfx.put("roll", new AudioPlayer("/sfx/player/roll.mp3"));
+		sfx.put("air-roll", new AudioPlayer("/sfx/player/air-roll.mp3"));
+		sfx.put("shield", new AudioPlayer("/sfx/player/shield.mp3"));
+		sfx.put("stabbing", new AudioPlayer("/sfx/player/stabbing.mp3"));
+		sfx.put("sword-hit", new AudioPlayer("/sfx/player/sword-hit.mp3"));
+		sfx.put("jump", new AudioPlayer("/sfx/player/jump.mp3"));
+		
+		health = maxHealth = 5;
 		stamina = maxStamina = 20;
 		bleeds = true;
 		
@@ -81,12 +94,12 @@ public class Player extends GameObject {
 	}
 	
 	private void getNextPosition() {
-		if (left) {
+		if (left && !dead) {
 			velX -= moveSpeed;
 			if (velX < -maxSpeed) {
 				velX = -maxSpeed;
 			}
-		} else if (right) {
+		} else if (right && !dead) {
 			velX += moveSpeed;
 			if (velX > maxSpeed) {
 				velX = maxSpeed;
@@ -132,7 +145,6 @@ public class Player extends GameObject {
 			
 			if (velY > 0) jumping = false;
 			if (velY < 0 && !jumping) velY += stopJumpSpeed;
-			
 			if (velY > maxFallSpeed) velY = maxFallSpeed;
 		}
 	}
@@ -234,7 +246,8 @@ public class Player extends GameObject {
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(70);
 				holdTimer = System.nanoTime();
-				right = left = false;
+				right = false;
+				left = false;
 			}
 		} else if (stabbing) {
 			if (currentAction != STABBING) {
@@ -243,6 +256,8 @@ public class Player extends GameObject {
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = STABBING;
+					sfx.get("stabbing").play();
+					
 					animator.setFrames(sprites.get(STABBING));
 					animator.setSpeed(85);
 					width = 63;
@@ -259,6 +274,8 @@ public class Player extends GameObject {
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = CUTTING;
+					sfx.get("cutting").play();
+					
 					animator.setFrames(sprites.get(CUTTING));
 					animator.setSpeed(80);
 					width = 63;
@@ -271,10 +288,11 @@ public class Player extends GameObject {
 		} else if (slicing) {
 			if (currentAction != SLICING) {
 				attack = attacks.get(2);
-				
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = SLICING;
+					sfx.get("slicing").play();
+					
 					animator.setFrames(sprites.get(SLICING));
 					animator.setSpeed(100);
 					width = 63;
@@ -290,6 +308,13 @@ public class Player extends GameObject {
 				if (stamina >= rollCost) {
 					previousAction = currentAction;
 					currentAction = ROLLING;
+					
+					if (previousAction == JUMPING || previousAction == FALLING) {
+						sfx.get("air-roll").play();
+					} else {
+						sfx.get("roll").play();
+					}
+					
 					animator.setFrames(sprites.get(ROLLING));
 					animator.setSpeed(80);
 					width = 63;
@@ -324,6 +349,8 @@ public class Player extends GameObject {
 			if (currentAction != JUMPING) {
 				previousAction = currentAction;
 				currentAction = JUMPING;
+				sfx.get("jump").play();
+				
 				animator.setFrames(sprites.get(JUMPING));
 				animator.setSpeed(100);
 				width = 63;
@@ -344,6 +371,7 @@ public class Player extends GameObject {
 				width = 63;
 			}
 		}
+		
 		if (right) facingRight = true;
 		if (left) facingRight = false;
 	}
@@ -352,10 +380,18 @@ public class Player extends GameObject {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if ((stabbing || cutting || slicing) && attack != null) {
-				attack.checkAttack(this, e, false);
+				attack.checkAttack(this, e, false, sfx.get("sword-hit"));
 			}
 			
 		}
+	}
+	
+	@Override
+	public void hit(int damage, boolean right, boolean shield) {
+		if (this.shield) {
+			sfx.get("shield").play();
+		}
+		super.hit(damage, right, shield);
 	}
 
 	public void setStabbing(boolean stabbing) {

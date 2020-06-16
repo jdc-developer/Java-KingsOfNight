@@ -33,7 +33,7 @@ public class MenuState extends GameState {
 	private Font titleFont;
 	private Font font;
 	
-	private Map<String, AudioPlayer> sfx;
+	private Map<String, AudioPlayer> sfx = new HashMap<>();
 
 	public MenuState(StateManager manager) {
 		this.manager = manager;
@@ -47,9 +47,8 @@ public class MenuState extends GameState {
 			bgMusic = new AudioPlayer("/music/blood-ritual.mp3");
 			bgMusic.loop();
 			
-			sfx = new HashMap<>();
-			sfx.put("switch", new AudioPlayer("/sfx/switch.mp3"));
-			sfx.put("click", new AudioPlayer("/sfx/click.mp3"));
+			sfx.put("switch", new AudioPlayer("/sfx/menu/switch.mp3"));
+			sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

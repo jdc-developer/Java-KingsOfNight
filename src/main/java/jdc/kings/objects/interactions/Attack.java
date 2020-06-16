@@ -1,6 +1,7 @@
 package jdc.kings.objects.interactions;
 
 import jdc.kings.objects.GameObject;
+import jdc.kings.utils.AudioPlayer;
 
 public class Attack {
 	
@@ -88,9 +89,9 @@ public class Attack {
 		this.endTime = endTime;
 	}
 	
-	public void checkAttack(GameObject attacking, GameObject attacked, boolean ranged) {
+	public void checkAttack(GameObject attacking, GameObject attacked, boolean ranged, AudioPlayer hitSound) {
 		long elapsed = (System.nanoTime() - timer) / 1000000;
-		if ((elapsed > startTime && elapsed < endTime) || ranged) {
+		if ((elapsed > startTime && elapsed < endTime && !attacked.isDead()) || ranged) {
 			
 			if (attacked.isShield()) {
 				
@@ -99,21 +100,21 @@ public class Attack {
 						(shieldElapsed > 200)) {
 					attacked.shieldDamage(shieldDamage, damage, shieldCost, !attacking.isFacingRight());
 				} else {
-					consumateAttack(attacking, attacked, ranged);
+					consumateAttack(attacking, attacked, ranged, hitSound);
 				}
 			} else if (attacked.isRolling()) {
 				
 				long rollElapsed = (System.nanoTime() - attacked.getRollTimer()) / 1000000;
 				if (rollElapsed < 100) {
-					consumateAttack(attacking, attacked, ranged);
+					consumateAttack(attacking, attacked, ranged, hitSound);
 				}
 			} else {
-				consumateAttack(attacking, attacked, ranged);
+				consumateAttack(attacking, attacked, ranged, hitSound);
 			}
 		}
 	}
 	
-	private void consumateAttack(GameObject attacking, GameObject attacked, boolean ranged) {
+	private void consumateAttack(GameObject attacking, GameObject attacked, boolean ranged, AudioPlayer hitSound) {
 		if (attacking.isFacingRight()) {
 			 if (
 					 attacked.getX() > attacking.getX() &&
@@ -122,8 +123,10 @@ public class Attack {
 					 attacked.getY() < attacking.getY() + attacking.getHeight() / 2) {
 				 
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
+				 if (hitSound != null) hitSound.play();
 			 } else if (ranged) {
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
+				 if (hitSound != null) hitSound.play();
 			 }
 		 } else {
 			 if (
@@ -133,8 +136,10 @@ public class Attack {
 					 attacked.getY() < attacking.getY() + attacking.getHeight() / 2) {
 				 
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
+				 if (hitSound != null) hitSound.play();
 			 } else if (ranged) {
 				 attacked.hit(damage, !attacking.isFacingRight(), false);
+				 if (hitSound != null) hitSound.play();
 			 }
 		 }
 	}

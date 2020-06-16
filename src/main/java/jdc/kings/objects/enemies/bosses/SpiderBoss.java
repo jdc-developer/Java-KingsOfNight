@@ -195,12 +195,8 @@ public class SpiderBoss extends Enemy {
 	
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
-		if (slashing && attack != null) {
-			attack.checkAttack(this, player, false);
-		}
-		
-		if (slicing && attack != null) {
-			attack.checkAttack(this, player, false);
+		if ((slashing || slicing) && attack != null) {
+			attack.checkAttack(this, player, false, null);
 		}
 	}
 	

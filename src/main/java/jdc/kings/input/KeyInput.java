@@ -8,6 +8,7 @@ import java.util.List;
 
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Player;
+import jdc.kings.state.LevelState;
 import jdc.kings.state.MenuState;
 import jdc.kings.state.StateManager;
 
@@ -78,7 +79,11 @@ public class KeyInput extends KeyAdapter {
 		if (manager.getCurrentState() == StateManager.MENU) {
 			MenuState menu = (MenuState) manager.getState();
 			menu.keyPressed(e);
-		} else {
+		} else if (player.isDead()) {
+			LevelState level = (LevelState) manager.getState();
+			level.getDeathState().keyPressed(e);
+		}
+		else {
 			inGameKeyPressed(e);
 		}
 	}

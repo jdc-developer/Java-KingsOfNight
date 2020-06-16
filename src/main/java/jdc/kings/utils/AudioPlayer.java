@@ -4,10 +4,11 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class AudioPlayer {
 	
-private Clip clip;
+	private Clip clip;
 	
 	public AudioPlayer(String s) {
 		try {
@@ -35,6 +36,9 @@ private Clip clip;
 	public void play() {
 		if (clip == null) return;
 		stop();
+		FloatControl gainControl = 
+			    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(-10.0f);
 		clip.setFramePosition(0);
 		clip.start();
 	}
