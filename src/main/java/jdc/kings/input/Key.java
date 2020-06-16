@@ -1,9 +1,13 @@
 package jdc.kings.input;
 
+import java.io.Serializable;
+
 import jdc.kings.input.enums.KeyAction;
 
-public class Key {
+public class Key implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private int mapping;
 	private KeyAction action;
 	private boolean pressed;

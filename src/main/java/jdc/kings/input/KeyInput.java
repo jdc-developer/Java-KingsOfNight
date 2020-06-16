@@ -20,7 +20,18 @@ public class KeyInput extends KeyAdapter {
 	
 	private KeyInput() {
 		manager = StateManager.getInstance();
-		
+		defaultKeys();
+	}
+	
+	public static KeyInput getInstance() {
+		if (instance == null) {
+			instance = new KeyInput();
+		}
+		return instance;
+	}
+	
+	public void defaultKeys() {
+		keys.clear();
 		Key key1 = new Key(KeyEvent.VK_D, KeyAction.RIGHT, false);
 		Key key2 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
 		Key key3 = new Key(KeyEvent.VK_U, KeyAction.ROLLING, false);
@@ -32,19 +43,12 @@ public class KeyInput extends KeyAdapter {
 		
 		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8));
 	}
-	
-	public static KeyInput getInstance() {
-		if (instance == null) {
-			instance = new KeyInput();
-		}
-		return instance;
-	}
 
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
-	private Key findKey(int keyPressed) {
+	public Key findKey(int keyPressed) {
 		for (Key key : keys) {
 			if (key.getMapping() == keyPressed) {
 				return key;
@@ -60,6 +64,10 @@ public class KeyInput extends KeyAdapter {
 			}
 		}
 		return null;
+	}
+	
+	public void setKeys(List<Key> keys) {
+		this.keys = keys;
 	}
 	
 	public List<Key> getKeys() {

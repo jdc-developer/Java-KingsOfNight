@@ -7,6 +7,8 @@ import java.awt.image.BufferStrategy;
 import java.util.Locale;
 
 import jdc.kings.input.KeyInput;
+import jdc.kings.options.Preferences;
+import jdc.kings.options.PreferencesLoader;
 import jdc.kings.state.StateManager;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Window;
@@ -20,7 +22,7 @@ public class Game extends Canvas implements Runnable {
 	private static Game instance;
 	private static StateManager manager;
 	
-	private static Locale locale;
+	private static Preferences preferences;
 	
 	private Game() {};
 	
@@ -30,7 +32,13 @@ public class Game extends Canvas implements Runnable {
 	
 	public static void main(String[] args) {
 		instance = new Game();
-		locale = new Locale("pt", "BR");
+		preferences = PreferencesLoader.loadPreferences();
+		if (preferences == null) {
+			preferences = new Preferences();
+			preferences.setLocale(new Locale("pt", "BR"));
+		} else if (preferences.getKeys() != null) {
+			KeyInput.getInstance().setKeys(preferences.getKeys());
+		}
 		manager = StateManager.getInstance();
 		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
@@ -99,13 +107,14 @@ public class Game extends Canvas implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
-	public Locale getLocale() {
-		return locale;
+
+	public Preferences getPreferences() {
+		return preferences;
 	}
-	
+
 	public void setLocale(String language, String country) {
-		locale = new Locale(language, country);
+		preferences.setLocale(new Locale(language, country));
+		PreferencesLoader.savePreferences(preferences);
 	}
 
 }
