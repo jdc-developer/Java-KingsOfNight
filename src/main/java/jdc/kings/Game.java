@@ -36,7 +36,7 @@ public class Game extends Canvas implements Runnable {
 		preferences = PreferencesLoader.loadPreferences();
 		if (preferences == null) {
 			preferences = new Preferences();
-			preferences.setLocale(new Locale("pt", "BR"));
+			preferences.setLocale(Locale.getDefault());
 		} else if (preferences.getKeys() != null) {
 			KeyInput.getInstance().setKeys(preferences.getKeys());
 		}

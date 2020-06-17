@@ -3,7 +3,9 @@ package jdc.kings.state;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Enemy;
@@ -22,6 +24,7 @@ public class LevelState extends GameState {
 	private Runnable deathStateThread;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
+	private Map<String, AudioPlayer> sfx = new HashMap<>();
 
 	public LevelState(TileMap tm, Player player, String background, String music) {
 		this.player = player;
@@ -31,6 +34,7 @@ public class LevelState extends GameState {
 		deathState = new DeathState();
 		bgMusic = new AudioPlayer(music);
 		bgMusic.loop();
+		sfx.put("blood-explosion", new AudioPlayer("/sfx/enemies/blood-explosion.mp3"));
 		KeyInput.getInstance().setPlayer(player);
 	}
 	
@@ -52,6 +56,7 @@ public class LevelState extends GameState {
 					bloodLosses.add(
 							new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));
 					enemies.remove(i);
+					sfx.get("blood-explosion").play();
 					i--;
 				}
 			} else {

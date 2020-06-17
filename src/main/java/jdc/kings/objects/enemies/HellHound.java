@@ -2,10 +2,13 @@ package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
@@ -17,6 +20,7 @@ public class HellHound extends Enemy {
 	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
+	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -34,8 +38,8 @@ public class HellHound extends Enemy {
 		jumpStart = -4.8f;
 		stopJumpSpeed = 1.3f;
 		flinchYSpeed = 2.5f;
-		flinchXSpeed = 2f;
-		maxFlinchXSpeed = 3.5f;
+		flinchXSpeed = 1f;
+		maxFlinchXSpeed = 2.5f;
 		
 		width = 60;
 		height = 60;
@@ -50,6 +54,11 @@ public class HellHound extends Enemy {
 		shieldCost = 4;
 		sightXDistance = 650;
 		sightYDistance = 350;
+		
+		sfx.put("running", new AudioPlayer("/sfx/enemies/hellhound/running.mp3"));
+		sfx.put("roar", new AudioPlayer("/sfx/enemies/hellhound/roar.mp3"));
+		sfx.put("howl", new AudioPlayer("/sfx/enemies/hellhound/howl.mp3"));
+		hit = new AudioPlayer("/sfx/enemies/hellhound/bite.mp3");
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
@@ -83,6 +92,7 @@ public class HellHound extends Enemy {
 		
 		if (dying) {
 			dead = true;
+			sfx.get("running").close();
 		}
 		
 		if (falling) {
@@ -108,11 +118,11 @@ public class HellHound extends Enemy {
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 1000) {
+			if (elapsed > 400) {
 				flinching = false;
 			}
 			
-			if (elapsed > 100) {
+			if (elapsed > 200) {
 				flinchDirection = 0;
 			} else {
 				right = false;
@@ -138,6 +148,7 @@ public class HellHound extends Enemy {
 			
 			if (currentAction != RUNNING && running) {
 				currentAction = RUNNING;
+				sfx.get("running").play();
 				animator.setFrames(sprites.get(RUNNING));
 				animator.setSpeed(100);
 				width = 60;
@@ -153,14 +164,25 @@ public class HellHound extends Enemy {
 		
 		if (right) facingRight = true;
 		if (left) facingRight = false;
+		
+		if (running) {
+			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
+			if (elapsed > 3400) {
+				sfx.get("running").play();
+			}
+		} else {
+			sfx.get("running").close();
+		}
 	}
 	
 	public void playerPosition() {
 		super.playerPosition();
 		if (playerXDistance <= sightXDistance  && playerXDistance > 0) {
 			running = true;
+			holdTimer = System.nanoTime();
 		} else if (playerXDistance >= -sightXDistance && playerXDistance < 0) {
 			running = true;
+			holdTimer = System.nanoTime();
 		}
 		
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
@@ -171,9 +193,19 @@ public class HellHound extends Enemy {
 			
 			if (playerXDistance <= 100 && playerXDistance > 0 && r == 1) {
 				jumping = true;
+				sfx.get("roar").play();
 			} else if (playerXDistance >= -100 && playerXDistance < 0 && r == 1) {
 				jumping = true;
+				sfx.get("roar").play();
 			}
+		}
+	}
+	
+	@Override
+	public void hit(int damage, boolean right, boolean shield) {
+		super.hit(damage, right, shield);
+		if (!dead && !dying) {
+			sfx.get("howl").play();
 		}
 	}
 

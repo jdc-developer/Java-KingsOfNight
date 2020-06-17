@@ -16,6 +16,7 @@ import jdc.kings.options.Preferences;
 import jdc.kings.options.PreferencesLoader;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.BundleUtil;
+import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 
 public class MenuState extends GameState {
@@ -105,7 +106,7 @@ public class MenuState extends GameState {
 		
 		g.setColor(Color.white);
 		g.setFont(titleFont);
-		g.drawString("Kings of Night", 280, 140);
+		g.drawString(Constants.TITLE, 280, 140);
 		
 		g.setFont(font);
 		List<Key> keys = KeyInput.getInstance().getKeys();

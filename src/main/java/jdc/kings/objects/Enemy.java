@@ -1,5 +1,6 @@
 package jdc.kings.objects;
 
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.view.TileMap;
 
 public class Enemy extends GameObject {
@@ -15,9 +16,11 @@ public class Enemy extends GameObject {
 	protected int sightYDistance;
 	
 	protected Player player;
+	protected AudioPlayer hit;
 
 	public Enemy(TileMap tm) {
 		super(tm);
+		hit = new AudioPlayer("/sfx/enemies/hit.mp3");
 	}
 
 	public int getDamage() {
@@ -40,15 +43,18 @@ public class Enemy extends GameObject {
 					flinchDirection = player.isFacingRight() ? 1 : 2;
 					flinchTimer = System.nanoTime();
 				} else {
+					hit.play();
 					player.hit(damage, !facingRight, false);
 				}
 			} else if (player.isRolling()) {
 				
 				long elapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;
 				if (elapsed < 100) {
+					hit.play();
 					player.hit(damage, !facingRight, false);
 				}
 			} else {
+				hit.play();
 				player.hit(damage, !facingRight, false);
 			}
 		}
