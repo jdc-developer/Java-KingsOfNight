@@ -71,6 +71,7 @@ public abstract class GameObject {
 	protected float flinchXSpeed;
 	protected float maxFlinchXSpeed;
 	protected float flinchYSpeed;
+	protected float maxFlinchYSpeed;
 	
 	protected int health;
 	protected float stamina;
@@ -361,10 +362,16 @@ public abstract class GameObject {
 			if (velX < -maxFlinchXSpeed) {
 				velX = -maxFlinchXSpeed;
 			}
+			if (velX > 0) {
+				velX = 0;
+			}
 		} else if (flinchDirection == 1) {
 			velX += flinchXSpeed;
 			if (velX > maxFlinchXSpeed) {
 				velX = maxFlinchXSpeed;
+			}
+			if (velX < 0) {
+				velX = 0;
 			}
 		}
 		
@@ -374,6 +381,10 @@ public abstract class GameObject {
 				bloodLosses.remove(i);
 				i--;
 			}
+		}
+		
+		if (y >= 850) {
+			dead = true;
 		}
 	}
 
@@ -423,8 +434,8 @@ public abstract class GameObject {
 			
 			velY -= flinchYSpeed;
 			
-			if (velY < -maxJumpSpeed) {
-				velY = -maxJumpSpeed;
+			if (velY < -maxFlinchYSpeed) {
+				velY = -maxFlinchYSpeed;
 			}
 			if (right) {
 				flinchDirection = 2;

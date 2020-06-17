@@ -57,7 +57,7 @@ public class Enemy extends GameObject {
 	protected void playerPosition() {
 		playerXDistance = this.x - player.getX();
 		playerYDistance = this.y - player.getY();
-		if (!player.isDead()) {
+		if (!player.isDead() && !flinching) {
 			if (playerXDistance <= sightXDistance  && playerXDistance > 0 && !jumping &&
 					(playerYDistance <= sightYDistance  && playerYDistance > 0 ||
 					playerYDistance >= -sightYDistance  && playerYDistance < 0)) {

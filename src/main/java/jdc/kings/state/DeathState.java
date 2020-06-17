@@ -79,15 +79,23 @@ public class DeathState extends GameState {
 	
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-		
+		if (alpha >= 0.5f) {
+			deathAction(key);
+		}
+	}
+	
+	private void deathAction(int key) {
 		if (key == KeyEvent.VK_ENTER) {
 			sfx.get("click").play();
+			manager.getState().getBgMusic().close();
 			bgMusic.close();
 			switch(currentChoice) {
 				case 0:
+					manager.showLoader(true);
 					manager.setState(manager.getCurrentState());
 					break;
 				case 1:
+					manager.showLoader(true);
 					manager.setState(StateManager.MENU);
 					break;
 			}
@@ -108,7 +116,6 @@ public class DeathState extends GameState {
 				currentChoice = 0;
 			}
 		}
-		
 	}
 	
 	public void loopMusic() {

@@ -49,6 +49,9 @@ public class MenuState extends GameState {
 			
 			sfx.put("switch", new AudioPlayer("/sfx/menu/switch.mp3"));
 			sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
+			sfx.put("start", new AudioPlayer("/sfx/menu/start.mp3"));
+			sfx.put("slash", new AudioPlayer("/sfx/menu/slash.mp3"));
+			manager.showLoader(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -191,6 +194,10 @@ public class MenuState extends GameState {
 		
 		switch (currentChoice) {
 			case 0:
+				manager.showLoader(true);
+				bgMusic.close();
+				sfx.get("start").play();
+				sfx.get("slash").play();
 				manager.setState(StateManager.LEVELONE);
 				break;
 			case 1:

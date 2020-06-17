@@ -8,6 +8,7 @@ public class StateManager {
 	
 	private GameState[] gameStates;
 	private int currentState;
+	private boolean showLoader;
 	
 	public static final int STATES = 2;
 	public static final int MENU = 0;
@@ -72,6 +73,14 @@ public class StateManager {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+	
+	public void showLoader(boolean showLoader) {
+		this.showLoader = showLoader;
+	}
+	
+	public boolean showLoader() {
+		return showLoader;
 	}
 
 }

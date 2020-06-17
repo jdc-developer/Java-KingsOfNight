@@ -9,6 +9,7 @@ import jdc.kings.input.KeyInput;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
@@ -20,17 +21,21 @@ public class LevelState extends GameState {
 	private DeathState deathState = null;
 	private Runnable deathStateThread;
 	private float alpha = 1.0f;
+	private float reduceSound = 0;
 
-	public LevelState(TileMap tm, Player player, String background) {
+	public LevelState(TileMap tm, Player player, String background, String music) {
 		this.player = player;
 		this.tileMap = tm;
 		this.background = new Background(background, 0.1f);
 		hud = new HUD(this.player);
 		deathState = new DeathState();
+		bgMusic = new AudioPlayer(music);
+		bgMusic.loop();
 		KeyInput.getInstance().setPlayer(player);
 	}
 	
 	public void tick() {
+		StateManager.getInstance().showLoader(false);
 		tileMap.setPosition(
 				Constants.WIDTH / Constants.SCALE - player.getX(),
 				Constants.HEIGHT / Constants.SCALE - player.getY());
@@ -74,6 +79,13 @@ public class LevelState extends GameState {
 				};
 				new Thread(deathStateThread).run();
 			} else {
+				reduceSound += -0.06f;
+				if (reduceSound <= -25) {
+					bgMusic.close();
+				} else {
+					bgMusic.reduceSound(reduceSound);
+				}
+				
 				deathState.tick();
 			}
 		}

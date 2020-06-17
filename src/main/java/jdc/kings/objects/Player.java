@@ -52,9 +52,10 @@ public class Player extends GameObject {
 		jumpStart = -7.8f;
 		maxJumpSpeed = 5.8f;
 		stopJumpSpeed = 0.3f;
-		flinchYSpeed = 5.5f;
 		flinchXSpeed = 2.8f;
 		maxFlinchXSpeed = 4f;
+		flinchYSpeed = 5.5f;
+		maxFlinchYSpeed = 5.8f;
 		
 		attacks.add(new Attack(12, 4, 4, 70, 4, 250, 400));
 		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
@@ -69,7 +70,7 @@ public class Player extends GameObject {
 		sfx.put("sword-hit", new AudioPlayer("/sfx/player/sword-hit.mp3"));
 		sfx.put("jump", new AudioPlayer("/sfx/player/jump.mp3"));
 		
-		health = maxHealth = 5;
+		health = maxHealth = 50;
 		stamina = maxStamina = 20;
 		bleeds = true;
 		

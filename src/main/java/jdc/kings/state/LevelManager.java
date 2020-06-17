@@ -9,6 +9,8 @@ import jdc.kings.view.TileMap;
 
 public abstract class LevelManager {
 	
+	private static LevelState currentLevel;
+	
 	public static LevelState loadLevelOne() {
 		TileMap tileMap = new TileMap(32, 20);
 		int[] normal = {7, 37, 31, 25, 1};
@@ -21,7 +23,7 @@ public abstract class LevelManager {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		LevelState levelOne = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif");
+		currentLevel = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif", "/music/lurker-of-the-depths.mp3");
 		
 		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
 		skeleton.setPosition(500, 650);
@@ -31,8 +33,8 @@ public abstract class LevelManager {
 		skeleton1.setPosition(700, 650);
 		skeleton1.setPlayer(player);
 		
-		levelOne.getEnemies().addAll(Arrays.asList(skeleton, skeleton1));
-		return levelOne;
+		currentLevel.getEnemies().addAll(Arrays.asList(skeleton, skeleton1));
+		return currentLevel;
 	}
 
 }

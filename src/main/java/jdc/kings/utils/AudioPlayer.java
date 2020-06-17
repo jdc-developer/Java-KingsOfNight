@@ -36,9 +36,6 @@ public class AudioPlayer {
 	public void play() {
 		if (clip == null) return;
 		stop();
-		FloatControl gainControl = 
-			    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl.setValue(-10.0f);
 		clip.setFramePosition(0);
 		clip.start();
 	}
@@ -48,6 +45,12 @@ public class AudioPlayer {
 		stop();
 		clip.setFramePosition(0);
 		clip.loop(Clip.LOOP_CONTINUOUSLY);
+	}
+	
+	public void reduceSound(float value) {
+		FloatControl gainControl = 
+			    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(value);
 	}
 
 	public void stop() {

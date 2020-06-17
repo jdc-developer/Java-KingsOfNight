@@ -9,6 +9,7 @@ import java.util.Locale;
 import jdc.kings.input.KeyInput;
 import jdc.kings.options.Preferences;
 import jdc.kings.options.PreferencesLoader;
+import jdc.kings.state.LoadingState;
 import jdc.kings.state.StateManager;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Window;
@@ -85,6 +86,10 @@ public class Game extends Canvas implements Runnable {
 		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
 		
 		manager.render(g);
+		if (manager.showLoader()) {
+			LoadingState.getInstance().render(g);
+		}
+		
 		g.dispose();
 		bs.show();
 	}

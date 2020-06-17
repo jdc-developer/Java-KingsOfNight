@@ -41,9 +41,10 @@ public class SkeletonKnight extends Enemy {
 		jumpStart = -0.8f;
 		maxJumpSpeed = 3.5f;
 		stopJumpSpeed = 1.3f;
+		flinchXSpeed = 0.5f;
+		maxFlinchXSpeed = 0.8f;
 		flinchYSpeed = 5.5f;
-		flinchXSpeed = 1f;
-		maxFlinchXSpeed = 1.5f;
+		maxFlinchYSpeed = 6f;
 		
 		width = 70;
 		height = 110;
@@ -132,11 +133,12 @@ public class SkeletonKnight extends Enemy {
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 400) {
+			if (elapsed > 200) {
 				flinching = false;
+				flinchTimer = 0;
 			}
 			
-			if (elapsed > 100) {
+			if (elapsed > 200) {
 				flinchDirection = 0;
 			} else {
 				right = false;
