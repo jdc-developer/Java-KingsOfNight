@@ -25,8 +25,8 @@ public abstract class GameState {
 	public abstract void tick();
 	public abstract void render(Graphics g);
 	
-	public AudioPlayer getBgMusic() {
-		return bgMusic;
+	public void closeMusic() {
+		bgMusic.close();
 	}
 
 }

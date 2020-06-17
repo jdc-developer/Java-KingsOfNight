@@ -57,7 +57,7 @@ public class Player extends GameObject {
 		flinchYSpeed = 5.5f;
 		maxFlinchYSpeed = 5.8f;
 		
-		attacks.add(new Attack(12, 4, 4, 80, 4, 250, 400));
+		attacks.add(new Attack(13, 4, 4, 80, 4, 250, 400));
 		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
 		attacks.add(new Attack(15, 5, 4, 106, 6, 250, 400));
 		

@@ -79,7 +79,7 @@ public class DeathState extends GameState {
 	
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-		if (alpha >= 0.5f) {
+		if (alpha >= 0.8f) {
 			deathAction(key);
 		}
 	}
@@ -87,7 +87,7 @@ public class DeathState extends GameState {
 	private void deathAction(int key) {
 		if (key == KeyEvent.VK_ENTER) {
 			sfx.get("click").play();
-			manager.getState().getBgMusic().close();
+			manager.getState().closeMusic();
 			bgMusic.close();
 			switch(currentChoice) {
 				case 0:

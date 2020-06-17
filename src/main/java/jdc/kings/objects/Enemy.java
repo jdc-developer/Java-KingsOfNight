@@ -86,4 +86,8 @@ public class Enemy extends GameObject {
 		}
 	}
 
+	public Player getPlayer() {
+		return player;
+	}
+
 }

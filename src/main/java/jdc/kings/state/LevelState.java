@@ -3,6 +3,7 @@ package jdc.kings.state;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,10 @@ public class LevelState extends GameState {
 	private Runnable deathStateThread;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
+	private BossState runningBoss;
+	
 	private Map<String, AudioPlayer> sfx = new HashMap<>();
+	private List<BossState> bossStates = new ArrayList<>();
 
 	public LevelState(TileMap tm, Player player, String background, String music) {
 		this.player = player;
@@ -32,6 +36,7 @@ public class LevelState extends GameState {
 		this.background = new Background(background, 0.1f);
 		hud = new HUD(this.player);
 		deathState = new DeathState();
+		
 		bgMusic = new AudioPlayer(music);
 		bgMusic.loop();
 		sfx.put("blood-explosion", new AudioPlayer("/sfx/enemies/blood-explosion.mp3"));
@@ -70,6 +75,20 @@ public class LevelState extends GameState {
 				bloodLosses.remove(i);
 				i--;
 			}
+		}
+		
+		for (int i = 0; i < bossStates.size(); i++) {
+			BossState bossState = bossStates.get(i);
+			if (player.getX() >= bossState.getX() && player.getY() >= bossState.getY() && !bossState.isRunning()) {
+				bossState.start();
+				runningBoss = bossState;
+				enemies.add(bossState.getBoss());
+				bgMusic.close();
+			}
+		}
+		
+		if (runningBoss != null) {
+			runningBoss.tick();
 		}
 		
 		if (player.isDead()) {
@@ -119,6 +138,10 @@ public class LevelState extends GameState {
 		
 		hud.render(g);
 		
+		if (runningBoss != null) {
+			runningBoss.render(g2d);
+		}
+		
 		if (player.isDead()) {
 			if (death) {
 				deathState.render(g);
@@ -134,8 +157,20 @@ public class LevelState extends GameState {
 		return enemies;
 	}
 	
+	public List<BossState> getBossStates() {
+		return bossStates;
+	}
+
 	public DeathState getDeathState() {
 		return deathState;
+	}
+	
+	@Override
+	public void closeMusic() {
+		super.closeMusic();
+		if (runningBoss != null) {
+			runningBoss.closeMusic();
+		}
 	}
 	
 }

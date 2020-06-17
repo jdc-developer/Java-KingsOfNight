@@ -58,6 +58,7 @@ public class HellHound extends Enemy {
 		sfx.put("running", new AudioPlayer("/sfx/enemies/hellhound/running.mp3"));
 		sfx.put("roar", new AudioPlayer("/sfx/enemies/hellhound/roar.mp3"));
 		sfx.put("howl", new AudioPlayer("/sfx/enemies/hellhound/howl.mp3"));
+		sfx.put("howl-2", new AudioPlayer("/sfx/enemies/hellhound/howl-2.mp3"));
 		hit = new AudioPlayer("/sfx/enemies/hellhound/bite.mp3");
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
@@ -205,7 +206,14 @@ public class HellHound extends Enemy {
 	public void hit(int damage, boolean right, boolean shield) {
 		super.hit(damage, right, shield);
 		if (!dead && !dying) {
-			sfx.get("howl").play();
+			Random random = Constants.random;
+			int r = random.nextInt(2);
+			
+			if (r == 1) {
+				sfx.get("howl").play();
+			} else {
+				sfx.get("howl-2").play();
+			}
 		}
 	}
 
