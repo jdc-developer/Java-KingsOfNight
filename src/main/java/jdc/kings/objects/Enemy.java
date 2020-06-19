@@ -8,6 +8,7 @@ public class Enemy extends GameObject {
 	protected int damage;
 	protected int shieldDamage;
 	protected int shieldCost;
+	protected boolean corner;
 	
 	protected float playerXDistance;
 	protected float playerYDistance;
@@ -83,6 +84,13 @@ public class Enemy extends GameObject {
 					turnAroundTimer = System.nanoTime();
 				}
 			}
+		}
+		
+		if (((left && !bottomLeft) || (right && !bottomRight)) && (!jumping && !falling)) {
+			velX = 0;
+			corner = true;
+		} else {
+			corner = false;
 		}
 	}
 

@@ -49,7 +49,7 @@ public abstract class LevelManager {
 		
 		HellHound hellhound = new HellHound(tileMap);
 		hellhound.setPlayer(player);
-		hellhound.setPosition(1000, 650);
+		hellhound.setPosition(5500, 80);
 		
 		currentLevel.getEnemies().addAll(Arrays.asList(hellhound, skeleton, skeleton1));
 		return currentLevel;

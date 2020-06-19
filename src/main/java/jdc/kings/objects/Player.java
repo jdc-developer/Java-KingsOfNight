@@ -389,7 +389,7 @@ public class Player extends GameObject {
 	
 	@Override
 	public void hit(int damage, boolean right, boolean shield) {
-		if (this.shield) {
+		if (shield) {
 			sfx.get("shield").play();
 		}
 		super.hit(damage, right, shield);

@@ -56,7 +56,7 @@ public class LevelState extends GameState {
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			if (e.isDead()) {
+			if (e.isDead() && e.getHealth() <= 0) {
 				if (e.bleeds()) {
 					bloodLosses.add(
 							new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));

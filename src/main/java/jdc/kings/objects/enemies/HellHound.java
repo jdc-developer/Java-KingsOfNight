@@ -139,7 +139,7 @@ public class HellHound extends Enemy {
 				animator.setSpeed(100);
 				width = 60;
 			}
-		} else if (left || right) {
+		} else if ((left || right) && !corner) {
 			if (currentAction != WALKING && !running) {
 				currentAction = WALKING;
 				animator.setFrames(sprites.get(WALKING));
