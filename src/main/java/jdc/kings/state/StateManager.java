@@ -10,9 +10,10 @@ public class StateManager {
 	private int currentState;
 	private boolean showLoader;
 	
-	public static final int STATES = 2;
+	public static final int STATES = 3;
 	public static final int MENU = 0;
-	public static final int LEVELONE = 1;
+	public static final int MAP = 1;
+	public static final int LEVELONE = 2;
 	
 	private StateManager() {
 		gameStates = new GameState[STATES];
@@ -34,6 +35,9 @@ public class StateManager {
 			break;
 		case LEVELONE:
 			gameStates[state] = LevelManager.loadLevelOne();
+			break;
+		case MAP:
+			gameStates[state] = new MapState();
 			break;
 		default:
 			gameStates[state] = new MenuState(this);

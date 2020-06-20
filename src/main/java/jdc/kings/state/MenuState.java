@@ -199,7 +199,7 @@ public class MenuState extends GameState {
 				bgMusic.close();
 				sfx.get("start").play();
 				sfx.get("slash").play();
-				manager.setState(StateManager.LEVELONE);
+				manager.setState(StateManager.MAP);
 				break;
 			case 1:
 				currentOptions = options;

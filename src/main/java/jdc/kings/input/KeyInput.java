@@ -9,6 +9,7 @@ import java.util.List;
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Player;
 import jdc.kings.state.LevelState;
+import jdc.kings.state.MapState;
 import jdc.kings.state.MenuState;
 import jdc.kings.state.StateManager;
 
@@ -79,6 +80,9 @@ public class KeyInput extends KeyAdapter {
 		if (manager.getCurrentState() == StateManager.MENU) {
 			MenuState menu = (MenuState) manager.getState();
 			menu.keyPressed(e);
+		} else if (manager.getCurrentState() == StateManager.MAP) {
+			MapState map = (MapState) manager.getState();
+			map.keyPressed(e);
 		} else if (player.isDead()) {
 			LevelState level = (LevelState) manager.getState();
 			level.getDeathState().keyPressed(e);
@@ -89,7 +93,10 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if (manager.getCurrentState() != StateManager.MENU) {
+		if (manager.getCurrentState() == StateManager.MAP) {
+			MapState map = (MapState) manager.getState();
+			map.keyReleased(e);
+		} else if (manager.getCurrentState() != StateManager.MENU) {
 			inGameKeyReleased(e);
 		}
 	}
