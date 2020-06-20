@@ -93,10 +93,7 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if (manager.getCurrentState() == StateManager.MAP) {
-			MapState map = (MapState) manager.getState();
-			map.keyReleased(e);
-		} else if (manager.getCurrentState() != StateManager.MENU) {
+		if (manager.getCurrentState() != StateManager.MENU) {
 			inGameKeyReleased(e);
 		}
 	}

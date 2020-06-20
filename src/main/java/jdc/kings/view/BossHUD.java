@@ -22,7 +22,7 @@ public class BossHUD {
 		this.bossName = bossName;
 		this.font = new Font("Arial", Font.PLAIN, 17);
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/hud/boss-hud.png"));
+			image = ImageIO.read(getClass().getResourceAsStream("/game/boss-hud.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

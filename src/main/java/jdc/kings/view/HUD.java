@@ -18,7 +18,7 @@ public class HUD {
 	public HUD(Player player) {
 		this.player = player;
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/hud/hud.png"));
+			image = ImageIO.read(getClass().getResourceAsStream("/game/hud.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

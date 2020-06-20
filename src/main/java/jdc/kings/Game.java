@@ -7,6 +7,7 @@ import java.awt.image.BufferStrategy;
 import java.util.Locale;
 
 import jdc.kings.input.KeyInput;
+import jdc.kings.input.MouseInput;
 import jdc.kings.options.Preferences;
 import jdc.kings.options.PreferencesLoader;
 import jdc.kings.state.LoadingState;
@@ -41,6 +42,10 @@ public class Game extends Canvas implements Runnable {
 			KeyInput.getInstance().setKeys(preferences.getKeys());
 		}
 		manager = StateManager.getInstance();
+		
+		instance.addMouseListener(MouseInput.getInstance());
+		instance.addMouseMotionListener(MouseInput.getInstance());
+		instance.addMouseWheelListener(MouseInput.getInstance());
 		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
 	}
