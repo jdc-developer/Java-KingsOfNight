@@ -12,9 +12,11 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import jdc.kings.state.interfaces.KeyState;
+import jdc.kings.state.interfaces.MouseState;
+import jdc.kings.state.objects.MapLevel;
 import jdc.kings.utils.Constants;
 
-public class MapState extends GameState implements KeyState {
+public class MapState extends GameState implements KeyState, MouseState {
 	
 	private BufferedImage image;
 	private BufferedImage cursor;
@@ -146,6 +148,7 @@ public class MapState extends GameState implements KeyState {
 		}
 	}
 	
+	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
@@ -261,6 +264,10 @@ public class MapState extends GameState implements KeyState {
 			mousePressed = false;
 			right = left = up = down = false;
 		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
 	}
 
 }

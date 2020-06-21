@@ -180,7 +180,7 @@ public class SkeletonKnight extends Enemy {
 			}
 		}
 		
-		if (previousAction == SLICING) {
+		if (currentAction != SLICING) {
 			maxSpeed = 0.4f;
 		}
 		
@@ -232,7 +232,7 @@ public class SkeletonKnight extends Enemy {
 					else left = true;
 				}
 			}
-		} else if (left || right) {
+		} else if ((left || right) && !corner) {
 			if (currentAction != WALKING) {
 				previousAction = currentAction;
 				currentAction = WALKING;

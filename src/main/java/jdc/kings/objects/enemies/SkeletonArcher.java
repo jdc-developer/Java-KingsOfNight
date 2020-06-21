@@ -191,7 +191,7 @@ public class SkeletonArcher extends Enemy {
 				animator.setFrames(sprites.get(FIRING));
 				animator.setSpeed(100);
 			}
-		} else if (left || right) {
+		} else if ((left || right) && !corner) {
 			if (currentAction != WALKING) {
 				currentAction = WALKING;
 				animator.setFrames(sprites.get(WALKING));

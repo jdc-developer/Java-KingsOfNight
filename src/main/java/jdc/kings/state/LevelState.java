@@ -4,8 +4,10 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,28 +18,34 @@ import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
+import jdc.kings.state.interfaces.MouseState;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
 import jdc.kings.view.TileMap;
 
-public class LevelState extends GameState implements KeyState {
+public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private StateManager manager;
+	private TileMap tileMap;
 	
+	private LinkedList<Enemy> enemies = new LinkedList<>();
+	private LinkedList<Blood> bloodLosses = new LinkedList<>();
+	
+	private List<BossState> bossStates = new ArrayList<>();
 	private DeathState deathState = new DeathState();
 	private OptionsState optionsState = new OptionsState();
+	
 	private BossState runningBoss;
+	private Runnable deathStateThread;
 	
 	private boolean death;
 	private boolean options;
-	private Runnable deathStateThread;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
 	
 	private Map<String, AudioPlayer> sfx = new HashMap<>();
-	private List<BossState> bossStates = new ArrayList<>();
 
 	public LevelState(TileMap tm, Player player, String background, String music) {
 		this.player = player;
@@ -49,6 +57,7 @@ public class LevelState extends GameState implements KeyState {
 		bgMusic = new AudioPlayer(music);
 		bgMusic.loop();
 		sfx.put("blood-explosion", new AudioPlayer("/sfx/enemies/blood-explosion.mp3"));
+		sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
 	}
 	
 	public void tick() {
@@ -76,8 +85,8 @@ public class LevelState extends GameState implements KeyState {
 					sfx.get("blood-explosion").play();
 					i--;
 				}
-			} else {
-				e.tick();
+			} else if (player.getX() - e.getX() <= 2000 && player.getX() - e.getX() >= -2000) {
+				 e.tick();
 			}
 		}
 		
@@ -139,7 +148,9 @@ public class LevelState extends GameState implements KeyState {
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			e.render(g);
+			if (player.getX() - e.getX() <= 2000 && player.getX() - e.getX() >= -2000) {
+				e.render(g);
+			}
 		}
 		
 		for(int i = 0; i < bloodLosses.size(); i++) {
@@ -169,18 +180,6 @@ public class LevelState extends GameState implements KeyState {
 		}
 	}
 
-	public List<Enemy> getEnemies() {
-		return enemies;
-	}
-	
-	public List<BossState> getBossStates() {
-		return bossStates;
-	}
-
-	public DeathState getDeathState() {
-		return deathState;
-	}
-
 	@Override
 	public void closeMusic() {
 		super.closeMusic();
@@ -191,6 +190,9 @@ public class LevelState extends GameState implements KeyState {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (options) {
+			optionsState.keyPressed(e);
+		}
 		if (player.isDead()) {
 			deathState.keyPressed(e);
 		} else {
@@ -244,6 +246,7 @@ public class LevelState extends GameState implements KeyState {
 			if (options) {
 				options = false;
 			} else {
+				sfx.get("click").play();
 				options = true;
 			}
 		}
@@ -269,6 +272,39 @@ public class LevelState extends GameState implements KeyState {
 				player.setShield(false);
 			}
 		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if (options) {
+			optionsState.mouseMoved(e);
+		}
+	}
+	
+	public List<Enemy> getEnemies() {
+		return enemies;
+	}
+	
+	public List<BossState> getBossStates() {
+		return bossStates;
 	}
 	
 }

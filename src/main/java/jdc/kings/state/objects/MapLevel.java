@@ -1,4 +1,4 @@
-package jdc.kings.state;
+package jdc.kings.state.objects;
 
 public class MapLevel {
 	

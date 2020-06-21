@@ -45,7 +45,6 @@ public class Game extends Canvas implements Runnable {
 		
 		instance.addMouseListener(MouseInput.getInstance());
 		instance.addMouseMotionListener(MouseInput.getInstance());
-		instance.addMouseWheelListener(MouseInput.getInstance());
 		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
 	}

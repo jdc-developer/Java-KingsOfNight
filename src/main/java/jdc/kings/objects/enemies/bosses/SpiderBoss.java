@@ -93,6 +93,11 @@ public class SpiderBoss extends Enemy {
 			}
 		}
 		
+		if ((currentAction == SLICING || currentAction == SLASHING) &&
+				!(jumping || falling)) {
+			velX = 0;
+		}
+		
 		if (stamina < maxStamina) {
 			stamina += 0.04f;
 		}

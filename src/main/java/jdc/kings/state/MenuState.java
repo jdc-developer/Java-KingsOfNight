@@ -68,6 +68,7 @@ public class MenuState extends GameState implements KeyState {
 		String menuItemTwo = BundleUtil.getMessageResourceString("menuItemTwo", locale);
 		String menuItemThree = BundleUtil.getMessageResourceString("menuItemThree", locale);
 		String menuItemFour = BundleUtil.getMessageResourceString("menuItemFour", locale);
+		
 		mainOptions[0] = menuItemOne;
 		mainOptions[1] = menuItemTwo;
 		mainOptions[2] = menuItemThree;
@@ -76,6 +77,7 @@ public class MenuState extends GameState implements KeyState {
 		String languageOne = BundleUtil.getMessageResourceString("languageOne", locale);
 		String languageTwo = BundleUtil.getMessageResourceString("languageTwo", locale);
 		String back = BundleUtil.getMessageResourceString("back", locale);
+		
 		languageOptions[0] = languageOne;
 		languageOptions[1] = languageTwo;
 		languageOptions[2] = back;
@@ -89,6 +91,7 @@ public class MenuState extends GameState implements KeyState {
 		String controlSeven = BundleUtil.getMessageResourceString("controlSeven", locale);
 		String controlEight = BundleUtil.getMessageResourceString("controlEight", locale);
 		String restoreDefault = BundleUtil.getMessageResourceString("restoreDefault", locale);
+		
 		options[0] = controlOne;
 		options[1] = controlTwo;
 		options[2] = controlThree;
@@ -131,17 +134,6 @@ public class MenuState extends GameState implements KeyState {
 		}
 	}
 	
-	public void keyPressed(KeyEvent e) {
-		int key = e.getKeyCode();
-		
-		if (selectedKey < 8) {
-			changeKey(key);
-		} else {
-			menuAction(key);
-		}
-		
-	}
-	
 	private void changeKey(int key) {
 		List<Key> keys = KeyInput.getInstance().getKeys();
 		Key inputKey = keys.get(selectedKey);
@@ -157,6 +149,17 @@ public class MenuState extends GameState implements KeyState {
 		preferences.setKeys(keys);
 		PreferencesLoader.savePreferences(preferences);
 		selectedKey = 100;
+	}
+	
+	public void keyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
+		
+		if (selectedKey < 8) {
+			changeKey(key);
+		} else {
+			menuAction(key);
+		}
+		
 	}
 	
 	private void menuAction(int key) {

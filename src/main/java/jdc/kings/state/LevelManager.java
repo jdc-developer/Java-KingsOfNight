@@ -26,7 +26,7 @@ public abstract class LevelManager {
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(100, 650);
+		player.setPosition(6500, 250);
 		
 		SpiderBoss spiderBoss = new SpiderBoss(tileMap);
 		spiderBoss.setPlayer(player);
@@ -47,11 +47,48 @@ public abstract class LevelManager {
 		skeleton1.setPosition(700, 650);
 		skeleton1.setPlayer(player);
 		
+		SkeletonKnight skeleton2 = new SkeletonKnight(tileMap);
+		skeleton2.setPosition(1500, 650);
+		skeleton2.setPlayer(player);
+		
+		SkeletonKnight skeleton3 = new SkeletonKnight(tileMap);
+		skeleton3.setPosition(1200, 650);
+		skeleton3.setPlayer(player);
+		
 		HellHound hellhound = new HellHound(tileMap);
 		hellhound.setPlayer(player);
 		hellhound.setPosition(5500, 80);
 		
-		currentLevel.getEnemies().addAll(Arrays.asList(hellhound, skeleton, skeleton1));
+		HellHound hellhound2 = new HellHound(tileMap);
+		hellhound2.setPlayer(player);
+		hellhound2.setPosition(5100, 80);
+		
+		SkeletonArcher skeleton4 = new SkeletonArcher(tileMap);
+		skeleton4.setPosition(4900, 80);
+		skeleton4.setPlayer(player);
+		
+		HellHound hellhound3 = new HellHound(tileMap);
+		hellhound3.setPlayer(player);
+		hellhound3.setPosition(2500, 250);
+		
+		SkeletonKnight skeleton5 = new SkeletonKnight(tileMap);
+		skeleton5.setPosition(2800, 250);
+		skeleton5.setPlayer(player);
+		
+		SkeletonKnight skeleton6 = new SkeletonKnight(tileMap);
+		skeleton6.setPosition(6300, 150);
+		skeleton6.setPlayer(player);
+		
+		SkeletonKnight skeleton7 = new SkeletonKnight(tileMap);
+		skeleton7.setPosition(6600, 650);
+		skeleton7.setPlayer(player);
+		
+		SkeletonArcher skeleton8 = new SkeletonArcher(tileMap);
+		skeleton8.setPosition(6900, 200);
+		skeleton8.setPlayer(player);
+		
+		currentLevel.getEnemies().addAll(Arrays.asList(hellhound, hellhound2, hellhound3, skeleton, skeleton1, skeleton2,
+				skeleton3, skeleton4, skeleton5, skeleton6, skeleton7, skeleton8));
 		return currentLevel;
 	}
 
