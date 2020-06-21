@@ -3,29 +3,38 @@ package jdc.kings.state;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
+import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
+import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
 import jdc.kings.view.TileMap;
 
-public class LevelState extends GameState {
+public class LevelState extends GameState implements KeyState {
+	
+	private StateManager manager;
+	
+	private DeathState deathState = new DeathState();
+	private OptionsState optionsState = new OptionsState();
+	private BossState runningBoss;
 	
 	private boolean death;
-	private DeathState deathState = null;
+	private boolean options;
 	private Runnable deathStateThread;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
-	private BossState runningBoss;
 	
 	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	private List<BossState> bossStates = new ArrayList<>();
@@ -34,17 +43,16 @@ public class LevelState extends GameState {
 		this.player = player;
 		this.tileMap = tm;
 		this.background = new Background(background, 0.1f);
+		this.manager = StateManager.getInstance();
 		hud = new HUD(this.player);
-		deathState = new DeathState();
 		
 		bgMusic = new AudioPlayer(music);
 		bgMusic.loop();
 		sfx.put("blood-explosion", new AudioPlayer("/sfx/enemies/blood-explosion.mp3"));
-		KeyInput.getInstance().setPlayer(player);
 	}
 	
 	public void tick() {
-		StateManager.getInstance().showLoader(false);
+		manager.showLoader(false);
 		tileMap.setPosition(
 				Constants.WIDTH / Constants.SCALE - player.getX(),
 				Constants.HEIGHT / Constants.SCALE - player.getY());
@@ -53,6 +61,10 @@ public class LevelState extends GameState {
 		
 		player.checkAttack(enemies);
 		player.tick();
+		
+		if (options) {
+			optionsState.tick();
+		}
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
@@ -151,6 +163,10 @@ public class LevelState extends GameState {
 			    }
 			}
 		}
+		
+		if (options) {
+			optionsState.render(g);
+		}
 	}
 
 	public List<Enemy> getEnemies() {
@@ -164,12 +180,94 @@ public class LevelState extends GameState {
 	public DeathState getDeathState() {
 		return deathState;
 	}
-	
+
 	@Override
 	public void closeMusic() {
 		super.closeMusic();
 		if (runningBoss != null) {
 			runningBoss.closeMusic();
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (player.isDead()) {
+			deathState.keyPressed(e);
+		} else {
+			inGameKeyPressed(e);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (player.isDead()) {
+			deathState.keyReleased(e);
+		} else {
+			inGameKeyReleased(e);
+		}
+	}
+	
+	private void inGameKeyPressed(KeyEvent e) {
+		int keyPressed = e.getKeyCode();
+		Key key = KeyInput.getInstance().findKey(keyPressed);
+		
+		if (key != null && !player.isDead()) {
+			key.setPressed(true);
+			KeyAction action = key.getAction();
+			if (action == KeyAction.RIGHT) {
+				player.setRight(true);
+			}
+			if (action == KeyAction.LEFT) {
+				player.setLeft(true);
+			}
+			if (action == KeyAction.JUMP) {
+				player.setJumping(true);
+			}
+			if (action == KeyAction.STABBING) {
+				player.setStabbing(true);
+			}
+			if (action == KeyAction.CUTTING) {
+				player.setCutting(true);
+			}
+			if (action == KeyAction.SLICING) {
+				player.setSlicing(true);
+			}
+			if (action == KeyAction.ROLLING) {
+				player.setRolling(true);
+			}
+			if (action == KeyAction.SHIELD) {
+				player.setShield(true);
+			}
+		}
+		
+		if (keyPressed == KeyEvent.VK_ESCAPE) {
+			if (options) {
+				options = false;
+			} else {
+				options = true;
+			}
+		}
+	}
+	
+	private void inGameKeyReleased(KeyEvent e) {
+		int keyPressed = e.getKeyCode();
+		Key key = KeyInput.getInstance().findKey(keyPressed);
+		
+		if (key != null) {
+			key.setPressed(false);
+			KeyAction action = key.getAction();
+			if (action == KeyAction.RIGHT) {
+				player.setRight(false);
+			}
+			if (action == KeyAction.LEFT) {
+				player.setLeft(false);
+			}
+			if (action == KeyAction.JUMP) {
+				player.setJumping(false);
+			}
+			if (action == KeyAction.SHIELD) {
+				player.setShield(false);
+			}
 		}
 	}
 	

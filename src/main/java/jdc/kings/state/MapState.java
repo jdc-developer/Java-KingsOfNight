@@ -11,9 +11,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.Constants;
 
-public class MapState extends GameState {
+public class MapState extends GameState implements KeyState {
 	
 	private BufferedImage image;
 	private BufferedImage cursor;
@@ -164,6 +165,9 @@ public class MapState extends GameState {
 			findClosestLevel(3);
 		}
 	}
+	
+	@Override
+	public void keyReleased(KeyEvent e) {}
 	
 	private void findClosestLevel(int direction) {
 		float minDisX = 0;

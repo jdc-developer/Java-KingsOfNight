@@ -350,7 +350,10 @@ public class Player extends GameObject {
 			if (currentAction != JUMPING) {
 				previousAction = currentAction;
 				currentAction = JUMPING;
-				sfx.get("jump").play();
+				
+				if (!flinching) {
+					sfx.get("jump").play();
+				}
 				
 				animator.setFrames(sprites.get(JUMPING));
 				animator.setSpeed(100);

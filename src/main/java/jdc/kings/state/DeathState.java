@@ -11,10 +11,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import jdc.kings.Game;
+import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.BundleUtil;
 
-public class DeathState extends GameState {
+public class DeathState extends GameState implements KeyState {
 	
 	private StateManager manager;
 	private float alpha = 0.0f;
@@ -117,6 +118,9 @@ public class DeathState extends GameState {
 			}
 		}
 	}
+	
+	@Override
+	public void keyReleased(KeyEvent e) {}
 	
 	public void loopMusic() {
 		bgMusic.loop();

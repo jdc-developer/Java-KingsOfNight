@@ -7,17 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import jdc.kings.input.enums.KeyAction;
-import jdc.kings.objects.Player;
-import jdc.kings.state.LevelState;
-import jdc.kings.state.MapState;
-import jdc.kings.state.MenuState;
 import jdc.kings.state.StateManager;
+import jdc.kings.state.interfaces.KeyState;
 
 public class KeyInput extends KeyAdapter {
 	
 	private static KeyInput instance;
 	private StateManager manager;
-	private Player player;	
 	private List<Key> keys = new ArrayList<>();
 	
 	private KeyInput() {
@@ -44,10 +40,6 @@ public class KeyInput extends KeyAdapter {
 		Key key8 = new Key(KeyEvent.VK_SPACE, KeyAction.JUMP, false);
 		
 		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8));
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
 	}
 
 	public Key findKey(int keyPressed) {
@@ -77,81 +69,13 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		if (manager.getCurrentState() == StateManager.MENU) {
-			MenuState menu = (MenuState) manager.getState();
-			menu.keyPressed(e);
-		} else if (manager.getCurrentState() == StateManager.MAP) {
-			MapState map = (MapState) manager.getState();
-			map.keyPressed(e);
-		} else if (player.isDead()) {
-			LevelState level = (LevelState) manager.getState();
-			level.getDeathState().keyPressed(e);
-		}
-		else {
-			inGameKeyPressed(e);
-		}
+		KeyState state = (KeyState) manager.getState();
+		state.keyPressed(e);
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if (manager.getCurrentState() != StateManager.MENU) {
-			inGameKeyReleased(e);
-		}
-	}
-	
-	public void inGameKeyPressed(KeyEvent e) {
-		int keyPressed = e.getKeyCode();
-		Key key = findKey(keyPressed);
-		
-		if (key != null && !player.isDead()) {
-			key.setPressed(true);
-			KeyAction action = key.getAction();
-			if (action == KeyAction.RIGHT) {
-				player.setRight(true);
-			}
-			if (action == KeyAction.LEFT) {
-				player.setLeft(true);
-			}
-			if (action == KeyAction.JUMP) {
-				player.setJumping(true);
-			}
-			if (action == KeyAction.STABBING) {
-				player.setStabbing(true);
-			}
-			if (action == KeyAction.CUTTING) {
-				player.setCutting(true);
-			}
-			if (action == KeyAction.SLICING) {
-				player.setSlicing(true);
-			}
-			if (action == KeyAction.ROLLING) {
-				player.setRolling(true);
-			}
-			if (action == KeyAction.SHIELD) {
-				player.setShield(true);
-			}
-		}
-	}
-	
-	public void inGameKeyReleased(KeyEvent e) {
-		int keyPressed = e.getKeyCode();
-		Key key = findKey(keyPressed);
-		
-		if (key != null) {
-			key.setPressed(false);
-			KeyAction action = key.getAction();
-			if (action == KeyAction.RIGHT) {
-				player.setRight(false);
-			}
-			if (action == KeyAction.LEFT) {
-				player.setLeft(false);
-			}
-			if (action == KeyAction.JUMP) {
-				player.setJumping(false);
-			}
-			if (action == KeyAction.SHIELD) {
-				player.setShield(false);
-			}
-		}
+		KeyState state = (KeyState) manager.getState();
+		state.keyReleased(e);
 	}
 
 }

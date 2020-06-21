@@ -14,12 +14,13 @@ import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.options.Preferences;
 import jdc.kings.options.PreferencesLoader;
+import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.BundleUtil;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 
-public class MenuState extends GameState {
+public class MenuState extends GameState implements KeyState {
 	
 	private StateManager manager;
 	private int currentChoice = 0;
@@ -254,4 +255,7 @@ public class MenuState extends GameState {
 				break;
 		}
 	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
 }
