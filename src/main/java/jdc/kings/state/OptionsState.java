@@ -54,12 +54,12 @@ public class OptionsState extends GameState implements KeyState {
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(image, 30, 300, image.getWidth(), image.getHeight(), null);
+		g.drawImage(image, 10, 280, image.getWidth(), image.getHeight(), null);
 		
 		g.setFont(font);
 		g.setColor(Color.white);
 		for (int i = 0; i < options.length; i ++) {
-			g.drawString(options[i], 90, 330 + (36 * i));
+			g.drawString(options[i], 65, 310 + (36 * i));
 		}
 	}
 

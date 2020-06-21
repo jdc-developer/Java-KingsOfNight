@@ -200,7 +200,7 @@ public class MenuState extends GameState implements KeyState {
 				bgMusic.close();
 				sfx.get("start").play();
 				sfx.get("slash").play();
-				manager.setState(StateManager.MAP);
+				manager.setState(StateManager.LEVELONE);
 				break;
 			case 1:
 				currentOptions = options;
