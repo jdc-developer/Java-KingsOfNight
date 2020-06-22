@@ -166,6 +166,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		}
 		
 		if (player.isDead()) {
+			options = false;
 			if (death) {
 				deathState.render(g);
 				alpha -= 0.003f;

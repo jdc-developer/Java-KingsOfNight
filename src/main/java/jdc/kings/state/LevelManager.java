@@ -6,6 +6,7 @@ import java.util.Locale;
 import jdc.kings.Game;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enemies.HellHound;
+import jdc.kings.objects.enemies.Shadow;
 import jdc.kings.objects.enemies.SkeletonArcher;
 import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
@@ -26,7 +27,7 @@ public abstract class LevelManager {
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(6500, 250);
+		player.setPosition(7500, 250);
 		
 		SpiderBoss spiderBoss = new SpiderBoss(tileMap);
 		spiderBoss.setPlayer(player);
@@ -87,8 +88,12 @@ public abstract class LevelManager {
 		skeleton8.setPosition(6900, 200);
 		skeleton8.setPlayer(player);
 		
+		Shadow shadow = new Shadow(tileMap);
+		shadow.setPosition(8000, 500);
+		shadow.setPlayer(player);
+		
 		currentLevel.getEnemies().addAll(Arrays.asList(hellhound, hellhound2, hellhound3, skeleton, skeleton1, skeleton2,
-				skeleton3, skeleton4, skeleton5, skeleton6, skeleton7, skeleton8));
+				skeleton3, skeleton4, skeleton5, skeleton6, skeleton7, skeleton8, shadow));
 		return currentLevel;
 	}
 
