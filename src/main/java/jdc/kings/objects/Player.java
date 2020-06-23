@@ -42,7 +42,7 @@ public class Player extends GameObject {
 		width = 63;
 		height = 74;
 		cwidth = 45;
-		cheight = 74;
+		cheight = 60;
 		
 		moveSpeed = 2.6f;
 		maxSpeed = 4.6f;

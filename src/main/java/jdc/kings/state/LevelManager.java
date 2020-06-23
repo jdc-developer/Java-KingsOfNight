@@ -1,6 +1,5 @@
 package jdc.kings.state;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import jdc.kings.Game;
@@ -10,6 +9,7 @@ import jdc.kings.objects.enemies.Shadow;
 import jdc.kings.objects.enemies.SkeletonArcher;
 import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
+import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.utils.BundleUtil;
 import jdc.kings.view.TileMap;
 
@@ -27,7 +27,7 @@ public abstract class LevelManager {
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(7500, 250);
+		player.setPosition(100, 650);
 		
 		SpiderBoss spiderBoss = new SpiderBoss(tileMap);
 		spiderBoss.setPlayer(player);
@@ -36,64 +36,31 @@ public abstract class LevelManager {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		String bossOne = BundleUtil.getMessageResourceString("bossOne", locale);
 		BossState bossState = new BossState(spiderBoss, "/music/epic-battle.mp3", bossOne, 18500, 200);
+		
 		currentLevel = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif", "/music/lurker-of-the-depths.mp3");
-		
 		currentLevel.getBossStates().add(bossState);
+		currentLevel.setSpawners(new EnemySpawner[18]);
+		EnemySpawner[] spawners = currentLevel.getSpawners();
 		
-		SkeletonKnight skeleton = new SkeletonKnight(tileMap);
-		skeleton.setPosition(500, 650);
-		skeleton.setPlayer(player);
+		spawners[0] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
+		spawners[1] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
+		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
+		spawners[3] = new EnemySpawner(SkeletonKnight.class, 8200, 500, tileMap);
+		spawners[4] = new EnemySpawner(SkeletonArcher.class, 8300, 500, tileMap);
+		spawners[5] = new EnemySpawner(Shadow.class, 8400, 500, tileMap);
+		spawners[6] = new EnemySpawner(SkeletonArcher.class, 6900, 200, tileMap);
+		spawners[7] = new EnemySpawner(SkeletonKnight.class, 6600, 650, tileMap);
+		spawners[8] = new EnemySpawner(SkeletonKnight.class, 6300, 150, tileMap);
+		spawners[9] = new EnemySpawner(SkeletonKnight.class, 2800, 250, tileMap);
+		spawners[10] = new EnemySpawner(HellHound.class, 2500, 250, tileMap);
+		spawners[11] = new EnemySpawner(SkeletonArcher.class, 4900, 80, tileMap);
+		spawners[12] = new EnemySpawner(HellHound.class, 5100, 80, tileMap);
+		spawners[13] = new EnemySpawner(HellHound.class, 5500, 80, tileMap);
+		spawners[14] = new EnemySpawner(SkeletonKnight.class, 1200, 650, tileMap);
+		spawners[15] = new EnemySpawner(SkeletonKnight.class, 1500, 650, tileMap);
+		spawners[16] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
+		spawners[17] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
 		
-		SkeletonArcher skeleton1 = new SkeletonArcher(tileMap);
-		skeleton1.setPosition(700, 650);
-		skeleton1.setPlayer(player);
-		
-		SkeletonKnight skeleton2 = new SkeletonKnight(tileMap);
-		skeleton2.setPosition(1500, 650);
-		skeleton2.setPlayer(player);
-		
-		SkeletonKnight skeleton3 = new SkeletonKnight(tileMap);
-		skeleton3.setPosition(1200, 650);
-		skeleton3.setPlayer(player);
-		
-		HellHound hellhound = new HellHound(tileMap);
-		hellhound.setPlayer(player);
-		hellhound.setPosition(5500, 80);
-		
-		HellHound hellhound2 = new HellHound(tileMap);
-		hellhound2.setPlayer(player);
-		hellhound2.setPosition(5100, 80);
-		
-		SkeletonArcher skeleton4 = new SkeletonArcher(tileMap);
-		skeleton4.setPosition(4900, 80);
-		skeleton4.setPlayer(player);
-		
-		HellHound hellhound3 = new HellHound(tileMap);
-		hellhound3.setPlayer(player);
-		hellhound3.setPosition(2500, 250);
-		
-		SkeletonKnight skeleton5 = new SkeletonKnight(tileMap);
-		skeleton5.setPosition(2800, 250);
-		skeleton5.setPlayer(player);
-		
-		SkeletonKnight skeleton6 = new SkeletonKnight(tileMap);
-		skeleton6.setPosition(6300, 150);
-		skeleton6.setPlayer(player);
-		
-		SkeletonKnight skeleton7 = new SkeletonKnight(tileMap);
-		skeleton7.setPosition(6600, 650);
-		skeleton7.setPlayer(player);
-		
-		SkeletonArcher skeleton8 = new SkeletonArcher(tileMap);
-		skeleton8.setPosition(6900, 200);
-		skeleton8.setPlayer(player);
-		
-		Shadow shadow = new Shadow(tileMap);
-		shadow.setPosition(8000, 500);
-		shadow.setPlayer(player);
-		
-		currentLevel.getEnemies().addAll(Arrays.asList(hellhound, hellhound2, hellhound3, skeleton, skeleton1, skeleton2,
-				skeleton3, skeleton4, skeleton5, skeleton6, skeleton7, skeleton8, shadow));
 		return currentLevel;
 	}
 

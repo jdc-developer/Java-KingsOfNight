@@ -397,9 +397,6 @@ public abstract class GameObject {
 					null);
 		} else {
 			BufferedImage image = animator.getImage();
-			if (image == null) {
-				System.out.println('a');
-			}
 			g.drawImage(image,
 					(int)(x + xmap - width / 2 + width),
 					(int)(y + ymap - height / 2),

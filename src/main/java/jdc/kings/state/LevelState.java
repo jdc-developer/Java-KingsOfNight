@@ -19,6 +19,7 @@ import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
+import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
@@ -32,13 +33,13 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private LinkedList<Blood> bloodLosses = new LinkedList<>();
+	private EnemySpawner[] spawners;
 	
 	private List<BossState> bossStates = new ArrayList<>();
 	private DeathState deathState = new DeathState();
 	private OptionsState optionsState = new OptionsState();
 	
 	private BossState runningBoss;
-	private Runnable deathStateThread;
 	
 	private boolean death;
 	private boolean options;
@@ -75,6 +76,22 @@ public class LevelState extends GameState implements KeyState, MouseState {
 			optionsState.tick();
 		}
 		
+		for (int i = 0; i < spawners.length; i++) {
+			EnemySpawner spawner = spawners[i];
+			if (player.getX() - spawner.getX() <= 2000 && player.getX() - spawner.getX() >= -2000 && !spawner.hasSpawned()) {
+				Runnable spawnerThread = new Runnable() {
+					
+					@Override
+					public void run() {
+						Enemy enemy = spawner.spawnEnemy();
+						enemy.setPlayer(player);
+						enemies.add(enemy);
+					}
+				};
+				new Thread(spawnerThread).run();
+			}
+		}
+		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if (e.isDead() && e.getHealth() <= 0) {
@@ -85,7 +102,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 					sfx.get("blood-explosion").play();
 					i--;
 				}
-			} else if (player.getX() - e.getX() <= 2000 && player.getX() - e.getX() >= -2000) {
+			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
 				 e.tick();
 			}
 		}
@@ -115,7 +132,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		if (player.isDead()) {
 			if (!death) {
 				death = true;
-				deathStateThread = new Runnable() {
+				Runnable deathStateThread = new Runnable() {
 					
 					@Override
 					public void run() {
@@ -148,7 +165,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			if (player.getX() - e.getX() <= 2000 && player.getX() - e.getX() >= -2000) {
+			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
 				e.render(g);
 			}
 		}
@@ -300,12 +317,16 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		}
 	}
 	
-	public List<Enemy> getEnemies() {
-		return enemies;
-	}
-	
 	public List<BossState> getBossStates() {
 		return bossStates;
+	}
+
+	public EnemySpawner[] getSpawners() {
+		return spawners;
+	}
+
+	public void setSpawners(EnemySpawner[] spawners) {
+		this.spawners = spawners;
 	}
 	
 }

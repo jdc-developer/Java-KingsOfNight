@@ -2,9 +2,13 @@ package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.utils.AudioPlayer;
+import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -15,6 +19,7 @@ public class Shadow extends Enemy {
 	private boolean standing;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
+	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int RISING = 1;
@@ -49,6 +54,10 @@ public class Shadow extends Enemy {
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
+		
+		sfx.put("rising", new AudioPlayer("/sfx/enemies/shadow/rising.mp3"));
+		sfx.put("agony", new AudioPlayer("/sfx/enemies/shadow/standing.mp3"));
+		sfx.put("dying", new AudioPlayer("/sfx/enemies/shadow/dying.mp3"));
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/shadow/idle.png", this, 0, 4, 0, 1, 0, 0, 80, 70, 0, 0));
@@ -109,7 +118,7 @@ public class Shadow extends Enemy {
 			playerPosition();
 			
 			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
-			if (standing || (rising && elapsed > 500)) {
+			if (standing || (rising && elapsed > 200)) {
 				checkPlayerDamage();
 			}
 			super.tick();
@@ -164,9 +173,22 @@ public class Shadow extends Enemy {
 			}
 		}
 		
+		if (player.isDead()) {
+			sfx.get("agony").stop();
+		}
+		
+		int random = Constants.random.nextInt(120);
+		long scream = (System.nanoTime() - holdTimer) / 1000000;
+		if (random == 1 && scream > 2500 && !player.isDead() && standing) {
+			sfx.get("agony").play();
+			holdTimer = System.nanoTime();
+		}
+		
 		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
+				sfx.get("dying").play();
+				sfx.get("agony").stop();
 				animator.setFrames(sprites.get(IDLE));
 				animator.setSpeed(150);
 				holdTimer = System.nanoTime();
@@ -180,6 +202,7 @@ public class Shadow extends Enemy {
 		 } else if (rising) {
 			if (currentAction != RISING) {
 				currentAction = RISING;
+				sfx.get("rising").play();
 				animator.setFrames(sprites.get(RISING));
 				animator.setSpeed(150);
 				holdTimer = System.nanoTime();
