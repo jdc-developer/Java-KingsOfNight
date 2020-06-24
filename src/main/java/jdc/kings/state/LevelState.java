@@ -19,7 +19,6 @@ import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
-import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
@@ -33,7 +32,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private LinkedList<Blood> bloodLosses = new LinkedList<>();
-	private EnemySpawner[] spawners;
 	
 	private List<BossState> bossStates = new ArrayList<>();
 	private DeathState deathState = new DeathState();
@@ -74,22 +72,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		
 		if (options) {
 			optionsState.tick();
-		}
-		
-		for (int i = 0; i < spawners.length; i++) {
-			EnemySpawner spawner = spawners[i];
-			if (player.getX() - spawner.getX() <= 2000 && player.getX() - spawner.getX() >= -2000 && !spawner.hasSpawned()) {
-				Runnable spawnerThread = new Runnable() {
-					
-					@Override
-					public void run() {
-						Enemy enemy = spawner.spawnEnemy();
-						enemy.setPlayer(player);
-						enemies.add(enemy);
-					}
-				};
-				new Thread(spawnerThread).run();
-			}
 		}
 		
 		for (int i = 0; i < enemies.size(); i++) {
@@ -321,12 +303,8 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		return bossStates;
 	}
 
-	public EnemySpawner[] getSpawners() {
-		return spawners;
-	}
-
-	public void setSpawners(EnemySpawner[] spawners) {
-		this.spawners = spawners;
+	public LinkedList<Enemy> getEnemies() {
+		return enemies;
 	}
 	
 }

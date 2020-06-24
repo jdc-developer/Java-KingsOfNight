@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
@@ -30,9 +31,11 @@ public class SkeletonKnight extends Enemy {
 	private static final int SLICING = 3;
 	private static final int DYING = 4;
 
-	public SkeletonKnight(TileMap tm) {
+	public SkeletonKnight(TileMap tm, float x, float y, Player player) {
 		super(tm);
 		facingRight = false;
+		setPosition(x, y);
+		this.player = player;
 		
 		moveSpeed = 0.35f;
 		maxSpeed = 0.4f;
@@ -66,7 +69,7 @@ public class SkeletonKnight extends Enemy {
 		shieldCost = 4;
 		
 		sightXDistance = 650;
-		sightYDistance = 150;
+		sightYDistance = 250;
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0));
@@ -124,7 +127,7 @@ public class SkeletonKnight extends Enemy {
 	
 	@Override
 	public void tick() {
-		if (!dying) {
+		if (!dead) {
 			getNextPosition();
 			playerPosition();
 			checkPlayerDamage();
@@ -193,6 +196,8 @@ public class SkeletonKnight extends Enemy {
 				holdTimer = System.nanoTime();
 				width = 105;
 				height = 130;
+				left = right = false;
+				velX = 0;
 			}
 		} else if (cutting && !slicing) {
 			if (currentAction != CUTTING) {
@@ -269,7 +274,9 @@ public class SkeletonKnight extends Enemy {
 			int r = random.nextInt(2);
 			randomTimer = System.nanoTime();
 			
-			if (playerXDistance <= 100 && playerXDistance > 0) {
+			if (playerXDistance <= 100 && playerXDistance >= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				if (r == 1) {
 					cutting = true;
 					slicing = false;
@@ -277,7 +284,9 @@ public class SkeletonKnight extends Enemy {
 					slicing = true;
 					cutting = false;
 				}
-			} else if (playerXDistance >= -100 && playerXDistance < 0) {
+			} else if (playerXDistance >= -100 && playerXDistance <= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				if (r == 1) {
 					cutting = true;
 					slicing = false;

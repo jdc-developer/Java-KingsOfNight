@@ -51,7 +51,7 @@ public class SpiderBoss extends Enemy {
 		
 		health = maxHealth = 200;
 		bleeds = true;
-		stamina = maxStamina = 150;
+		stamina = maxStamina = 100;
 		damage = 8;
 		
 		shieldDamage = 2;
@@ -102,6 +102,10 @@ public class SpiderBoss extends Enemy {
 			stamina += 0.04f;
 		}
 		
+		if (dying) {
+			dead = true;
+		}
+		
 		if (stamina < 0) {
 			stamina = 0;
 		}
@@ -117,12 +121,10 @@ public class SpiderBoss extends Enemy {
 	}
 	
 	public void tick() {
-		if (!dying) {
-			getNextPosition();
-			playerPosition();
-			checkPlayerDamage();
-			super.tick();
-		}
+		getNextPosition();
+		playerPosition();
+		checkPlayerDamage();
+		super.tick();
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
@@ -136,19 +138,23 @@ public class SpiderBoss extends Enemy {
 				right = false;
 				left = false;
 			}
+			
+			if (slicing || slashing) {
+				animator.setFrames(sprites.get(IDLE));
+				slicing = false;
+				slashing = false;
+			}
 		}
 		
 		if (currentAction == SLASHING) {
 			if (animator.hasPlayedOnce()) {
 				slashing = false;
-				maxSpeed = 5.1f;
 			}
 		}
 		
 		if (currentAction == SLICING) {
 			if (animator.hasPlayedOnce()) {
 				slicing = false;
-				maxSpeed = 5.1f;
 			}
 		}
 		
@@ -159,9 +165,7 @@ public class SpiderBoss extends Enemy {
 			holdTimer = System.nanoTime();
 		}
 		
-		if (jumping) {
-			maxSpeed = 2f;
-		} else if (slashing && !slicing) {
+		if (slashing && !slicing) {
 			if (currentAction != SLASHING) {
 				attack = attacks.get(0);
 				long elapsed = (System.nanoTime() - attack.getTimer()) / 1000000;
@@ -174,7 +178,6 @@ public class SpiderBoss extends Enemy {
 					animator.setFrames(sprites.get(SLASHING));
 					animator.setSpeed(150);
 					
-					maxSpeed = 2f;
 					if (facingRight) right = true;
 					else left = true;
 				}
@@ -192,17 +195,15 @@ public class SpiderBoss extends Enemy {
 					animator.setFrames(sprites.get(SLICING));
 					animator.setSpeed(150);
 					
-					maxSpeed = 2.8f;
 					if (facingRight) right = true;
 					else left = true;
 				}
 			}
-		} else if ((left || right) && (!jumping && !falling)) {
+		} else if (left || right) {
 			if (currentAction != WALKING) {
 				currentAction = WALKING;
 				animator.setFrames(sprites.get(WALKING));
 				animator.setSpeed(80);
-				maxSpeed = 5.1f;
 			}
 		} else {
 			if (currentAction != IDLE) {
@@ -231,7 +232,9 @@ public class SpiderBoss extends Enemy {
 			int r = random.nextInt(2);
 			randomTimer = System.nanoTime();
 			
-			if (playerXDistance <= 120 && playerXDistance > 0) {
+			if (playerXDistance <= 120 && playerXDistance >= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				if (r == 1) {
 					slashing = true;
 					slicing = false;
@@ -239,7 +242,9 @@ public class SpiderBoss extends Enemy {
 					slicing = true;
 					slashing = false;
 				}
-			} else if (playerXDistance >= -120 && playerXDistance < 0) {
+			} else if (playerXDistance >= -120 && playerXDistance <= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				if (r == 1) {
 					slashing = true;
 					slicing = false;

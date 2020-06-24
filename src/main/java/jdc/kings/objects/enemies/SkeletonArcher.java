@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Arrow;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.AudioPlayer;
@@ -28,9 +29,11 @@ public class SkeletonArcher extends Enemy {
 	private static final int FIRING = 2;
 	private static final int DYING = 3;
 
-	public SkeletonArcher(TileMap tm) {
+	public SkeletonArcher(TileMap tm, float x, float y, Player player) {
 		super(tm);
 		facingRight = false;
+		setPosition(x, y);
+		this.player = player;
 		
 		moveSpeed = 1f;
 		maxSpeed = 1.4f;
@@ -60,7 +63,7 @@ public class SkeletonArcher extends Enemy {
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		attacks.add(new Attack(4, 2, 3, 0, 4, 0, 0));
+		attacks.add(new Attack(4, 2, 3, 0, 6, 0, 0));
 		
 		sfx.put("arrow-throw", new AudioPlayer("/sfx/enemies/skeleton-archer/arrow-throw.mp3"));
 		sfx.put("arrow-hit", new AudioPlayer("/sfx/enemies/skeleton-archer/arrow-hit.mp3"));
@@ -121,7 +124,7 @@ public class SkeletonArcher extends Enemy {
 	
 	@Override
 	public void tick() {
-		if (!dying) {
+		if (!dead) {
 			getNextPosition();
 			playerPosition();
 			checkPlayerDamage();
@@ -180,6 +183,8 @@ public class SkeletonArcher extends Enemy {
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
+				left = right = false;
+				velX = 0;
 			}
 		} else if (firing) {
 			attack = attacks.get(0);
@@ -246,13 +251,13 @@ public class SkeletonArcher extends Enemy {
 		super.playerPosition();
 		
 		if (!player.isDead()) {
-			if (playerXDistance <= 500 && playerXDistance > 0 &&
-					(playerYDistance <= 500 && playerYDistance > 0 ||
-					playerYDistance >= -250 && playerYDistance < 0)) {
+			if (playerXDistance <= 500 && playerXDistance >= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				firing = true;
-			} else if (playerXDistance >= -500 && playerXDistance < 0 &&
-					(playerYDistance <= 500 && playerYDistance > 0 ||
-					playerYDistance >= -250 && playerYDistance < 0)) {
+			} else if (playerXDistance >= -500 && playerXDistance <= 0 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				firing = true;
 			}
 		}

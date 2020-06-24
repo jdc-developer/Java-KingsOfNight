@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Player;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
@@ -27,9 +28,11 @@ public class HellHound extends Enemy {
 	private static final int JUMPING = 2;
 	private static final int RUNNING = 3;
 
-	public HellHound(TileMap tm) {
+	public HellHound(TileMap tm, float x, float y, Player player) {
 		super(tm);
 		facingRight = false;
+		setPosition(x, y);
+		this.player = player;
 		
 		moveSpeed = 5f;
 		maxSpeed = 6f;
@@ -37,9 +40,10 @@ public class HellHound extends Enemy {
 		maxFallSpeed = 10.0f;
 		jumpStart = -4.8f;
 		stopJumpSpeed = 1.3f;
-		flinchYSpeed = 2.5f;
 		flinchXSpeed = 1f;
 		maxFlinchXSpeed = 2.5f;
+		flinchYSpeed = 2.5f;
+		maxFlinchYSpeed = 3f;
 		
 		width = 60;
 		height = 60;
@@ -53,7 +57,7 @@ public class HellHound extends Enemy {
 		shieldDamage = 1;
 		shieldCost = 4;
 		sightXDistance = 650;
-		sightYDistance = 350;
+		sightYDistance = 250;
 		
 		sfx.put("running", new AudioPlayer("/sfx/enemies/hellhound/running.mp3"));
 		sfx.put("roar", new AudioPlayer("/sfx/enemies/hellhound/roar.mp3"));
@@ -178,10 +182,15 @@ public class HellHound extends Enemy {
 	
 	public void playerPosition() {
 		super.playerPosition();
-		if (playerXDistance <= sightXDistance  && playerXDistance > 0) {
+		
+		if (playerXDistance <= sightXDistance  && playerXDistance >= 0 &&
+				(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+				playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 			running = true;
 			holdTimer = System.nanoTime();
-		} else if (playerXDistance >= -sightXDistance && playerXDistance < 0) {
+		} else if (playerXDistance >= -sightXDistance && playerXDistance <= 0 &&
+				(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+				playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 			running = true;
 			holdTimer = System.nanoTime();
 		}
@@ -192,10 +201,14 @@ public class HellHound extends Enemy {
 			int r = random.nextInt(4);
 			randomTimer = System.nanoTime();
 			
-			if (playerXDistance <= 100 && playerXDistance > 0 && r == 1) {
+			if (playerXDistance <= 100 && playerXDistance >= 0 && r == 1 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				jumping = true;
 				sfx.get("roar").play();
-			} else if (playerXDistance >= -100 && playerXDistance < 0 && r == 1) {
+			} else if (playerXDistance >= -100 && playerXDistance <= 0 && r == 1 &&
+					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
+					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				jumping = true;
 				sfx.get("roar").play();
 			}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Player;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
@@ -26,9 +27,11 @@ public class Shadow extends Enemy {
 	private static final int STANDING = 2;
 	private static final int DYING = 3;
 
-	public Shadow(TileMap tm) {
+	public Shadow(TileMap tm, float x, float y, Player player) {
 		super(tm);
 		facingRight = false;
+		setPosition(x, y);
+		this.player = player;
 		
 		moveSpeed = 0.4f;
 		maxSpeed = 1f;
@@ -56,7 +59,7 @@ public class Shadow extends Enemy {
 		sightYDistance = 250;
 		
 		sfx.put("rising", new AudioPlayer("/sfx/enemies/shadow/rising.mp3"));
-		sfx.put("agony", new AudioPlayer("/sfx/enemies/shadow/standing.mp3"));
+		sfx.put("agony", new AudioPlayer("/sfx/enemies/shadow/agony.mp3"));
 		sfx.put("dying", new AudioPlayer("/sfx/enemies/shadow/dying.mp3"));
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
@@ -113,12 +116,12 @@ public class Shadow extends Enemy {
 	
 	@Override
 	public void tick() {
-		if (!dying) {
+		if (!dead) {
 			getNextPosition();
 			playerPosition();
 			
 			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
-			if (standing || (rising && elapsed > 200)) {
+			if (standing || (rising && elapsed > 400)) {
 				checkPlayerDamage();
 			}
 			super.tick();
@@ -192,6 +195,8 @@ public class Shadow extends Enemy {
 				animator.setFrames(sprites.get(IDLE));
 				animator.setSpeed(150);
 				holdTimer = System.nanoTime();
+				left = right = false;
+				velX = 0;
 			}
 		} else if (standing) {
 			 if (currentAction != STANDING) {
@@ -230,13 +235,13 @@ public class Shadow extends Enemy {
 		super.playerPosition();
 		
 		if (!player.isDead() && !standing) {
-			if (playerXDistance <= 50 && playerXDistance > 0 &&
-					(playerYDistance <= 50 && playerYDistance > 0 ||
-					playerYDistance >= -50 && playerYDistance < 0)) {
+			if (playerXDistance <= 50 && playerXDistance >= 0 &&
+					(playerYDistance <= 50 && playerYDistance >= 0 ||
+					playerYDistance >= -50 && playerYDistance <= 0)) {
 				rising = true;
-			} else if (playerXDistance >= -50 && playerXDistance < 0 &&
-					(playerYDistance <= 50 && playerYDistance > 0 ||
-					playerYDistance >= -50 && playerYDistance < 0)) {
+			} else if (playerXDistance >= -50 && playerXDistance <= 0 &&
+					(playerYDistance <= 50 && playerYDistance >= 0 ||
+					playerYDistance >= -50 && playerYDistance <= 0)) {
 				rising = true;
 			}
 		}
