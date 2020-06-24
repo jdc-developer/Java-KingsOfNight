@@ -38,6 +38,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	private OptionsState optionsState = new OptionsState();
 	
 	private BossState runningBoss;
+	private EnemyThread enemyThread;
 	
 	private boolean death;
 	private boolean options;
@@ -72,6 +73,10 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		
 		if (options) {
 			optionsState.tick();
+		}
+		
+		if (!enemyThread.isRunning()) {
+			enemyThread.start();
 		}
 		
 		for (int i = 0; i < enemies.size(); i++) {
@@ -112,6 +117,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		}
 		
 		if (player.isDead()) {
+			try {
+				enemyThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (!death) {
 				death = true;
 				Runnable deathStateThread = new Runnable() {
@@ -305,6 +316,14 @@ public class LevelState extends GameState implements KeyState, MouseState {
 
 	public LinkedList<Enemy> getEnemies() {
 		return enemies;
+	}
+
+	public EnemyThread getEnemyThread() {
+		return enemyThread;
+	}
+
+	public void setEnemyThread(EnemyThread enemyThread) {
+		this.enemyThread = enemyThread;
 	}
 	
 }

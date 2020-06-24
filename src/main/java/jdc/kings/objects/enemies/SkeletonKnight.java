@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
@@ -31,11 +30,9 @@ public class SkeletonKnight extends Enemy {
 	private static final int SLICING = 3;
 	private static final int DYING = 4;
 
-	public SkeletonKnight(TileMap tm, float x, float y, Player player) {
+	public SkeletonKnight(TileMap tm) {
 		super(tm);
 		facingRight = false;
-		setPosition(x, y);
-		this.player = player;
 		
 		moveSpeed = 0.35f;
 		maxSpeed = 0.4f;

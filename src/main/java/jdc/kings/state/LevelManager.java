@@ -1,23 +1,22 @@
 package jdc.kings.state;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import jdc.kings.Game;
-import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enemies.HellHound;
 import jdc.kings.objects.enemies.Shadow;
 import jdc.kings.objects.enemies.SkeletonArcher;
 import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
+import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.utils.BundleUtil;
 import jdc.kings.view.TileMap;
 
 public abstract class LevelManager {
 	
 	private static LevelState currentLevel;
+	private static EnemySpawner[] spawners;
 	
 	public static LevelState loadLevelOne() {
 		TileMap tileMap = new TileMap(32, 20);
@@ -29,7 +28,7 @@ public abstract class LevelManager {
 		tileMap.setTween(1);
 		
 		Player player = new Player(tileMap);
-		player.setPosition(17900, 50);
+		player.setPosition(100, 650);
 		
 		SpiderBoss spiderBoss = new SpiderBoss(tileMap);
 		spiderBoss.setPlayer(player);
@@ -41,56 +40,62 @@ public abstract class LevelManager {
 		
 		currentLevel = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif", "/music/lurker-of-the-depths.mp3");
 		currentLevel.getBossStates().add(bossState);
-		List<Enemy> enemies = currentLevel.getEnemies();
+		spawners = new EnemySpawner[41];
 		
-		SkeletonKnight enemy1 = new SkeletonKnight(tileMap, 500, 650, player);
-		SkeletonArcher enemy2 = new SkeletonArcher(tileMap, 700, 650, player);
-		SkeletonKnight enemy3 = new SkeletonKnight(tileMap, 1500, 650, player);
-		SkeletonKnight enemy4 = new SkeletonKnight(tileMap, 1200, 650, player);
-		HellHound enemy5 = new HellHound(tileMap, 5500, 80, player);
-		HellHound enemy6 = new HellHound(tileMap, 5100, 80, player);
-		SkeletonArcher enemy7 = new SkeletonArcher(tileMap, 4900, 80, player);
-		HellHound enemy8 = new HellHound(tileMap, 2500, 250, player);
-		SkeletonKnight enemy9 = new SkeletonKnight(tileMap, 2800, 250, player);
-		SkeletonKnight enemy10 = new SkeletonKnight(tileMap, 6300, 150, player);
-		SkeletonKnight enemy11 = new SkeletonKnight(tileMap, 6600, 650, player);
-		SkeletonArcher enemy12 = new SkeletonArcher(tileMap, 6900, 200, player);
-		Shadow enemy13 = new Shadow(tileMap, 8000, 500, player);
-		SkeletonArcher enemy14 = new SkeletonArcher(tileMap, 8300, 500, player);
-		SkeletonKnight enemy15 = new SkeletonKnight(tileMap, 8200, 500, player);
-		Shadow enemy16 = new Shadow(tileMap, 9500, 450, player);
-		HellHound enemy17 = new HellHound(tileMap, 9300, 450, player);
-		SkeletonArcher enemy18 = new SkeletonArcher(tileMap, 9400, 450, player);
-		SkeletonArcher enemy19 = new SkeletonArcher(tileMap, 4700, 710, player);
-		HellHound enemy20 = new HellHound(tileMap, 4600, 710, player);
-		SkeletonKnight enemy21 = new SkeletonKnight(tileMap, 10800, 50, player);
-		HellHound enemy22 = new HellHound(tileMap, 12500, 710, player);
-		HellHound enemy23 = new HellHound(tileMap, 12700, 710, player);
-		HellHound enemy24 = new HellHound(tileMap, 12900, 710, player);
-		Shadow enemy25 = new Shadow(tileMap, 14000, 650, player);
-		Shadow enemy26 = new Shadow(tileMap, 14200, 650, player);
-		Shadow enemy27 = new Shadow(tileMap, 14400, 650, player);
-		SkeletonKnight enemy28 = new SkeletonKnight(tileMap, 14600, 650, player);
-		SkeletonArcher enemy29 = new SkeletonArcher(tileMap, 14700, 650, player);
-		Shadow enemy30 = new Shadow(tileMap, 14900, 650, player);
-		Shadow enemy31 = new Shadow(tileMap, 15000, 650, player);
-		SkeletonArcher enemy32 = new SkeletonArcher(tileMap, 15200, 650, player);
-		SkeletonKnight enemy33 = new SkeletonKnight(tileMap, 15100, 50, player);
-		SkeletonKnight enemy34 = new SkeletonKnight(tileMap, 15000, 50, player);
-		SkeletonKnight enemy35 = new SkeletonKnight(tileMap, 14700, 50, player);
-		SkeletonKnight enemy36 = new SkeletonKnight(tileMap, 14500, 50, player);
-		Shadow enemy37 = new Shadow(tileMap, 14300, 150, player);
-		SkeletonArcher enemy38 = new SkeletonArcher(tileMap, 14200, 150, player);
-		Shadow enemy39 = new Shadow(tileMap, 14000, 150, player);
-		SkeletonArcher enemy40 = new SkeletonArcher(tileMap, 18500, 50, player);
-		SkeletonArcher enemy41 = new SkeletonArcher(tileMap, 18600, 50, player);
+		spawners[0] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
+		spawners[1] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
+		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
+		spawners[3] = new EnemySpawner(SkeletonKnight.class, 8200, 500, tileMap);
+		spawners[4] = new EnemySpawner(SkeletonArcher.class, 8300, 500, tileMap);
+		spawners[5] = new EnemySpawner(Shadow.class, 8400, 500, tileMap);
+		spawners[6] = new EnemySpawner(SkeletonArcher.class, 6900, 200, tileMap);
+		spawners[7] = new EnemySpawner(SkeletonKnight.class, 6600, 650, tileMap);
+		spawners[8] = new EnemySpawner(SkeletonKnight.class, 6300, 150, tileMap);
+		spawners[9] = new EnemySpawner(SkeletonKnight.class, 2800, 250, tileMap);
+		spawners[10] = new EnemySpawner(HellHound.class, 2500, 250, tileMap);
+		spawners[11] = new EnemySpawner(SkeletonArcher.class, 4900, 80, tileMap);
+		spawners[12] = new EnemySpawner(HellHound.class, 5100, 80, tileMap);
+		spawners[13] = new EnemySpawner(HellHound.class, 5500, 80, tileMap);
+		spawners[14] = new EnemySpawner(SkeletonKnight.class, 1200, 650, tileMap);
+		spawners[15] = new EnemySpawner(SkeletonKnight.class, 1500, 650, tileMap);
+		spawners[16] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
+		spawners[17] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
+		spawners[18] = new EnemySpawner(SkeletonArcher.class, 4700, 710, tileMap);
+		spawners[19] = new EnemySpawner(HellHound.class, 4600, 710, tileMap);
+		spawners[20] = new EnemySpawner(SkeletonKnight.class, 10800, 50, tileMap);
+		spawners[21] = new EnemySpawner(HellHound.class, 12500, 710, tileMap);
+		spawners[22] = new EnemySpawner(HellHound.class, 12700, 710, tileMap);
+		spawners[23] = new EnemySpawner(HellHound.class, 12900, 710, tileMap);
+		spawners[24] = new EnemySpawner(Shadow.class, 14000, 650, tileMap);
+		spawners[25] = new EnemySpawner(Shadow.class, 14200, 650, tileMap);
+		spawners[26] = new EnemySpawner(Shadow.class, 14400, 650, tileMap);
+		spawners[27] = new EnemySpawner(SkeletonKnight.class, 14600, 650, tileMap);
+		spawners[28] = new EnemySpawner(SkeletonArcher.class, 14700, 650, tileMap);
+		spawners[29] = new EnemySpawner(Shadow.class, 14900, 650, tileMap);
+		spawners[30] = new EnemySpawner(Shadow.class, 15000, 650, tileMap);
+		spawners[31] = new EnemySpawner(SkeletonArcher.class, 15200, 50, tileMap);
+		spawners[32] = new EnemySpawner(SkeletonKnight.class, 15100, 50, tileMap);
+		spawners[33] = new EnemySpawner(SkeletonKnight.class, 15000, 50, tileMap);
+		spawners[34] = new EnemySpawner(SkeletonKnight.class, 14700, 50, tileMap);
+		spawners[35] = new EnemySpawner(SkeletonKnight.class, 14500, 50, tileMap);
+		spawners[36] = new EnemySpawner(Shadow.class, 14300, 150, tileMap);
+		spawners[37] = new EnemySpawner(SkeletonArcher.class, 14200, 150, tileMap);
+		spawners[38] = new EnemySpawner(Shadow.class, 14000, 150, tileMap);
+		spawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
+		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);
 		
-		enemies.addAll(Arrays.asList(enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7, enemy8, enemy9, enemy10,
-				enemy11, enemy12, enemy13, enemy14, enemy15, enemy16, enemy17, enemy18, enemy19, enemy20, enemy21, enemy22,
-				enemy23, enemy24, enemy25, enemy26, enemy27, enemy28, enemy29, enemy30, enemy31, enemy32, enemy33, enemy34,
-				enemy35, enemy36, enemy37, enemy38, enemy39, enemy40, enemy41));
-		
+		currentLevel.setEnemyThread(new EnemyThread(player, currentLevel.getEnemies()));
 		return currentLevel;
 	}
+
+	public static LevelState getCurrentLevel() {
+		return currentLevel;
+	}
+
+	public static EnemySpawner[] getSpawners() {
+		return spawners;
+	}
+	
+	
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Arrow;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.AudioPlayer;
@@ -29,11 +28,9 @@ public class SkeletonArcher extends Enemy {
 	private static final int FIRING = 2;
 	private static final int DYING = 3;
 
-	public SkeletonArcher(TileMap tm, float x, float y, Player player) {
+	public SkeletonArcher(TileMap tm) {
 		super(tm);
 		facingRight = false;
-		setPosition(x, y);
-		this.player = player;
 		
 		moveSpeed = 1f;
 		maxSpeed = 1.4f;

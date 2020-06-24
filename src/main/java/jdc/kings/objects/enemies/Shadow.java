@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.Player;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
@@ -27,11 +26,9 @@ public class Shadow extends Enemy {
 	private static final int STANDING = 2;
 	private static final int DYING = 3;
 
-	public Shadow(TileMap tm, float x, float y, Player player) {
+	public Shadow(TileMap tm) {
 		super(tm);
 		facingRight = false;
-		setPosition(x, y);
-		this.player = player;
 		
 		moveSpeed = 0.4f;
 		maxSpeed = 1f;

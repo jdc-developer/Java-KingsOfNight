@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.objects.Player;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
@@ -28,11 +27,9 @@ public class HellHound extends Enemy {
 	private static final int JUMPING = 2;
 	private static final int RUNNING = 3;
 
-	public HellHound(TileMap tm, float x, float y, Player player) {
+	public HellHound(TileMap tm) {
 		super(tm);
 		facingRight = false;
-		setPosition(x, y);
-		this.player = player;
 		
 		moveSpeed = 5f;
 		maxSpeed = 6f;
