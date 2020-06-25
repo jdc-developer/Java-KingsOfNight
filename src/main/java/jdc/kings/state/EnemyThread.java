@@ -1,6 +1,6 @@
 package jdc.kings.state;
 
-import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
@@ -9,21 +9,30 @@ import jdc.kings.state.objects.EnemySpawner;
 public class EnemyThread extends Thread {
 	
 	private Player player;
-	private LinkedList<Enemy> enemies;
+	private BlockingQueue<Enemy> enemyQueue;
 	private EnemySpawner[] spawners;
-	private boolean running = false;
 	
 	@Override
 	public void run() {
-		running = true;
-		while(running) {
+		while(true) {
 			for (int i = 0; i < spawners.length; i++) {
 				EnemySpawner spawner = spawners[i];
 				if (player.getX() - spawner.getX() <= 2000 && player.getX() - spawner.getX() >= -2000 && !spawner.hasSpawned()) {
 					Enemy enemy = spawner.spawnEnemy();
 					enemy.setPlayer(player);
-					enemies.add(enemy);
+					try {
+						enemyQueue.put(enemy);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+			}
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -36,14 +45,6 @@ public class EnemyThread extends Thread {
 		this.player = player;
 	}
 
-	public LinkedList<Enemy> getEnemies() {
-		return enemies;
-	}
-
-	public void setEnemies(LinkedList<Enemy> enemies) {
-		this.enemies = enemies;
-	}
-
 	public EnemySpawner[] getSpawners() {
 		return spawners;
 	}
@@ -52,14 +53,10 @@ public class EnemyThread extends Thread {
 		this.spawners = spawners;
 	}
 
-	public boolean isRunning() {
-		return running;
-	}
-
-	public EnemyThread(Player player, LinkedList<Enemy> enemies) {
+	public EnemyThread(Player player, BlockingQueue<Enemy> enemyQueue) {
 		super();
 		this.player = player;
-		this.enemies = enemies;
+		this.enemyQueue = enemyQueue;
 		this.spawners = LevelManager.getSpawners();
 	}
 

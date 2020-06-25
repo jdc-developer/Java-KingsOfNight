@@ -1,8 +1,13 @@
 package jdc.kings.state;
 
 import java.util.Locale;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jdc.kings.Game;
+import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enemies.HellHound;
 import jdc.kings.objects.enemies.Shadow;
@@ -42,6 +47,7 @@ public abstract class LevelManager {
 		currentLevel.getBossStates().add(bossState);
 		spawners = new EnemySpawner[41];
 		
+		//enemies to the spawned
 		spawners[0] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
 		spawners[1] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
 		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
@@ -84,7 +90,12 @@ public abstract class LevelManager {
 		spawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
 		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);
 		
-		currentLevel.setEnemyThread(new EnemyThread(player, currentLevel.getEnemies()));
+		//the queue and thread, also starting the level
+		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
+		currentLevel.setEnemyQueue(enemyQueue);
+		
+		ExecutorService exec = Executors.newCachedThreadPool();
+        exec.execute(new EnemyThread(player, enemyQueue));
 		return currentLevel;
 	}
 
@@ -96,6 +107,4 @@ public abstract class LevelManager {
 		return spawners;
 	}
 	
-	
-
 }

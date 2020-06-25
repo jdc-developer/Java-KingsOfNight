@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
@@ -32,13 +33,13 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private LinkedList<Blood> bloodLosses = new LinkedList<>();
+	private BlockingQueue<Enemy> enemyQueue;
 	
 	private List<BossState> bossStates = new ArrayList<>();
 	private DeathState deathState = new DeathState();
 	private OptionsState optionsState = new OptionsState();
 	
 	private BossState runningBoss;
-	private EnemyThread enemyThread;
 	
 	private boolean death;
 	private boolean options;
@@ -75,10 +76,17 @@ public class LevelState extends GameState implements KeyState, MouseState {
 			optionsState.tick();
 		}
 		
-		if (!enemyThread.isRunning()) {
-			enemyThread.start();
+		// Get enemies from the queue
+		for(int i = 0; i < enemyQueue.size(); i++) {
+			try {
+				enemies.add(enemyQueue.take());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
+		// update enemies actions
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if (e.isDead() && e.getHealth() <= 0) {
@@ -117,12 +125,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		}
 		
 		if (player.isDead()) {
-			try {
-				enemyThread.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			if (!death) {
 				death = true;
 				Runnable deathStateThread = new Runnable() {
@@ -156,6 +158,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		tileMap.render(g);
 		player.render(g);
 		
+		// render enemies
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
@@ -314,16 +317,16 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		return bossStates;
 	}
 
+	public BlockingQueue<Enemy> getEnemyQueue() {
+		return enemyQueue;
+	}
+
+	public void setEnemyQueue(BlockingQueue<Enemy> enemyQueue) {
+		this.enemyQueue = enemyQueue;
+	}
+
 	public LinkedList<Enemy> getEnemies() {
 		return enemies;
-	}
-
-	public EnemyThread getEnemyThread() {
-		return enemyThread;
-	}
-
-	public void setEnemyThread(EnemyThread enemyThread) {
-		this.enemyThread = enemyThread;
 	}
 	
 }
