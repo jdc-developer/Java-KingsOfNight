@@ -69,13 +69,17 @@ public class KeyInput extends KeyAdapter {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		KeyState state = (KeyState) manager.getState();
-		state.keyPressed(e);
+		if (manager.getCurrentState() != StateManager.CLEAR) {
+			KeyState state = (KeyState) manager.getState();
+			state.keyPressed(e);
+		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		KeyState state = (KeyState) manager.getState();
-		state.keyReleased(e);
+		if (manager.getCurrentState() != StateManager.CLEAR) {
+			KeyState state = (KeyState) manager.getState();
+			state.keyReleased(e);
+		}
 	}
 
 }

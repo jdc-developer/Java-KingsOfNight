@@ -46,6 +46,10 @@ public class Arrow extends GameObject {
 		return remove;
 	}
 	
+	public void shouldRemove(boolean remove) {
+		this.remove = remove;
+	}
+	
 	public void tick() {
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);

@@ -15,6 +15,7 @@ import jdc.kings.view.TileMap;
 public class SkeletonArcher extends Enemy {
 	
 	private boolean firing;
+	private boolean hasFlinched;
 	
 	private List<Arrow> arrows = new ArrayList<>();
 	private List<BufferedImage[]> sprites = new ArrayList<>();
@@ -125,7 +126,12 @@ public class SkeletonArcher extends Enemy {
 		}
 		
 		for (int i = 0; i < arrows.size(); i++) {
-			arrows.get(i).tick();
+			Arrow arrow = arrows.get(i);
+			arrow.tick();
+			
+			if (x - arrow.getX() >= 1590 || x - arrow.getX() <= -1590) {
+				arrow.shouldRemove(true);
+			}
 			if (arrows.get(i).shouldRemove()) {
 				arrows.remove(i);
 				i--;
@@ -134,9 +140,10 @@ public class SkeletonArcher extends Enemy {
 		
 		if (flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 400) {
+			if (elapsed > 200) {
 				flinching = false;
-				flinchTimer = 0;
+				flinchTimer = System.nanoTime();
+				hasFlinched = true;
 			}
 			
 			if (elapsed > 200) {
@@ -150,6 +157,11 @@ public class SkeletonArcher extends Enemy {
 				animator.setFrames(sprites.get(IDLE));
 				firing = false;
 			}
+		}
+		
+		long flinchedElapsed = (System.nanoTime() - flinchTimer) / 1000000;
+		if (hasFlinched && flinchedElapsed > 800) {
+			hasFlinched = false;
 		}
 		
 		if (currentAction == DYING) {
@@ -243,7 +255,7 @@ public class SkeletonArcher extends Enemy {
 	public void playerPosition() {
 		super.playerPosition();
 		
-		if (!player.isDead()) {
+		if (!player.isDead() && !hasFlinched) {
 			if (playerXDistance <= 500 && playerXDistance >= 0 &&
 					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
 					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
