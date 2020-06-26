@@ -10,6 +10,7 @@ import java.util.Locale;
 import jdc.kings.Game;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.BundleUtil;
+import jdc.kings.utils.Constants;
 
 public class DeathState extends GameState implements KeyState {
 	
@@ -48,16 +49,17 @@ public class DeathState extends GameState implements KeyState {
 
 	@Override
 	public void render(Graphics2D g) {
-		Graphics2D g2d = (Graphics2D) g;
-		
-		g2d.setComposite(AlphaComposite.getInstance(
+		g.setComposite(AlphaComposite.getInstance(
 	            AlphaComposite.SRC_OVER, alpha));
 		
-		g2d.setFont(titleFont);
-		g2d.setColor(color);
-		g2d.drawString(deathMessage, 240, 170);
+		g.setColor(Color.black);
+		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
 		
-		g2d.setFont(font);
+		g.setFont(titleFont);
+		g.setColor(color);
+		g.drawString(deathMessage, 240, 170);
+		
+		g.setFont(font);
 		for (int i = 0; i < options.length; i++) {
 			if (i == currentChoice) {
 				g.setColor(Color.white);
