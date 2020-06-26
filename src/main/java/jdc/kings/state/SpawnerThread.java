@@ -6,15 +6,17 @@ import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Player;
 import jdc.kings.state.objects.EnemySpawner;
 
-public class EnemyThread extends Thread {
+public class SpawnerThread extends Thread {
 	
 	private Player player;
 	private BlockingQueue<Enemy> enemyQueue;
 	private EnemySpawner[] spawners;
+	private volatile boolean running;
 	
 	@Override
 	public void run() {
-		while(true) {
+		running = true;
+		while(running) {
 			for (int i = 0; i < spawners.length; i++) {
 				EnemySpawner spawner = spawners[i];
 				if (player.getX() - spawner.getX() <= 2000 && player.getX() - spawner.getX() >= -2000 && !spawner.hasSpawned()) {
@@ -35,25 +37,14 @@ public class EnemyThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		running = false;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public boolean isRunning() {
+		return running;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	public EnemySpawner[] getSpawners() {
-		return spawners;
-	}
-
-	public void setSpawners(EnemySpawner[] spawners) {
-		this.spawners = spawners;
-	}
-
-	public EnemyThread(Player player, BlockingQueue<Enemy> enemyQueue) {
+	public SpawnerThread(Player player, BlockingQueue<Enemy> enemyQueue) {
 		super();
 		this.player = player;
 		this.enemyQueue = enemyQueue;

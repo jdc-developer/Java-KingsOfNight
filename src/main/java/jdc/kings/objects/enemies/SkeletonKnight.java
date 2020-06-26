@@ -2,14 +2,11 @@ package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
@@ -22,7 +19,6 @@ public class SkeletonKnight extends Enemy {
 	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -54,9 +50,9 @@ public class SkeletonKnight extends Enemy {
 		attacks.add(new Attack(8, 2, 4, 66, 4, 250, 500));
 		attacks.add(new Attack(10, 3, 5, 100, 6, 250, 500));
 		
-		sfx.put("axe", new AudioPlayer("/sfx/enemies/skeleton-knight/axe.mp3"));
-		sfx.put("axe-hit", new AudioPlayer("/sfx/enemies/skeleton-knight/axe-hit.mp3"));
-		sfx.put("skull-break", new AudioPlayer("/sfx/enemies/skull-break.mp3"));
+		audioPlayer.loadAudio("skeleton-knight-axe", "/sfx/enemies/skeleton-knight/axe.mp3");
+		audioPlayer.loadAudio("skeleton-knight-axe-hit", "/sfx/enemies/skeleton-knight/axe-hit.mp3");
+		audioPlayer.loadAudio("skull-break", "/sfx/enemies/skull-break.mp3");
 		
 		health = maxHealth = 20;
 		stamina = maxStamina = 15;
@@ -187,7 +183,7 @@ public class SkeletonKnight extends Enemy {
 		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
-				sfx.get("skull-break").play();
+				audioPlayer.play("skull-break");
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
@@ -203,7 +199,7 @@ public class SkeletonKnight extends Enemy {
 				if (stamina >= attack.getCost() && elapsed > 1500) {
 					currentAction = CUTTING;
 					attack.setTimer(System.nanoTime());
-					sfx.get("axe").play();
+					audioPlayer.play("skeleton-knight-axe");
 					
 					stamina -= attack.getCost();
 					animator.setFrames(sprites.get(CUTTING));
@@ -219,7 +215,7 @@ public class SkeletonKnight extends Enemy {
 				if (stamina >= attack.getCost() && elapsed > 1500) {
 					currentAction = SLICING;
 					attack.setTimer(System.nanoTime());
-					sfx.get("axe").play();
+					audioPlayer.play("skeleton-knight-axe");
 					
 					stamina -= attack.getCost();
 					animator.setFrames(sprites.get(SLICING));
@@ -259,7 +255,7 @@ public class SkeletonKnight extends Enemy {
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
 		if ((cutting || slicing) && attack != null) {
-			attack.checkAttack(this, player, false, sfx.get("axe-hit"));
+			attack.checkAttack(this, player, false, "skeleton-knight-axe-hit");
 		}
 	}
 	

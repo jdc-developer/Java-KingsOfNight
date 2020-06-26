@@ -3,14 +3,11 @@ package jdc.kings.objects.enemies;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Arrow;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -21,7 +18,6 @@ public class SkeletonArcher extends Enemy {
 	
 	private List<Arrow> arrows = new ArrayList<>();
 	private List<BufferedImage[]> sprites = new ArrayList<>();
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -62,9 +58,9 @@ public class SkeletonArcher extends Enemy {
 		
 		attacks.add(new Attack(4, 2, 3, 0, 6, 0, 0));
 		
-		sfx.put("arrow-throw", new AudioPlayer("/sfx/enemies/skeleton-archer/arrow-throw.mp3"));
-		sfx.put("arrow-hit", new AudioPlayer("/sfx/enemies/skeleton-archer/arrow-hit.mp3"));
-		sfx.put("skull-break", new AudioPlayer("/sfx/enemies/skull-break.mp3"));
+		audioPlayer.loadAudio("skeleton-archer-arrow-throw", "/sfx/enemies/skeleton-archer/arrow-throw.mp3");
+		audioPlayer.loadAudio("skeleton-archer-arrow-hit", "/sfx/enemies/skeleton-archer/arrow-hit.mp3");
+		audioPlayer.loadAudio("skull-break", "/sfx/enemies/skull-break.mp3");
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 346, 0, 0));
@@ -176,7 +172,7 @@ public class SkeletonArcher extends Enemy {
 		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
-				sfx.get("skull-break").play();
+				audioPlayer.play("skull-break");
 				animator.setFrames(sprites.get(DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
@@ -188,7 +184,7 @@ public class SkeletonArcher extends Enemy {
 			if (currentAction != FIRING && stamina >= attack.getCost()) {
 				stamina -= attack.getCost();
 				currentAction = FIRING;
-				sfx.get("arrow-throw").play();
+				audioPlayer.play("skeleton-archer-arrow-throw");
 				
 				animator.setFrames(sprites.get(FIRING));
 				animator.setSpeed(100);
@@ -229,7 +225,7 @@ public class SkeletonArcher extends Enemy {
 		super.checkPlayerDamage();
 		for (int j = 0; j < arrows.size(); j++) {
 			if (arrows.get(j).intersects(player) && !player.isDead()) {
-				attack.checkAttack(this, player, true, sfx.get("arrow-hit"));
+				attack.checkAttack(this, player, true, "skeleton-archer-arrow-hit");
 				if (player.isRolling()) {
 					
 					long rollElapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;

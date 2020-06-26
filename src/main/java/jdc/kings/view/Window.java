@@ -10,10 +10,11 @@ import jdc.kings.utils.Constants;
 
 public abstract class Window extends Canvas {
 	
-private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+	private static JFrame frame;
 	
 	public static void createWindow() {
-		JFrame frame = new JFrame(Constants.TITLE);
+		frame = new JFrame(Constants.TITLE);
 		
 		Game game = Game.getInstance();
 		Dimension dimension = new Dimension(Constants.WIDTH, Constants.HEIGHT);
@@ -28,6 +29,10 @@ private static final long serialVersionUID = 1L;
 		frame.add(game);
 		frame.setVisible(true);
 		game.start();
+	}
+
+	public static JFrame getFrame() {
+		return frame;
 	}
 
 }

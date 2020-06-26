@@ -38,7 +38,7 @@ public class LoadingState extends GameState {
 		}
 		return instance;
 	}
-	
+
 	@Override
 	public void tick() { }
 

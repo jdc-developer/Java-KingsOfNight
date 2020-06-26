@@ -2,13 +2,10 @@ package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
@@ -20,7 +17,6 @@ public class HellHound extends Enemy {
 	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -56,11 +52,13 @@ public class HellHound extends Enemy {
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		sfx.put("running", new AudioPlayer("/sfx/enemies/hellhound/running.mp3"));
-		sfx.put("roar", new AudioPlayer("/sfx/enemies/hellhound/roar.mp3"));
-		sfx.put("howl", new AudioPlayer("/sfx/enemies/hellhound/howl.mp3"));
-		sfx.put("howl-2", new AudioPlayer("/sfx/enemies/hellhound/howl-2.mp3"));
-		hit = new AudioPlayer("/sfx/enemies/hellhound/bite.mp3");
+		hitClip = "hellhound-bite";
+		audioPlayer.loadAudio(hitClip, "/sfx/enemies/hellhound/bite.mp3");
+		
+		audioPlayer.loadAudio("hellhound-run", "/sfx/enemies/hellhound/running.mp3");
+		audioPlayer.loadAudio("hellhound-roar", "/sfx/enemies/hellhound/roar.mp3");
+		audioPlayer.loadAudio("hellhound-howl", "/sfx/enemies/hellhound/howl.mp3");
+		audioPlayer.loadAudio("hellhound-howl-2", "/sfx/enemies/hellhound/howl-2.mp3");
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
@@ -94,7 +92,7 @@ public class HellHound extends Enemy {
 		
 		if (dying) {
 			dead = true;
-			sfx.get("running").close();
+			audioPlayer.close("hellhound-run");
 		}
 		
 		if (falling) {
@@ -150,7 +148,7 @@ public class HellHound extends Enemy {
 			
 			if (currentAction != RUNNING && running) {
 				currentAction = RUNNING;
-				sfx.get("running").play();
+				audioPlayer.play("hellhound-run");
 				animator.setFrames(sprites.get(RUNNING));
 				animator.setSpeed(100);
 				width = 60;
@@ -170,10 +168,10 @@ public class HellHound extends Enemy {
 		if (running) {
 			long elapsed = (System.nanoTime() - holdTimer) / 1000000;
 			if (elapsed > 3400) {
-				sfx.get("running").play();
+				audioPlayer.play("hellhound-run");
 			}
 		} else {
-			sfx.get("running").close();
+			audioPlayer.close("hellhound-run");
 		}
 	}
 	
@@ -202,12 +200,12 @@ public class HellHound extends Enemy {
 					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
 					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				jumping = true;
-				sfx.get("roar").play();
+				audioPlayer.play("hellhound-roar");
 			} else if (playerXDistance >= -100 && playerXDistance <= 0 && r == 1 &&
 					(playerYDistance <= sightYDistance && playerYDistance >= 0 ||
 					playerYDistance >= -sightYDistance && playerYDistance <= 0)) {
 				jumping = true;
-				sfx.get("roar").play();
+				audioPlayer.play("hellhound-roar");
 			}
 		}
 	}
@@ -220,9 +218,9 @@ public class HellHound extends Enemy {
 			int r = random.nextInt(2);
 			
 			if (r == 1) {
-				sfx.get("howl").play();
+				audioPlayer.play("hellhound-howl");
 			} else {
-				sfx.get("howl-2").play();
+				audioPlayer.play("hellhound-howl-2");
 			}
 		}
 	}

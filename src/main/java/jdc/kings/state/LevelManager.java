@@ -35,19 +35,8 @@ public abstract class LevelManager {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		SpiderBoss spiderBoss = new SpiderBoss(tileMap);
-		spiderBoss.setPlayer(player);
-		spiderBoss.setPosition(19500,  650);
-		
-		Locale locale = Game.getInstance().getPreferences().getLocale();
-		String bossOne = BundleUtil.getMessageResourceString("bossOne", locale);
-		BossState bossState = new BossState(spiderBoss, "/music/epic-battle.mp3", bossOne, 18500, 200);
-		
-		currentLevel = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif", "/music/lurker-of-the-depths.mp3");
-		currentLevel.getBossStates().add(bossState);
 		spawners = new EnemySpawner[41];
 		
-		//enemies to the spawned
 		spawners[0] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
 		spawners[1] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
 		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
@@ -90,12 +79,24 @@ public abstract class LevelManager {
 		spawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
 		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);
 		
-		//the queue and thread, also starting the level
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
-		currentLevel.setEnemyQueue(enemyQueue);
+		SpawnerThread spawnerThread = new SpawnerThread(player, enemyQueue);
 		
 		ExecutorService exec = Executors.newCachedThreadPool();
-        exec.execute(new EnemyThread(player, enemyQueue));
+        exec.execute(spawnerThread);
+        
+        SpiderBoss spiderBoss = new SpiderBoss(tileMap);
+		spiderBoss.setPlayer(player);
+		spiderBoss.setPosition(19500,  650);
+		
+		Locale locale = Game.getInstance().getPreferences().getLocale();
+		String bossOne = BundleUtil.getMessageResourceString("bossOne", locale);
+		BossState bossState = new BossState(spiderBoss, "/music/epic-battle.mp3", bossOne, 18500, 200);
+		
+		currentLevel = new LevelState(tileMap, player, "/backgrounds/level1-bg.gif", "/music/lurker-of-the-depths.mp3");
+		currentLevel.getBossStates().add(bossState);
+		currentLevel.setEnemyQueue(enemyQueue);
+		currentLevel.setSpawnerThread(spawnerThread);
 		return currentLevel;
 	}
 

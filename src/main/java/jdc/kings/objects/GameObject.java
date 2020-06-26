@@ -9,6 +9,7 @@ import java.util.List;
 
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.objects.interactions.Blood;
+import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Animator;
 import jdc.kings.view.Tile;
@@ -90,10 +91,12 @@ public abstract class GameObject {
 	protected long rollTimer;
 	
 	protected int flinchDirection;
+	protected AudioPlayer audioPlayer;
 	
 	public GameObject(TileMap tm) {
 		tileMap = tm;
 		tileSize = tm.getTileSize() + tm.getIncreaseSize();
+		audioPlayer = AudioPlayer.getInstance();
 	}
 	
 	public boolean intersects(GameObject o) {

@@ -10,9 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -20,7 +18,6 @@ import jdc.kings.Game;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
 import jdc.kings.state.objects.Option;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.BundleUtil;
 
 public class OptionsState extends GameState implements KeyState, MouseState {
@@ -31,8 +28,6 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 	private int currentChoice = 0;
 	private Option[] options = new Option[7];
 	private Color selectedBackground = new Color(41, 41, 41);
-	
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	public OptionsState() {
 		try {
@@ -53,8 +48,8 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 			options[5] = new Option(menuOptionSix, 180, 30);
 			options[6] = new Option(menuOptionSeven, 180, 30);
 			
-			sfx.put("switch", new AudioPlayer("/sfx/menu/switch.mp3"));
-			sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
+			audioPlayer.loadAudio("switch", "/sfx/menu/switch.mp3");
+			audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
 			
 			font = new Font("Arial", Font.PLAIN, 20);
 			image = ImageIO.read(getClass().getResourceAsStream("/game/options.jpg"));
@@ -98,7 +93,7 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		if (key == KeyEvent.VK_UP) {
-			sfx.get("switch").play();
+			audioPlayer.play("switch");
 			currentChoice--;
 			if (currentChoice == -1) {
 				currentChoice = options.length - 1;
@@ -106,7 +101,7 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 		}
 		
 		if (key == KeyEvent.VK_DOWN) {
-			sfx.get("switch").play();
+			audioPlayer.play("switch");
 			currentChoice++;
 			if (currentChoice == options.length) {
 				currentChoice = 0;

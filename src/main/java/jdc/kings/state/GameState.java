@@ -11,14 +11,16 @@ public abstract class GameState {
 	
 	protected Background background;
 	protected Player player;
-	protected AudioPlayer bgMusic;
+	protected String bgMusic;
 	protected HUD hud;
+	protected AudioPlayer audioPlayer = AudioPlayer.getInstance();
 	
 	public abstract void tick();
 	public abstract void render(Graphics g);
 	
 	public void closeMusic() {
-		bgMusic.close();
+		audioPlayer.close(bgMusic);
+		audioPlayer.removeClip(bgMusic);
 	}
 
 }

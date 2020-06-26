@@ -2,15 +2,12 @@ package jdc.kings.objects;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -24,7 +21,6 @@ public class Player extends GameObject {
 	private boolean slicing;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -61,14 +57,14 @@ public class Player extends GameObject {
 		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
 		attacks.add(new Attack(15, 5, 4, 106, 6, 250, 400));
 		
-		sfx.put("cutting", new AudioPlayer("/sfx/player/cutting.mp3"));
-		sfx.put("slicing", new AudioPlayer("/sfx/player/slicing.mp3"));
-		sfx.put("roll", new AudioPlayer("/sfx/player/roll.mp3"));
-		sfx.put("air-roll", new AudioPlayer("/sfx/player/air-roll.mp3"));
-		sfx.put("shield", new AudioPlayer("/sfx/player/shield.mp3"));
-		sfx.put("stabbing", new AudioPlayer("/sfx/player/stabbing.mp3"));
-		sfx.put("sword-hit", new AudioPlayer("/sfx/player/sword-hit.mp3"));
-		sfx.put("jump", new AudioPlayer("/sfx/player/jump.mp3"));
+		audioPlayer.loadAudio("player-cut", "/sfx/player/cutting.mp3");
+		audioPlayer.loadAudio("player-slice", "/sfx/player/slicing.mp3");
+		audioPlayer.loadAudio("player-roll", "/sfx/player/roll.mp3");
+		audioPlayer.loadAudio("player-air-roll", "/sfx/player/air-roll.mp3");
+		audioPlayer.loadAudio("player-shield", "/sfx/player/shield.mp3");
+		audioPlayer.loadAudio("player-stab", "/sfx/player/stabbing.mp3");
+		audioPlayer.loadAudio("player-sword-hit", "/sfx/player/sword-hit.mp3");
+		audioPlayer.loadAudio("player-jump", "/sfx/player/jump.mp3");
 		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
@@ -257,7 +253,7 @@ public class Player extends GameObject {
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = STABBING;
-					sfx.get("stabbing").play();
+					audioPlayer.play("player-stab");
 					
 					animator.setFrames(sprites.get(STABBING));
 					animator.setSpeed(85);
@@ -275,7 +271,7 @@ public class Player extends GameObject {
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = CUTTING;
-					sfx.get("cutting").play();
+					audioPlayer.play("player-cut");
 					
 					animator.setFrames(sprites.get(CUTTING));
 					animator.setSpeed(80);
@@ -292,7 +288,7 @@ public class Player extends GameObject {
 				if (stamina >= attack.getCost()) {
 					previousAction = currentAction;
 					currentAction = SLICING;
-					sfx.get("slicing").play();
+					audioPlayer.play("player-slice");
 					
 					animator.setFrames(sprites.get(SLICING));
 					animator.setSpeed(100);
@@ -311,9 +307,9 @@ public class Player extends GameObject {
 					currentAction = ROLLING;
 					
 					if (previousAction == JUMPING || previousAction == FALLING) {
-						sfx.get("air-roll").play();
+						audioPlayer.play("player-air-roll");
 					} else {
-						sfx.get("roll").play();
+						audioPlayer.play("player-roll");
 					}
 					
 					animator.setFrames(sprites.get(ROLLING));
@@ -352,7 +348,7 @@ public class Player extends GameObject {
 				currentAction = JUMPING;
 				
 				if (!flinching) {
-					sfx.get("jump").play();
+					audioPlayer.play("player-jump");
 				}
 				
 				animator.setFrames(sprites.get(JUMPING));
@@ -384,7 +380,7 @@ public class Player extends GameObject {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if ((stabbing || cutting || slicing) && attack != null) {
-				attack.checkAttack(this, e, false, sfx.get("sword-hit"));
+				attack.checkAttack(this, e, false, "player-sword-hit");
 			}
 			
 		}
@@ -393,7 +389,7 @@ public class Player extends GameObject {
 	@Override
 	public void hit(int damage, boolean right, boolean shield) {
 		if (shield) {
-			sfx.get("shield").play();
+			audioPlayer.play("player-shield");
 		}
 		super.hit(damage, right, shield);
 	}

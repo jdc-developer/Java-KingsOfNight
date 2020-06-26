@@ -3,7 +3,6 @@ package jdc.kings.state;
 import java.awt.Graphics;
 
 import jdc.kings.objects.Enemy;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.view.BossHUD;
 
 public class BossState extends GameState {
@@ -16,17 +15,18 @@ public class BossState extends GameState {
 	
 	private float reduceSound = 0;
 	
-	public BossState(Enemy boss, String music, String bossName, float x, float y) {
+	public BossState(Enemy boss, String musicPath, String bossName, float x, float y) {
 		this.boss = boss;
 		this.x = x;
 		this.y = y;
 		this.hud = new BossHUD(boss, bossName);
-		bgMusic = new AudioPlayer(music);
+		bgMusic = "bossMusic";
+		audioPlayer.loadAudio(bgMusic, musicPath);
 	}
 	
 	public void start() {
 		running = true;
-		bgMusic.loop();
+		audioPlayer.loop(bgMusic);
 	}
 	
 	@Override
@@ -34,9 +34,9 @@ public class BossState extends GameState {
 		if (boss.getPlayer().isDead()) {
 			reduceSound += -0.06f;
 			if (reduceSound <= -25) {
-				bgMusic.close();
+				audioPlayer.close(bgMusic);
 			} else {
-				bgMusic.reduceSound(reduceSound);
+				audioPlayer.reduceSound(bgMusic, reduceSound);
 			}
 		}
 	}

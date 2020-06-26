@@ -6,10 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import jdc.kings.input.Key;
@@ -20,7 +18,6 @@ import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
@@ -40,13 +37,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	private OptionsState optionsState = new OptionsState();
 	
 	private BossState runningBoss;
+	private SpawnerThread spawnerThread;
 	
 	private boolean death;
 	private boolean options;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
-	
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 
 	public LevelState(TileMap tm, Player player, String background, String music) {
 		this.player = player;
@@ -55,10 +51,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		this.manager = StateManager.getInstance();
 		hud = new HUD(this.player);
 		
-		bgMusic = new AudioPlayer(music);
-		bgMusic.loop();
-		sfx.put("blood-explosion", new AudioPlayer("/sfx/enemies/blood-explosion.mp3"));
-		sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
+		bgMusic = "level-music";
+		audioPlayer.loadAudio(bgMusic, music);
+		audioPlayer.loop(bgMusic);
+		
+		audioPlayer.loadAudio("blood-explosion", "/sfx/enemies/blood-explosion.mp3");
+		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
 	}
 	
 	public void tick() {
@@ -94,7 +92,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 					bloodLosses.add(
 							new Blood((int)e.getX(), (int)e.getY(), 132, 78, 2, !player.isFacingRight()));
 					enemies.remove(i);
-					sfx.get("blood-explosion").play();
+					audioPlayer.play("blood-explosion");
 					i--;
 				}
 			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
@@ -116,7 +114,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 				bossState.start();
 				runningBoss = bossState;
 				enemies.add(bossState.getBoss());
-				bgMusic.close();
+				audioPlayer.close(bgMusic);
 			}
 		}
 		
@@ -127,6 +125,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		if (player.isDead()) {
 			if (!death) {
 				death = true;
+				try {
+					spawnerThread.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Runnable deathStateThread = new Runnable() {
 					
 					@Override
@@ -138,9 +142,9 @@ public class LevelState extends GameState implements KeyState, MouseState {
 			} else {
 				reduceSound += -0.06f;
 				if (reduceSound <= -25) {
-					bgMusic.close();
+					audioPlayer.close(bgMusic);
 				} else {
-					bgMusic.reduceSound(reduceSound);
+					audioPlayer.reduceSound(bgMusic, reduceSound);
 				}
 				
 				deathState.tick();
@@ -260,7 +264,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 			if (options) {
 				options = false;
 			} else {
-				sfx.get("click").play();
+				audioPlayer.play("click");
 				options = true;
 			}
 		}
@@ -317,16 +321,16 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		return bossStates;
 	}
 
-	public BlockingQueue<Enemy> getEnemyQueue() {
-		return enemyQueue;
-	}
-
 	public void setEnemyQueue(BlockingQueue<Enemy> enemyQueue) {
 		this.enemyQueue = enemyQueue;
 	}
 
-	public LinkedList<Enemy> getEnemies() {
-		return enemies;
+	public SpawnerThread getSpawnerThread() {
+		return spawnerThread;
+	}
+
+	public void setSpawnerThread(SpawnerThread enemyThread) {
+		this.spawnerThread = enemyThread;
 	}
 	
 }

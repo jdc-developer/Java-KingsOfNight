@@ -8,12 +8,14 @@ public class StateManager {
 	
 	private GameState[] gameStates;
 	private int currentState;
+	private int nextState;
 	private boolean showLoader;
 	
-	public static final int STATES = 3;
+	public static final int STATES = 4;
 	public static final int MENU = 0;
 	public static final int MAP = 1;
-	public static final int LEVELONE = 2;
+	public static final int CLEAR = 2;
+	public static final int LEVELONE = 3;
 	
 	private StateManager() {
 		gameStates = new GameState[STATES];
@@ -33,11 +35,14 @@ public class StateManager {
 		case MENU:
 			gameStates[state] = new MenuState(this);
 			break;
-		case LEVELONE:
-			gameStates[state] = LevelManager.loadLevelOne();
-			break;
 		case MAP:
 			gameStates[state] = new MapState();
+			break;
+		case CLEAR:
+			gameStates[state] = new ClearState(nextState);
+			break;
+		case LEVELONE:
+			gameStates[state] = LevelManager.loadLevelOne();
 			break;
 		default:
 			gameStates[state] = new MenuState(this);
@@ -85,6 +90,10 @@ public class StateManager {
 	
 	public boolean showLoader() {
 		return showLoader;
+	}
+
+	public void setNextState(int nextState) {
+		this.nextState = nextState;
 	}
 
 }

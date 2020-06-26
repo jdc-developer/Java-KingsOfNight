@@ -23,8 +23,10 @@ public class Game extends Canvas implements Runnable {
 	private Thread thread;
 	private static Game instance;
 	private static StateManager manager;
-	
 	private static Preferences preferences;
+	
+	private int FPS = 60;
+	private long targetTime = 1000 / FPS;
 	
 	private Game() {};
 	
@@ -57,10 +59,15 @@ public class Game extends Canvas implements Runnable {
         double delta = 0;
         long timer = System.currentTimeMillis();
         int frames = 0;
+        
+        long start;
+		long elapsed;
+		long wait;
+		
         while(running) {
-           long now = System.nanoTime();
-           delta += (now - lastTime) / ns;
-           lastTime = now;
+           start = System.nanoTime();
+           delta += (start - lastTime) / ns;
+           lastTime = start;
            while(delta >=1) {
                tick();
                delta--;
@@ -74,6 +81,17 @@ public class Game extends Canvas implements Runnable {
                System.out.println("FPS: "+ frames);
                frames = 0;
            }
+           
+           elapsed = System.nanoTime() - start;
+			
+           wait= targetTime - elapsed / 1000000;
+			
+			if (wait < 0) wait = 5;
+			try {
+				Thread.sleep(wait);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
         stop();
 	}

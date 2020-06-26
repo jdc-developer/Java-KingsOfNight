@@ -2,14 +2,11 @@ package jdc.kings.objects.enemies.bosses;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
 import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
@@ -22,7 +19,6 @@ public class SpiderBoss extends Enemy {
 	private long randomTimer;
 	
 	private List<BufferedImage[]> sprites = new ArrayList<>();
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -63,10 +59,10 @@ public class SpiderBoss extends Enemy {
 		attacks.add(new Attack(12, 3, 5, 100, 10, 100, 300));
 		attacks.add(new Attack(15, 5, 8, 100, 15, 100, 300));
 		
-		sfx.put("tearing", new AudioPlayer("/sfx/enemies/bosses/spider/tearing.mp3"));
-		sfx.put("whoosh", new AudioPlayer("/sfx/enemies/bosses/spider/whoosh.mp3"));
-		sfx.put("scream", new AudioPlayer("/sfx/enemies/bosses/spider/scream.mp3"));
-		sfx.put("short-scream", new AudioPlayer("/sfx/enemies/bosses/spider/short-scream.mp3"));
+		audioPlayer.loadAudio("spider-boss-tear", "/sfx/enemies/bosses/spider/tearing.mp3");
+		audioPlayer.loadAudio("spider-boss-whoosh", "/sfx/enemies/bosses/spider/whoosh.mp3");
+		audioPlayer.loadAudio("spider-boss-scream", "/sfx/enemies/bosses/spider/scream.mp3");
+		audioPlayer.loadAudio("spider-boss-short-scream", "/sfx/enemies/bosses/spider/short-scream.mp3");
 		
 		SpriteLoader loader = SpriteLoader.getInstance();
 		sprites.add(loader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 2, 3, 4, 334, 0, 83, 73, 0, 0));
@@ -161,7 +157,7 @@ public class SpiderBoss extends Enemy {
 		int random = Constants.random.nextInt(120);
 		long scream = (System.nanoTime() - holdTimer) / 1000000;
 		if (random == 1 && scream > 2500 && !player.isDead()) {
-			sfx.get("short-scream").play();
+			audioPlayer.play("spider-boss-short-scream");
 			holdTimer = System.nanoTime();
 		}
 		
@@ -172,7 +168,7 @@ public class SpiderBoss extends Enemy {
 				if (stamina >= attack.getCost() && elapsed > 1500) {
 					currentAction = SLASHING;
 					attack.setTimer(System.nanoTime());
-					sfx.get("whoosh").play();;
+					audioPlayer.play("spider-boss-whoosh");
 					
 					stamina -= attack.getCost();
 					animator.setFrames(sprites.get(SLASHING));
@@ -189,7 +185,7 @@ public class SpiderBoss extends Enemy {
 				if (stamina >= attack.getCost() && elapsed > 1500) {
 					currentAction = SLICING;
 					attack.setTimer(System.nanoTime());
-					sfx.get("whoosh").play();;
+					audioPlayer.play("spider-boss-whoosh");
 					
 					stamina -= attack.getCost();
 					animator.setFrames(sprites.get(SLICING));
@@ -220,7 +216,7 @@ public class SpiderBoss extends Enemy {
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
 		if ((slashing || slicing) && attack != null) {
-			attack.checkAttack(this, player, false, sfx.get("tearing"));
+			attack.checkAttack(this, player, false, "spider-boss-tear");
 		}
 	}
 	

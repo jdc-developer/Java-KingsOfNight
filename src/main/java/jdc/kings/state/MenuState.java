@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import jdc.kings.Game;
 import jdc.kings.input.Key;
@@ -15,7 +13,6 @@ import jdc.kings.input.KeyInput;
 import jdc.kings.options.Preferences;
 import jdc.kings.options.PreferencesLoader;
 import jdc.kings.state.interfaces.KeyState;
-import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.BundleUtil;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
@@ -34,8 +31,6 @@ public class MenuState extends GameState implements KeyState {
 	
 	private Font titleFont;
 	private Font font;
-	
-	private Map<String, AudioPlayer> sfx = new HashMap<>();
 
 	public MenuState(StateManager manager) {
 		this.manager = manager;
@@ -46,13 +41,15 @@ public class MenuState extends GameState implements KeyState {
 			font = new Font("Arial", Font.PLAIN, 25);
 			
 			currentOptions = mainOptions;
-			bgMusic = new AudioPlayer("/music/blood-ritual.mp3");
-			bgMusic.loop();
+			bgMusic = "menu-music";
+			audioPlayer.loadAudio(bgMusic, "/music/blood-ritual.mp3");
+			audioPlayer.loop(bgMusic);
 			
-			sfx.put("switch", new AudioPlayer("/sfx/menu/switch.mp3"));
-			sfx.put("click", new AudioPlayer("/sfx/menu/click.mp3"));
-			sfx.put("start", new AudioPlayer("/sfx/menu/start.mp3"));
-			sfx.put("slash", new AudioPlayer("/sfx/menu/slash.mp3"));
+			audioPlayer.loadAudio("switch", "/sfx/menu/switch.mp3");
+			audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
+			audioPlayer.loadAudio("start", "/sfx/menu/start.mp3");
+			audioPlayer.loadAudio("slash", "/sfx/menu/slash.mp3");
+			
 			manager.showLoader(false);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -179,7 +176,7 @@ public class MenuState extends GameState implements KeyState {
 		}
 		
 		if (key == KeyEvent.VK_UP) {
-			sfx.get("switch").play();
+			audioPlayer.play("switch");
 			currentChoice--;
 			if (currentChoice == -1) {
 				currentChoice = currentOptions.length - 1;
@@ -187,7 +184,7 @@ public class MenuState extends GameState implements KeyState {
 		}
 		
 		if (key == KeyEvent.VK_DOWN) {
-			sfx.get("switch").play();
+			audioPlayer.play("switch");
 			currentChoice++;
 			if (currentChoice == currentOptions.length) {
 				currentChoice = 0;
@@ -200,22 +197,22 @@ public class MenuState extends GameState implements KeyState {
 		switch (currentChoice) {
 			case 0:
 				manager.showLoader(true);
-				bgMusic.close();
-				sfx.get("start").play();
-				sfx.get("slash").play();
+				audioPlayer.close(bgMusic);
+				audioPlayer.play("start");
+				audioPlayer.play("slash");
 				manager.setState(StateManager.LEVELONE);
 				break;
 			case 1:
 				currentOptions = options;
 				currentState = 1;
 				currentChoice = 0;
-				sfx.get("click").play();
+				audioPlayer.play("click");
 				break;
 			case 2:
 				currentOptions = languageOptions;
 				currentState = 2;
 				currentChoice = 0;
-				sfx.get("click").play();
+				audioPlayer.play("click");
 				break;
 			case 3:
 				System.exit(0);
@@ -224,7 +221,7 @@ public class MenuState extends GameState implements KeyState {
 	}
 	
 	private void optionSelect() {
-		sfx.get("click").play();
+		audioPlayer.play("click");
 		selectedKey = currentChoice;
 		switch (currentChoice) {
 			case 8:
@@ -243,7 +240,7 @@ public class MenuState extends GameState implements KeyState {
 	}
 	
 	private void languageSelect() {
-		sfx.get("click").play();
+		audioPlayer.play("click");
 		switch (currentChoice) {
 			case 0:
 				Game.getInstance().setLocale("pt", "BR");
