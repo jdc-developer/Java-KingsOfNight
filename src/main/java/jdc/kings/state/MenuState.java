@@ -2,7 +2,7 @@ package jdc.kings.state;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +102,7 @@ public class MenuState extends GameState implements KeyState {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		background.render(g);
 		
 		g.setColor(Color.white);

@@ -1,6 +1,6 @@
 package jdc.kings.objects.enemies;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -210,7 +210,7 @@ public class SkeletonArcher extends Enemy {
 	}
 	
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		for (int i = 0; i < arrows.size(); i++) {
 			arrows.get(i).render(g);
 			if (dead) {

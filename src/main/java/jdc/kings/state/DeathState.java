@@ -3,7 +3,6 @@ package jdc.kings.state;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
@@ -48,7 +47,7 @@ public class DeathState extends GameState implements KeyState {
 	public void tick() {}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.setComposite(AlphaComposite.getInstance(

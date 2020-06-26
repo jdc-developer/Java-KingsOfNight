@@ -1,10 +1,11 @@
 package jdc.kings;
 
-import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferStrategy;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.Locale;
+
+import javax.swing.JPanel;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.MouseInput;
@@ -15,20 +16,26 @@ import jdc.kings.state.StateManager;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Window;
 
-public class Game extends Canvas implements Runnable {
+public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private boolean running = false;
+	private boolean running;
 	private Thread thread;
 	private static Game instance;
 	private static StateManager manager;
 	private static Preferences preferences;
 	
+	private BufferedImage image;
+	private Graphics2D g;
 	private int FPS = 60;
 	private long targetTime = 1000 / FPS;
 	
-	private Game() {};
+	private Game() {
+		super();
+		setFocusable(true);
+		requestFocus();
+	}
 	
 	public static Game getInstance() {
 		return instance;
@@ -50,41 +57,40 @@ public class Game extends Canvas implements Runnable {
 		instance.addKeyListener(KeyInput.getInstance());
 		Window.createWindow();
 	}
+	
+	@Override
+	public void addNotify() {
+		super.addNotify();
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.start();
+		}
+	}
+	
+	public void init() {
+		image = new BufferedImage(Constants.WIDTH, Constants.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		g = (Graphics2D) image.getGraphics();
+		running = true;
+	}
 
+	@Override
 	public void run() {
-		this.requestFocus();
-		long lastTime = System.nanoTime();
-        double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
-        double delta = 0;
-        long timer = System.currentTimeMillis();
-        int frames = 0;
-        
-        long start;
+		init();
+		
+		long start;
 		long elapsed;
 		long wait;
 		
-        while(running) {
-           start = System.nanoTime();
-           delta += (start - lastTime) / ns;
-           lastTime = start;
-           while(delta >=1) {
-               tick();
-               delta--;
-           }
-           if(running)
-               render();
-           frames++;
-            
-           if(System.currentTimeMillis() - timer > 1000) {
-               timer += 1000;
-               System.out.println("FPS: "+ frames);
-               frames = 0;
-           }
-           
-           elapsed = System.nanoTime() - start;
+		while(running) {
+			start = System.nanoTime();
 			
-           wait= targetTime - elapsed / 1000000;
+			update();
+			draw();
+			drawToScreen();
+			
+			elapsed = System.nanoTime() - start;
+			
+			wait = targetTime - elapsed / 1000000;
 			
 			if (wait < 0) wait = 5;
 			try {
@@ -92,46 +98,24 @@ public class Game extends Canvas implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-        }
-        stop();
+		}
 	}
 	
-	private void render() {
-		BufferStrategy bs = this.getBufferStrategy();
-		if (bs == null) {
-			this.createBufferStrategy(3);
-			return;
-		}
+	private void drawToScreen() {
+		Graphics g2 = getGraphics();
+		g2.drawImage(image, 0, 0, Constants.WIDTH, Constants.HEIGHT, null);
+		g2.dispose();
 		
-		Graphics g = bs.getDrawGraphics();
-		g.setColor(Color.black);
-		g.fillRect(0, 0, Constants.WIDTH, Constants.HEIGHT);
-		
-		manager.render(g);
-		if (manager.showLoader()) {
-			LoadingState.getInstance().render(g);
-		}
-		
-		g.dispose();
-		bs.show();
 	}
 
-	private void tick() {
+	private void update() {
 		manager.tick();
 	}
 	
-	public synchronized void start() {
-		thread = new Thread(this);
-		thread.start();
-		running = true;
-	}
-
-	private void stop() {
-		try {
-			thread.join();
-			running = false;
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void draw() {
+		manager.render(g);
+		if (manager.showLoader()) {
+			LoadingState.getInstance().render(g);
 		}
 	}
 

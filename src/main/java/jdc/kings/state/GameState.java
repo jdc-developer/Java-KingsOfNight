@@ -1,6 +1,6 @@
 package jdc.kings.state;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import jdc.kings.objects.Player;
 import jdc.kings.utils.AudioPlayer;
@@ -16,7 +16,7 @@ public abstract class GameState {
 	protected AudioPlayer audioPlayer = AudioPlayer.getInstance();
 	
 	public abstract void tick();
-	public abstract void render(Graphics g);
+	public abstract void render(Graphics2D g);
 	
 	public void closeMusic() {
 		audioPlayer.close(bgMusic);

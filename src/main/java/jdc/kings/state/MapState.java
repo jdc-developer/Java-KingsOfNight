@@ -1,6 +1,6 @@
 package jdc.kings.state;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -133,7 +133,7 @@ public class MapState extends GameState implements KeyState, MouseState {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		g.drawImage(image, (int)x, (int)y, image.getWidth(), image.getHeight(), null);
 		
 		for (int i = 0;i < levels.size(); i++) {

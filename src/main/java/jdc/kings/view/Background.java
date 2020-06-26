@@ -1,6 +1,6 @@
 package jdc.kings.view;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
@@ -44,7 +44,7 @@ public class Background {
 		y += velY;
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		g.drawImage(image, (int)x, (int)y, Constants.WIDTH,
 				Constants.HEIGHT, null);
 		

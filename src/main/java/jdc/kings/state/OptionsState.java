@@ -3,7 +3,6 @@ package jdc.kings.state;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -65,7 +64,7 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.drawImage(image, 10, 290, image.getWidth(), image.getHeight(), null);
 		

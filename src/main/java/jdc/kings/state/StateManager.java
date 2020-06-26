@@ -1,6 +1,6 @@
 package jdc.kings.state;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class StateManager {
 	
@@ -76,7 +76,7 @@ public class StateManager {
 		}
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		try {
 			gameStates[currentState].render(g);
 		} catch (Exception e) {
