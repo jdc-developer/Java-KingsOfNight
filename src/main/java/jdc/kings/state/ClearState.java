@@ -2,6 +2,8 @@ package jdc.kings.state;
 
 import java.awt.Graphics2D;
 
+import jdc.kings.utils.SpriteLoader;
+
 public class ClearState extends GameState {
 	
 	private StateManager manager;
@@ -23,6 +25,7 @@ public class ClearState extends GameState {
 				
 				@Override
 				public void run() {
+					SpriteLoader.getInstance().clear();
 					audioPlayer.clear();
 					clear = true;
 				}

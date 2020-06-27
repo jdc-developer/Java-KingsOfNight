@@ -87,6 +87,10 @@ public class SpriteLoader {
 	    g2d.dispose();
 
 	    return dimg;
-	} 
+	}
+	
+	public void clear() {
+		spritesArray.clear();
+	}
 
 }

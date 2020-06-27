@@ -79,6 +79,8 @@ public abstract class GameObject {
 	protected float stamina;
 	protected float maxHealth;
 	protected float maxStamina;
+	protected float damage;
+	protected float healthBeforeDamage;
 	
 	protected boolean rolling;
 	protected boolean shield;
@@ -86,6 +88,7 @@ public abstract class GameObject {
 	protected boolean dying;
 	protected boolean flinching;
 	protected boolean bleeds;
+	protected boolean damaged;
 	
 	protected long flinchTimer;
 	protected long holdTimer;
@@ -389,6 +392,14 @@ public abstract class GameObject {
 			}
 		}
 		
+		if (damaged) {
+			health -= 0.5f;
+			if (health <= healthBeforeDamage - damage) {
+				damaged = false;
+				health = healthBeforeDamage - damage;
+			}
+		}
+		
 		if (y >= 850) {
 			dead = true;
 		}
@@ -422,8 +433,11 @@ public abstract class GameObject {
 	
 	public void hit(float damage, boolean right, boolean shield) {
 		if (dead || flinching || shielding) return;
-		health -= damage;
-		if (health < 0) health = 0;
+		this.damage = damage;
+		healthBeforeDamage = health;
+		damaged = true;
+		
+		if (health - damage <= 0) health = 0;
 		if (health == 0) dying = true;
 		
 		if (!shield && !dead && !dying) {

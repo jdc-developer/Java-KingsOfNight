@@ -87,7 +87,7 @@ public class Enemy extends GameObject {
 			}
 		}
 		
-		if (((left && !bottomLeft) || (right && !bottomRight)) && (!jumping && !falling)) {
+		if (((left && !bottomLeft) || (right && !bottomRight)) && (!jumping && !falling && !flinching)) {
 			velX = 0;
 			corner = true;
 		} else {

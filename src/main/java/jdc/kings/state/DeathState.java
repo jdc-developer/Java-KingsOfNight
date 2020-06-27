@@ -94,8 +94,7 @@ public class DeathState extends GameState implements KeyState {
 					manager.setState(manager.getCurrentState());
 					break;
 				case 1:
-					manager.setNextState(StateManager.MENU);
-					manager.setState(StateManager.CLEAR);
+					LevelManager.getCurrentLevel().destroy();
 					break;
 			}
 		}
