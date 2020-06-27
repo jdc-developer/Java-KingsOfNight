@@ -27,7 +27,7 @@ public abstract class LevelManager {
 		TileMap tileMap = new TileMap(32, 20);
 		int[] normal = {7, 37, 31, 25, 1};
 		
-		tileMap.loadTiles("/tilesets/dawn-of-the-gods-1.png", normal);
+		tileMap.loadTiles("/tilesets/dawn-of-the-gods.png", normal);
 		tileMap.loadMap("/maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
