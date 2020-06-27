@@ -14,8 +14,8 @@ public class HUD {
 	private BufferedImage healthBar;
 	private BufferedImage staminaBar;
 	
-	private static final float maxBarWidth = 150;
-	private static final float barWidthBasis = maxBarWidth / 100;
+	private static final float MAXBARWIDTH = 150;
+	private static final float BARWIDTHBASIS = MAXBARWIDTH / 100;
 	private static float barImageWidth;
 	private static float barImageWidthBasis;
 	
@@ -48,10 +48,10 @@ public class HUD {
 		float staminaTotal = player.getStamina() / staminaBasis;
 		
 		float healthImageWidth = healthTotal * barImageWidthBasis;
-		float healthWidth = healthTotal * barWidthBasis;
+		float healthWidth = healthTotal * BARWIDTHBASIS;
 
 		float staminaImageWidth = staminaTotal * barImageWidthBasis;
-		float staminaWidth = staminaTotal * barWidthBasis;
+		float staminaWidth = staminaTotal * BARWIDTHBASIS;
 		
 		BufferedImage healthToDraw = new BufferedImage((int)barImageWidth, healthBar.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		BufferedImage staminaToDraw = new BufferedImage((int)barImageWidth, staminaBar.getHeight(), BufferedImage.TYPE_INT_ARGB);

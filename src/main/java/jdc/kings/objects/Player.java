@@ -18,6 +18,8 @@ public class Player extends GameObject {
 	private boolean cutting;
 	private boolean slicing;
 	
+	private Inventory inventory;
+	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
@@ -48,6 +50,8 @@ public class Player extends GameObject {
 		maxFlinchXSpeed = 4f;
 		flinchYSpeed = 5.5f;
 		maxFlinchYSpeed = 5.8f;
+		
+		inventory = new Inventory();
 		
 		attacks.add(new Attack(13.5f, 4, 4.5f, 80.5f, 3, 250, 400));
 		attacks.add(new Attack(8.2f, 2.8f, 3, 105.2f, 2.5f, 50, 250));
@@ -424,6 +428,10 @@ public class Player extends GameObject {
 	
 	public float getStamina() {
 		return stamina;
+	}
+
+	public Inventory getInventory() {
+		return inventory;
 	}
 
 }

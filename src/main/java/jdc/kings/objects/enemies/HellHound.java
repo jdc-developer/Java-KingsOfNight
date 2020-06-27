@@ -191,7 +191,7 @@ public class HellHound extends Enemy {
 		
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
 		if (elapsed > 150) {
-			Random random = Constants.random;
+			Random random = Constants.RANDOM;
 			int r = random.nextInt(4);
 			randomTimer = System.nanoTime();
 			
@@ -213,7 +213,7 @@ public class HellHound extends Enemy {
 	public void hit(float damage, boolean right, boolean shield) {
 		super.hit(damage, right, shield);
 		if (!dead && !dying) {
-			Random random = Constants.random;
+			Random random = Constants.RANDOM;
 			int r = random.nextInt(2);
 			
 			if (r == 1) {

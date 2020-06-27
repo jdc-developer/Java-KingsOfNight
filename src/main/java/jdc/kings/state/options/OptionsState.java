@@ -193,6 +193,11 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 				subState = null;
 			}
 		}
+		
+		if (subState != null) {
+			MouseState mouseState = (MouseState) subState;
+			mouseState.mousePressed(e);
+		}
 	}
 
 	@Override

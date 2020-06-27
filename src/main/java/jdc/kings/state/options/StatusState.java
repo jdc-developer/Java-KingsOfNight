@@ -26,7 +26,7 @@ public class StatusState extends GameState implements KeyState {
 	private Font font;
 	private String title;
 	
-	private String[] statusInfo = new String[5];
+	private String[] statusInfo = new String[6];
 	
 	public static StatusState getInstance() {
 		if (instance == null) {
@@ -58,6 +58,7 @@ public class StatusState extends GameState implements KeyState {
 		statusInfo[2] = BundleUtil.getMessageResourceString("StatusInfoThree", locale);
 		statusInfo[3] = BundleUtil.getMessageResourceString("StatusInfoFour", locale);
 		statusInfo[4] = BundleUtil.getMessageResourceString("StatusInfoFive", locale);
+		statusInfo[5] = BundleUtil.getMessageResourceString("StatusInfoSix", locale);
 	}
 
 	@Override
@@ -76,17 +77,22 @@ public class StatusState extends GameState implements KeyState {
 			
 			g.setFont(font);
 			switch (i) {
-			case 0:
-				Integer health = (int) player.getHealth();
-				Integer maxHealth = (int) player.getMaxHealth();
-				g.drawString(health + " / " + maxHealth, 465, 250 + (i * 20));
-				break;
-			case 1:
-				Integer stamina = (int) player.getStamina();
-				Integer maxStamina = (int) player.getMaxStamina();
-				g.drawString(stamina + " / " + maxStamina, 475, 250 + (i * 20));
-				break;
-			}
+				case 0:
+					Integer health = (int) player.getHealth();
+					Integer maxHealth = (int) player.getMaxHealth();
+					g.drawString(health + " / " + maxHealth, 465, 250 + (i * 20));
+					break;
+				case 1:
+					Integer stamina = (int) player.getStamina();
+					Integer maxStamina = (int) player.getMaxStamina();
+					g.drawString(stamina + " / " + maxStamina, 475, 250 + (i * 20));
+					break;
+				case 5:
+					Integer items = player.getInventory().getItems().size();
+					Integer storage = ItemState.ITEMSPERPAGE * ItemState.PAGES;
+					g.drawString(items + " / " + storage, 488, 250 + (i * 20));
+					break;
+				}
 		}
 	}
 

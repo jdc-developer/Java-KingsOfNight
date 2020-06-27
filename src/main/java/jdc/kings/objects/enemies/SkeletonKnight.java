@@ -263,7 +263,7 @@ public class SkeletonKnight extends Enemy {
 		super.playerPosition();
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
 		if (elapsed > 500 && !player.isDead()) {
-			Random random = Constants.random;
+			Random random = Constants.RANDOM;
 			int r = random.nextInt(2);
 			randomTimer = System.nanoTime();
 			

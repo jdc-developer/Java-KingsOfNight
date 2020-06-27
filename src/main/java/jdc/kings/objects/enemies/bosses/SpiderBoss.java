@@ -154,7 +154,7 @@ public class SpiderBoss extends Enemy {
 			}
 		}
 		
-		int random = Constants.random.nextInt(120);
+		int random = Constants.RANDOM.nextInt(120);
 		long scream = (System.nanoTime() - holdTimer) / 1000000;
 		if (random == 1 && scream > 2500 && !player.isDead()) {
 			audioPlayer.play("spider-boss-short-scream");
@@ -224,7 +224,7 @@ public class SpiderBoss extends Enemy {
 		super.playerPosition();
 		long elapsed = (System.nanoTime() - randomTimer) / 1000000;
 		if (elapsed > 500) {
-			Random random = Constants.random;
+			Random random = Constants.RANDOM;
 			int r = random.nextInt(2);
 			randomTimer = System.nanoTime();
 			

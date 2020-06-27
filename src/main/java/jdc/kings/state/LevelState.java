@@ -13,6 +13,7 @@ import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
@@ -30,7 +31,10 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	private TileMap tileMap;
 	
 	private BlockingQueue<Enemy> enemyQueue;
+	private BlockingQueue<Item> itemQueue;
+	
 	private LinkedList<Enemy> enemies = new LinkedList<>();
+	private LinkedList<Item> items = new LinkedList<>();
 	private LinkedList<Blood> bloodLosses = new LinkedList<>();
 	private List<BossState> bossStates = new ArrayList<>();
 	
@@ -49,10 +53,10 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		this.background = new Background(background, 0.1f);
 		this.manager = StateManager.getInstance();
 		hud = new HUD(LevelState.player);
-		
+		/*
 		bgMusic = "level-music";
 		audioPlayer.loadAudio(bgMusic, music);
-		audioPlayer.loop(bgMusic);
+		audioPlayer.loop(bgMusic);*/
 		
 		audioPlayer.loadAudio("blood-explosion", "/sfx/enemies/blood-explosion.mp3");
 		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
@@ -69,7 +73,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		player.checkAttack(enemies);
 		player.tick();
 		
-		// Get enemies from the queue
 		for(int i = 0; i < enemyQueue.size(); i++) {
 			try {
 				enemies.add(enemyQueue.take());
@@ -79,7 +82,15 @@ public class LevelState extends GameState implements KeyState, MouseState {
 			}
 		}
 		
-		// update enemies actions
+		for(int i = 0; i < itemQueue.size(); i++) {
+			try {
+				items.add(itemQueue.take());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if (e.isDead() && e.getHealth() <= 0) {
@@ -90,9 +101,19 @@ public class LevelState extends GameState implements KeyState, MouseState {
 					audioPlayer.play("blood-explosion");
 					i--;
 				}
-			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600 &&
-					player.getY() - e.getY() <= 500 && player.getY() - e.getY() >= -500) {
+			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
 				 e.tick();
+			}
+		}
+		
+		for (int i = 0; i < items.size(); i++) {
+			Item item = items.get(i);
+			if (player.getX() -item.getX() <= 1600 && player.getX() - item.getX() >= -1600) {
+				item.tick();
+			}
+			if (item.shouldRemove()) {
+				items.remove(i);
+				i--;
 			}
 		}
 		
@@ -162,12 +183,18 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		tileMap.render(g);
 		player.render(g);
 		
-		// render enemies
+
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600 &&
-					player.getY() - e.getY() <= 500 && player.getY() - e.getY() >= -500) {
+			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
 				e.render(g);
+			}
+		}
+		
+		for (int i = 0; i < items.size(); i++) {
+			Item item = items.get(i);
+			if (player.getX() -item.getX() <= 1600 && player.getX() - item.getX() >= -1600) {
+				item.render(g);
 			}
 		}
 		
@@ -330,6 +357,10 @@ public class LevelState extends GameState implements KeyState, MouseState {
 
 	public void setEnemyQueue(BlockingQueue<Enemy> enemyQueue) {
 		this.enemyQueue = enemyQueue;
+	}
+
+	public void setItemQueue(BlockingQueue<Item> itemQueue) {
+		this.itemQueue = itemQueue;
 	}
 
 	public SpawnerThread getSpawnerThread() {

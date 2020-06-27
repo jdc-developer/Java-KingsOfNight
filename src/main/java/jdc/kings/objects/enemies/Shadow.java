@@ -174,7 +174,7 @@ public class Shadow extends Enemy {
 			audioPlayer.stop("shadow-agony");
 		}
 		
-		int random = Constants.random.nextInt(120);
+		int random = Constants.RANDOM.nextInt(120);
 		long scream = (System.nanoTime() - holdTimer) / 1000000;
 		if (random == 1 && scream > 2500 && !player.isDead() && standing) {
 			audioPlayer.play("shadow-agony");

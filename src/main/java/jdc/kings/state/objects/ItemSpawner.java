@@ -2,23 +2,23 @@ package jdc.kings.state.objects;
 
 import java.lang.reflect.InvocationTargetException;
 
-import jdc.kings.objects.Enemy;
+import jdc.kings.objects.Item;
 import jdc.kings.view.TileMap;
 
-public class EnemySpawner {
+public class ItemSpawner {
 	
-	private Class<? extends Enemy> enemy;
+	private Class<? extends Item> item;
 	private float x;
 	private float y;
 	private TileMap tileMap;
 	private boolean spawned;
 
-	public Class<? extends Enemy> getEnemy() {
-		return enemy;
+	public Class<? extends Item> getItem() {
+		return item;
 	}
 
-	public void setEnemy(Class<? extends Enemy> enemy) {
-		this.enemy = enemy;
+	public void setItem(Class<? extends Item> item) {
+		this.item = item;
 	}
 
 	public float getX() {
@@ -52,22 +52,22 @@ public class EnemySpawner {
 		this.spawned = spawned;
 	}
 
-	public EnemySpawner(Class<? extends Enemy> enemy, float x, float y, TileMap tileMap) {
+	public ItemSpawner(Class<? extends Item> item, float x, float y, TileMap tileMap) {
 		super();
-		this.enemy = enemy;
+		this.item = item;
 		this.x = x;
 		this.y = y;
 		this.tileMap = tileMap;
 	}
 
-	public EnemySpawner() {
+	public ItemSpawner() {
 		super();
 	}
 	
-	public Enemy spawnEnemy() {
-		Enemy instance = null;
+	public Item spawnItem() {
+		Item instance = null;
 		try {
-			instance = enemy.getConstructor(TileMap.class).newInstance(tileMap);
+			instance = item.getConstructor(TileMap.class).newInstance(tileMap);
 			instance.setPosition(x, y);
 			spawned = true;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
