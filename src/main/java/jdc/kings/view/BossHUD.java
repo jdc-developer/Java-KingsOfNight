@@ -2,7 +2,7 @@ package jdc.kings.view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -28,12 +28,12 @@ public class BossHUD {
 		}
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		g.setColor(Color.white);
 		g.setFont(font);
 		g.drawString(bossName, 200, 490);
 		g.setColor(HEALTH);
-		g.fillRect(200, 503, boss.getHealth() * 3, 25);
+		g.fillRect(200, 503, (int)boss.getHealth() * 3, 25);
 		g.drawImage(image, 200, 480, 600, 80, null);
 	}
 	

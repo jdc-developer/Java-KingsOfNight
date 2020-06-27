@@ -5,48 +5,48 @@ import jdc.kings.utils.AudioPlayer;
 
 public class Attack {
 	
-	private int damage;
-	private int shieldDamage;
-	private int shieldCost;
-	private int range;
-	private int cost;
+	private float damage;
+	private float shieldDamage;
+	private float shieldCost;
+	private float range;
+	private float cost;
 	private int startTime;
 	private int endTime;
 	private long timer;
 	
-	public int getDamage() {
+	public float getDamage() {
 		return damage;
 	}
 
-	public void setDamage(int damage) {
+	public void setDamage(float damage) {
 		this.damage = damage;
 	}
 
-	public int getShieldDamage() {
+	public float getShieldDamage() {
 		return shieldDamage;
 	}
 	
-	public void setShieldDamage(int shieldDamage) {
+	public void setShieldDamage(float shieldDamage) {
 		this.shieldDamage = shieldDamage;
 	}
 	
-	public int getShieldCost() {
+	public float getShieldCost() {
 		return shieldCost;
 	}
 	
-	public void setShieldCost(int shieldCost) {
+	public void setShieldCost(float shieldCost) {
 		this.shieldCost = shieldCost;
 	}
 	
-	public int getRange() {
+	public float getRange() {
 		return range;
 	}
 	
-	public void setRange(int range) {
+	public void setRange(float range) {
 		this.range = range;
 	}
 	
-	public int getCost() {
+	public float getCost() {
 		return cost;
 	}
 	
@@ -78,7 +78,7 @@ public class Attack {
 		this.timer = timer;
 	}
 
-	public Attack(int damage, int shieldDamage, int shieldCost, int range, int cost, int startTime, int endTime) {
+	public Attack(float damage, float shieldDamage, float shieldCost, float range, float cost, int startTime, int endTime) {
 		super();
 		this.damage = damage;
 		this.shieldDamage = shieldDamage;

@@ -43,10 +43,10 @@ public class Shadow extends Enemy {
 		
 		health = maxHealth = 20;
 		stamina = maxStamina = 15;
-		damage = 7;
+		damage = 7.7f;
 		
-		shieldDamage = 1;
-		shieldCost = 4;
+		shieldDamage = 1.9f;
+		shieldCost = 4.8f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
@@ -241,7 +241,7 @@ public class Shadow extends Enemy {
 	}
 	
 	@Override
-	public void hit(int damage, boolean right, boolean shield) {
+	public void hit(float damage, boolean right, boolean shield) {
 		if (standing) {
 			super.hit(damage, right, shield);
 		}

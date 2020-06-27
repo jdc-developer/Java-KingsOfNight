@@ -17,6 +17,7 @@ import jdc.kings.objects.Player;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
+import jdc.kings.state.options.OptionsState;
 import jdc.kings.utils.Constants;
 import jdc.kings.view.Background;
 import jdc.kings.view.HUD;
@@ -33,7 +34,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private List<BossState> bossStates = new ArrayList<>();
 	private DeathState deathState = new DeathState();
-	private OptionsState optionsState = new OptionsState();
+	private OptionsState optionsState = OptionsState.getInstance();
 	
 	private BossState runningBoss;
 	private SpawnerThread spawnerThread;
@@ -49,13 +50,13 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		this.background = new Background(background, 0.1f);
 		this.manager = StateManager.getInstance();
 		hud = new HUD(this.player);
-		
+		/*
 		bgMusic = "level-music";
 		audioPlayer.loadAudio(bgMusic, music);
 		audioPlayer.loop(bgMusic);
 		
 		audioPlayer.loadAudio("blood-explosion", "/sfx/enemies/blood-explosion.mp3");
-		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
+		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");*/
 	}
 	
 	public void tick() {
@@ -94,7 +95,8 @@ public class LevelState extends GameState implements KeyState, MouseState {
 					audioPlayer.play("blood-explosion");
 					i--;
 				}
-			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
+			} else if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600 &&
+					player.getY() - e.getY() <= 500 && player.getY() - e.getY() >= -500) {
 				 e.tick();
 			}
 		}
@@ -164,7 +166,8 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		// render enemies
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
-			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600) {
+			if (player.getX() - e.getX() <= 1600 && player.getX() - e.getX() >= -1600 &&
+					player.getY() - e.getY() <= 500 && player.getY() - e.getY() >= -500) {
 				e.render(g);
 			}
 		}
@@ -262,6 +265,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		if (keyPressed == KeyEvent.VK_ESCAPE) {
 			if (options) {
 				options = false;
+				optionsState.setSubState(null);
 			} else {
 				audioPlayer.play("click");
 				options = true;
@@ -293,8 +297,9 @@ public class LevelState extends GameState implements KeyState, MouseState {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (options) {
+			optionsState.mousePressed(e);
+		}
 	}
 
 	@Override
@@ -330,6 +335,17 @@ public class LevelState extends GameState implements KeyState, MouseState {
 
 	public void setSpawnerThread(SpawnerThread enemyThread) {
 		this.spawnerThread = enemyThread;
+	}
+	
+	public void destroy() {
+		try {
+			spawnerThread.join();
+			manager.setNextState(StateManager.MENU);
+			manager.setState(StateManager.CLEAR);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

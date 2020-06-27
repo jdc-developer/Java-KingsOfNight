@@ -48,16 +48,16 @@ public class SpiderBoss extends Enemy {
 		health = maxHealth = 200;
 		bleeds = true;
 		stamina = maxStamina = 100;
-		damage = 8;
+		damage = 8.8f;
 		
-		shieldDamage = 2;
-		shieldCost = 4;
+		shieldDamage = 2.2f;
+		shieldCost = 4.7f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		attacks.add(new Attack(12, 3, 5, 100, 10, 100, 300));
-		attacks.add(new Attack(15, 5, 8, 100, 15, 100, 300));
+		attacks.add(new Attack(12.2f, 3.2f, 4.8f, 100.1f, 10.1f, 100, 300));
+		attacks.add(new Attack(15.1f, 5.6f, 7.8f, 100.8f, 15.3f, 100, 300));
 		
 		audioPlayer.loadAudio("spider-boss-tear", "/sfx/enemies/bosses/spider/tearing.mp3");
 		audioPlayer.loadAudio("spider-boss-whoosh", "/sfx/enemies/bosses/spider/whoosh.mp3");

@@ -1,6 +1,6 @@
 package jdc.kings.view;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -180,7 +180,7 @@ public class TileMap {
 		if (y > ymax) y = ymax;
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		for (int row = rowOffset; row < rowOffset + numRowsToDraw; row++) {
 			if (row >= numRows) break;
 			for (int col = colOffset; col < colOffset + numColsToDraw; col++) {

@@ -4,9 +4,9 @@ import jdc.kings.view.TileMap;
 
 public class Enemy extends GameObject {
 	
-	protected int damage;
-	protected int shieldDamage;
-	protected int shieldCost;
+	protected float damage;
+	protected float shieldDamage;
+	protected float shieldCost;
 	protected boolean corner;
 	
 	protected float playerXDistance;
@@ -24,7 +24,7 @@ public class Enemy extends GameObject {
 		audioPlayer.loadAudio(hitClip, "/sfx/enemies/hit.mp3");
 	}
 
-	public int getDamage() {
+	public float getDamage() {
 		return damage;
 	}
 

@@ -53,9 +53,9 @@ public class Player extends GameObject {
 		flinchYSpeed = 5.5f;
 		maxFlinchYSpeed = 5.8f;
 		
-		attacks.add(new Attack(13, 4, 4, 80, 3, 250, 400));
-		attacks.add(new Attack(8, 2, 3, 106, 3, 50, 250));
-		attacks.add(new Attack(15, 5, 4, 106, 6, 250, 400));
+		attacks.add(new Attack(13.5f, 4, 4.5f, 80.5f, 3, 250, 400));
+		attacks.add(new Attack(8.2f, 2.8f, 3, 105.2f, 2.5f, 50, 250));
+		attacks.add(new Attack(15, 5, 4.5f, 106.9f, 6, 250, 400));
 		
 		audioPlayer.loadAudio("player-cut", "/sfx/player/cutting.mp3");
 		audioPlayer.loadAudio("player-slice", "/sfx/player/slicing.mp3");
@@ -387,7 +387,7 @@ public class Player extends GameObject {
 	}
 	
 	@Override
-	public void hit(int damage, boolean right, boolean shield) {
+	public void hit(float damage, boolean right, boolean shield) {
 		if (shield) {
 			audioPlayer.play("player-shield");
 		}
@@ -408,6 +408,14 @@ public class Player extends GameObject {
 	
 	public boolean isAttacking() {
 		return stabbing || cutting || slicing;
+	}
+	
+	public float getMaxHealth() {
+		return maxHealth;
+	}
+	
+	public float getMaxStamina() {
+		return maxStamina;
 	}
 
 }

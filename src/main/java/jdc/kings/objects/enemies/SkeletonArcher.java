@@ -48,16 +48,16 @@ public class SkeletonArcher extends Enemy {
 		
 		health = maxHealth = 20;
 		stamina = maxStamina = 15;
-		damage = 7;
+		damage = 5.5f;
 		arrows = new ArrayList<>();
 		
 		shieldDamage = 1;
-		shieldCost = 4;
+		shieldCost = 2.8f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		attacks.add(new Attack(4, 2, 3, 0, 6, 0, 0));
+		attacks.add(new Attack(4.5f, 2.2f, 3.1f, 0, 5.6f, 0, 0));
 		
 		audioPlayer.loadAudio("skeleton-archer-arrow-throw", "/sfx/enemies/skeleton-archer/arrow-throw.mp3");
 		audioPlayer.loadAudio("skeleton-archer-arrow-hit", "/sfx/enemies/skeleton-archer/arrow-hit.mp3");

@@ -74,9 +74,9 @@ public abstract class GameObject {
 	protected float flinchYSpeed;
 	protected float maxFlinchYSpeed;
 	
-	protected int health;
+	protected float health;
 	protected float stamina;
-	protected int maxHealth;
+	protected float maxHealth;
 	protected float maxStamina;
 	
 	protected boolean rolling;
@@ -197,7 +197,7 @@ public abstract class GameObject {
 		return moveSpeed;
 	}
 
-	public int getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
@@ -417,7 +417,7 @@ public abstract class GameObject {
 		animator.update(System.currentTimeMillis());
 	}
 	
-	public void hit(int damage, boolean right, boolean shield) {
+	public void hit(float damage, boolean right, boolean shield) {
 		if (dead || flinching || shielding) return;
 		health -= damage;
 		if (health < 0) health = 0;
@@ -448,7 +448,7 @@ public abstract class GameObject {
 		}
 	}
 	
-	public void shieldDamage(int shieldDamage, int damage, int cost, boolean right) {
+	public void shieldDamage(float shieldDamage, float damage, float cost, boolean right) {
 		if (stamina < cost) {
 			hit(damage, right, false);
 		} else {

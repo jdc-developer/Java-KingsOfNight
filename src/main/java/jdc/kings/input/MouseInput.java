@@ -25,9 +25,11 @@ public class MouseInput extends MouseAdapter {
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (manager.getCurrentState() == StateManager.MAP) {
-			MapState map = (MapState) manager.getState();
-			map.mousePressed(e);
+		try {
+			MouseState state = (MouseState) manager.getState();
+			state.mousePressed(e);
+		}catch (ClassCastException ex) {
+			// TODO: handle exception
 		}
 	}
 	
@@ -36,7 +38,7 @@ public class MouseInput extends MouseAdapter {
 		try {
 			MouseState state = (MouseState) manager.getState();
 			state.mouseDragged(e);
-		}catch (java.lang.ClassCastException ex) {
+		}catch (ClassCastException ex) {
 			// TODO: handle exception
 		}
 		

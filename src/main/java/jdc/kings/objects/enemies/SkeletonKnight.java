@@ -47,8 +47,8 @@ public class SkeletonKnight extends Enemy {
 		cwidth = 35;
 		cheight = 105;
 		
-		attacks.add(new Attack(8, 2, 4, 66, 4, 250, 500));
-		attacks.add(new Attack(10, 3, 5, 100, 6, 250, 500));
+		attacks.add(new Attack(7.6f, 2.5f, 3.8f, 66.6f, 4.5f, 250, 500));
+		attacks.add(new Attack(9.8f, 3.1f, 5.8f, 100.9f, 6.9f, 250, 500));
 		
 		audioPlayer.loadAudio("skeleton-knight-axe", "/sfx/enemies/skeleton-knight/axe.mp3");
 		audioPlayer.loadAudio("skeleton-knight-axe-hit", "/sfx/enemies/skeleton-knight/axe-hit.mp3");
@@ -56,10 +56,10 @@ public class SkeletonKnight extends Enemy {
 		
 		health = maxHealth = 20;
 		stamina = maxStamina = 15;
-		damage = 7;
+		damage = 6.1f;
 		
-		shieldDamage = 1;
-		shieldCost = 4;
+		shieldDamage = 1.2f;
+		shieldCost = 2.5f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;

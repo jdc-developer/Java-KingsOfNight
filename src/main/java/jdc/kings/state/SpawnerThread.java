@@ -31,7 +31,7 @@ public class SpawnerThread extends Thread {
 				}
 			}
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(2500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

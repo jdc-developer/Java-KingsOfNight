@@ -35,10 +35,10 @@ public abstract class LevelManager {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		spawners = new EnemySpawner[41];
-		
-		spawners[0] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
-		spawners[1] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
+		spawners = new EnemySpawner[0];
+		/*
+		spawners[0] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
+		spawners[1] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
 		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
 		spawners[3] = new EnemySpawner(SkeletonKnight.class, 8200, 500, tileMap);
 		spawners[4] = new EnemySpawner(SkeletonArcher.class, 8300, 500, tileMap);
@@ -53,8 +53,8 @@ public abstract class LevelManager {
 		spawners[13] = new EnemySpawner(HellHound.class, 5500, 80, tileMap);
 		spawners[14] = new EnemySpawner(SkeletonKnight.class, 1200, 650, tileMap);
 		spawners[15] = new EnemySpawner(SkeletonKnight.class, 1500, 650, tileMap);
-		spawners[16] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
-		spawners[17] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
+		spawners[16] = new EnemySpawner(SkeletonArcher.class, 9400, 450, tileMap);
+		spawners[17] = new EnemySpawner(HellHound.class, 9300, 450, tileMap);
 		spawners[18] = new EnemySpawner(SkeletonArcher.class, 4700, 710, tileMap);
 		spawners[19] = new EnemySpawner(HellHound.class, 4600, 710, tileMap);
 		spawners[20] = new EnemySpawner(SkeletonKnight.class, 10800, 50, tileMap);
@@ -77,7 +77,7 @@ public abstract class LevelManager {
 		spawners[37] = new EnemySpawner(SkeletonArcher.class, 14200, 150, tileMap);
 		spawners[38] = new EnemySpawner(Shadow.class, 14000, 150, tileMap);
 		spawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
-		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);
+		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);*/
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
 		SpawnerThread spawnerThread = new SpawnerThread(player, enemyQueue);
