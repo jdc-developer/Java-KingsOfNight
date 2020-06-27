@@ -10,7 +10,7 @@ import jdc.kings.view.HUD;
 public abstract class GameState {
 	
 	protected Background background;
-	protected Player player;
+	protected static Player player;
 	protected String bgMusic;
 	protected HUD hud;
 	protected AudioPlayer audioPlayer = AudioPlayer.getInstance();

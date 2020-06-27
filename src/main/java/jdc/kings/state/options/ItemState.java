@@ -31,9 +31,6 @@ public class ItemState extends GameState implements KeyState {
 	
 	private ItemState() {
 		try {
-			Locale locale = Game.getInstance().getPreferences().getLocale();
-			title = BundleUtil.getMessageResourceString("menuOptionOne", locale);
-			
 			font = new Font("Arial", Font.BOLD, 16);
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-items.png"));
 		} catch (IOException e) {
@@ -44,8 +41,8 @@ public class ItemState extends GameState implements KeyState {
 
 	@Override
 	public void tick() {
-		// TODO Auto-generated method stub
-		
+		Locale locale = Game.getInstance().getPreferences().getLocale();
+		title = BundleUtil.getMessageResourceString("menuOptionOne", locale);
 	}
 
 	@Override

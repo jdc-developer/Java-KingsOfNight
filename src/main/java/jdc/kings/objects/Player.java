@@ -414,8 +414,16 @@ public class Player extends GameObject {
 		return maxHealth;
 	}
 	
+	public float getHealth() {
+		return health;
+	}
+	
 	public float getMaxStamina() {
 		return maxStamina;
+	}
+	
+	public float getStamina() {
+		return stamina;
 	}
 
 }

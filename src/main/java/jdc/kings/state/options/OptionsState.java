@@ -157,6 +157,12 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 			case 1:
 				subState = SkillState.getInstance();
 				break;
+			case 2:
+				subState = EquipmentState.getInstance();
+				break;
+			case 3:
+				subState = StatusState.getInstance();
+				break;
 			case 4:
 				subState = SettingsState.getInstance();
 				break;

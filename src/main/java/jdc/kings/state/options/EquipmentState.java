@@ -14,25 +14,25 @@ import jdc.kings.state.GameState;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.utils.BundleUtil;
 
-public class SkillState extends GameState implements KeyState {
+public class EquipmentState extends GameState implements KeyState {
 	
-	private static SkillState instance;
+	private static EquipmentState instance;
 	
 	private BufferedImage image;
 	private Font font;
 	private String title;
 	
-	public static SkillState getInstance() {
+	public static EquipmentState getInstance() {
 		if (instance == null) {
-			instance = new SkillState();
+			instance = new EquipmentState();
 		}
 		return instance;
 	}
 	
-	private SkillState() {
+	private EquipmentState() {
 		try {
-			font = new Font("Arial", Font.BOLD, 16);
-			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-skills.png"));
+			font = new Font("Arial", Font.BOLD, 14);
+			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-equipment.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class SkillState extends GameState implements KeyState {
 	@Override
 	public void tick() {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
-		title = BundleUtil.getMessageResourceString("menuOptionTwo", locale);
+		title = BundleUtil.getMessageResourceString("menuOptionThree", locale);
 	}
 
 	@Override
@@ -52,11 +52,10 @@ public class SkillState extends GameState implements KeyState {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		g.setFont(font);
 		if (locale.getCountry().equals("US") && locale.getLanguage().equals("en")) {
-			g.drawString(title, 497, 95);
+			g.drawString(title, 482, 95);
 		} else {
 			g.drawString(title, 475, 95);
 		}
-		
 	}
 
 	@Override
