@@ -222,4 +222,8 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 		this.subState = subState;
 	}
 
+	public GameState getSubState() {
+		return subState;
+	}
+
 }

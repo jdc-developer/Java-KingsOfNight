@@ -1,14 +1,11 @@
 package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.Constants;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -17,8 +14,6 @@ public class SkeletonKnight extends Enemy {
 	private boolean cutting;
 	private boolean slicing;
 	private long randomTimer;
-	
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -64,14 +59,19 @@ public class SkeletonKnight extends Enemy {
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 325, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/cutting.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/slicing.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-knight/dying.png", this, 0, 7, 0, 1, 0, 0, 200, 186, 0, 0));
+		if (spriteLoader.getSprites("skeleton-knight") == null) {
+			BufferedImage[][] sprites = new BufferedImage[5][];
+			
+			sprites[0] = spriteLoader.loadAction("/sprites/enemies/skeleton-knight/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 322, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/enemies/skeleton-knight/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 325, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/enemies/skeleton-knight/cutting.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10);
+			sprites[3] = spriteLoader.loadAction("/sprites/enemies/skeleton-knight/slicing.png", this, 0, 5, 0, 1, 0, 0, 246, 265, 50, 10);
+			sprites[4] = spriteLoader.loadAction("/sprites/enemies/skeleton-knight/dying.png", this, 0, 7, 0, 1, 0, 0, 200, 186, 0, 0);
+		
+			spriteLoader.loadSprites("skeleton-knight", sprites);
+		}
 	
-		animator = new Animator(sprites.get(0));
+		animator = new Animator(spriteLoader.getAction("skeleton-knight", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(120);
 		animator.start();
@@ -142,7 +142,7 @@ public class SkeletonKnight extends Enemy {
 			}
 			
 			if (cutting) {
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("skeleton-knight", IDLE));
 				cutting = false;
 				height = 110;
 				width = 70;
@@ -184,7 +184,7 @@ public class SkeletonKnight extends Enemy {
 			if (currentAction != DYING) {
 				currentAction = DYING;
 				audioPlayer.play("skull-break");
-				animator.setFrames(sprites.get(DYING));
+				animator.setFrames(spriteLoader.getAction("skeleton-knight", DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
 				width = 105;
@@ -202,7 +202,7 @@ public class SkeletonKnight extends Enemy {
 					audioPlayer.play("skeleton-knight-axe");
 					
 					stamina -= attack.getCost();
-					animator.setFrames(sprites.get(CUTTING));
+					animator.setFrames(spriteLoader.getAction("skeleton-knight", CUTTING));
 					animator.setSpeed(100);
 					width = 105;
 					height = 130;
@@ -218,7 +218,7 @@ public class SkeletonKnight extends Enemy {
 					audioPlayer.play("skeleton-knight-axe");
 					
 					stamina -= attack.getCost();
-					animator.setFrames(sprites.get(SLICING));
+					animator.setFrames(spriteLoader.getAction("skeleton-knight", SLICING));
 					animator.setSpeed(150);
 					width = 105;
 					height = 130;
@@ -234,7 +234,7 @@ public class SkeletonKnight extends Enemy {
 			if (currentAction != WALKING) {
 				previousAction = currentAction;
 				currentAction = WALKING;
-				animator.setFrames(sprites.get(WALKING));
+				animator.setFrames(spriteLoader.getAction("skeleton-knight", WALKING));
 				animator.setSpeed(80);
 				width = 70;
 			}
@@ -242,7 +242,7 @@ public class SkeletonKnight extends Enemy {
 			if (currentAction != IDLE) {
 				previousAction = currentAction;
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("skeleton-knight", IDLE));
 				animator.setSpeed(120);
 				width = 70;
 			}

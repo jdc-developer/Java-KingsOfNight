@@ -8,7 +8,6 @@ import java.util.List;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Arrow;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -18,7 +17,6 @@ public class SkeletonArcher extends Enemy {
 	private boolean hasFlinched;
 	
 	private List<Arrow> arrows = new ArrayList<>();
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -63,13 +61,18 @@ public class SkeletonArcher extends Enemy {
 		audioPlayer.loadAudio("skeleton-archer-arrow-hit", "/sfx/enemies/skeleton-archer/arrow-hit.mp3");
 		audioPlayer.loadAudio("skull-break", "/sfx/enemies/skull-break.mp3");
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 346, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 307, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/firing.png", this, 0, 5, 0, 2, 0, 0, 215, 283, 10, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/skeleton-archer/dying.png", this, 0, 6, 0, 1, 0, 0, 200, 301, 0, 0));
+		if (spriteLoader.getSprites("skeleton-archer") == null) {
+			BufferedImage[][] sprites = new BufferedImage[4][];
+			
+			sprites[0] = spriteLoader.loadAction("/sprites/enemies/skeleton-archer/idle.png", this, 0, 5, 0, 2, 0, 0, 200, 346, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/enemies/skeleton-archer/walking.png", this, 0, 5, 0, 2, 0, 0, 200, 307, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/enemies/skeleton-archer/firing.png", this, 0, 5, 0, 2, 0, 0, 215, 283, 10, 0);
+			sprites[3] = spriteLoader.loadAction("/sprites/enemies/skeleton-archer/dying.png", this, 0, 6, 0, 1, 0, 0, 200, 301, 0, 0);
+		
+			spriteLoader.loadSprites("skeleton-archer", sprites);
+		}
 	
-		animator = new Animator(sprites.get(0));
+		animator = new Animator(spriteLoader.getAction("skeleton-archer", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(120);
 		animator.start();
@@ -154,7 +157,7 @@ public class SkeletonArcher extends Enemy {
 			}
 			
 			if (firing) {
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("skeleton-archer", IDLE));
 				firing = false;
 			}
 		}
@@ -185,7 +188,7 @@ public class SkeletonArcher extends Enemy {
 			if (currentAction != DYING) {
 				currentAction = DYING;
 				audioPlayer.play("skull-break");
-				animator.setFrames(sprites.get(DYING));
+				animator.setFrames(spriteLoader.getAction("skeleton-archer", DYING));
 				animator.setSpeed(120);
 				holdTimer = System.nanoTime();
 				left = right = false;
@@ -198,20 +201,20 @@ public class SkeletonArcher extends Enemy {
 				currentAction = FIRING;
 				audioPlayer.play("skeleton-archer-arrow-throw");
 				
-				animator.setFrames(sprites.get(FIRING));
+				animator.setFrames(spriteLoader.getAction("skeleton-archer", FIRING));
 				animator.setSpeed(100);
 			}
 		} else if ((left || right) && !corner) {
 			if (currentAction != WALKING) {
 				currentAction = WALKING;
-				animator.setFrames(sprites.get(WALKING));
+				animator.setFrames(spriteLoader.getAction("skeleton-archer", WALKING));
 				animator.setSpeed(80);
 				width = 70;
 			}
 		} else {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("skeleton-archer", IDLE));
 				animator.setSpeed(120);
 				width = 70;
 			}

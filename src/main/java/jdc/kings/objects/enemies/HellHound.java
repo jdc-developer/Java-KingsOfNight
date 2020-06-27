@@ -1,13 +1,10 @@
 package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.utils.Constants;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -15,8 +12,6 @@ public class HellHound extends Enemy {
 	
 	private boolean running;
 	private long randomTimer;
-	
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -60,13 +55,17 @@ public class HellHound extends Enemy {
 		audioPlayer.loadAudio("hellhound-howl", "/sfx/enemies/hellhound/howl.mp3");
 		audioPlayer.loadAudio("hellhound-howl-2", "/sfx/enemies/hellhound/howl-2.mp3");
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/walking.png", this, 0, 12, 0, 1, 9, 19, 45, 26, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/jumping.png", this, 0, 6, 0, 1, 11, 14, 47, 39, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/hellhound/running.png", this, 0, 5, 0, 1, 9, 22, 45, 29, 0, 0));
-	
-		animator = new Animator(sprites.get(0));
+		if (spriteLoader.getSprites("hellhound") == null) {
+			BufferedImage[][] sprites = new BufferedImage[4][];
+			sprites[0] = spriteLoader.loadAction("/sprites/enemies/hellhound/idle.png", this, 0, 6, 0, 1, 11, 22, 40, 24, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/enemies/hellhound/walking.png", this, 0, 12, 0, 1, 9, 19, 45, 26, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/enemies/hellhound/jumping.png", this, 0, 6, 0, 1, 11, 14, 47, 39, 0, 0);
+			sprites[3] = spriteLoader.loadAction("/sprites/enemies/hellhound/running.png", this, 0, 5, 0, 1, 9, 22, 45, 29, 0, 0);
+		
+			spriteLoader.loadSprites("hellhound", sprites);
+		}
+		
+		animator = new Animator(spriteLoader.getAction("hellhound", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(120);
 		animator.start();
@@ -134,14 +133,14 @@ public class HellHound extends Enemy {
 			if (currentAction != JUMPING) {
 				currentAction = JUMPING;
 				turnAroundTimer = System.nanoTime();
-				animator.setFrames(sprites.get(JUMPING));
+				animator.setFrames(spriteLoader.getAction("hellhound", JUMPING));
 				animator.setSpeed(100);
 				width = 60;
 			}
 		} else if ((left || right) && !corner) {
 			if (currentAction != WALKING && !running) {
 				currentAction = WALKING;
-				animator.setFrames(sprites.get(WALKING));
+				animator.setFrames(spriteLoader.getAction("hellhound", WALKING));
 				animator.setSpeed(100);
 				width = 60;
 			}
@@ -149,14 +148,14 @@ public class HellHound extends Enemy {
 			if (currentAction != RUNNING && running) {
 				currentAction = RUNNING;
 				audioPlayer.play("hellhound-run");
-				animator.setFrames(sprites.get(RUNNING));
+				animator.setFrames(spriteLoader.getAction("hellhound", RUNNING));
 				animator.setSpeed(100);
 				width = 60;
 			}
 		} else {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("hellhound", IDLE));
 				animator.setSpeed(120);
 				width = 60;
 			}

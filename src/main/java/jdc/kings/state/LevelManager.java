@@ -35,8 +35,8 @@ public abstract class LevelManager {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		spawners = new EnemySpawner[0];
-		/*
+		spawners = new EnemySpawner[41];
+		
 		spawners[0] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
 		spawners[1] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
 		spawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
@@ -77,7 +77,7 @@ public abstract class LevelManager {
 		spawners[37] = new EnemySpawner(SkeletonArcher.class, 14200, 150, tileMap);
 		spawners[38] = new EnemySpawner(Shadow.class, 14000, 150, tileMap);
 		spawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
-		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);*/
+		spawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
 		SpawnerThread spawnerThread = new SpawnerThread(player, enemyQueue);

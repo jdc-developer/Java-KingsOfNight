@@ -26,18 +26,17 @@ import jdc.kings.view.TileMap;
 public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private StateManager manager;
+	private SpawnerThread spawnerThread;
 	private TileMap tileMap;
 	
+	private BlockingQueue<Enemy> enemyQueue;
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private LinkedList<Blood> bloodLosses = new LinkedList<>();
-	private BlockingQueue<Enemy> enemyQueue;
-	
 	private List<BossState> bossStates = new ArrayList<>();
-	private DeathState deathState = new DeathState();
-	private OptionsState optionsState = OptionsState.getInstance();
 	
 	private BossState runningBoss;
-	private SpawnerThread spawnerThread;
+	private DeathState deathState = new DeathState();
+	private OptionsState optionsState = OptionsState.getInstance();
 	
 	private boolean death;
 	private boolean options;
@@ -45,18 +44,18 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	private float reduceSound = 0;
 
 	public LevelState(TileMap tm, Player player, String background, String music) {
-		this.player = player;
+		LevelState.player = player;
 		this.tileMap = tm;
 		this.background = new Background(background, 0.1f);
 		this.manager = StateManager.getInstance();
-		hud = new HUD(this.player);
-		/*
+		hud = new HUD(LevelState.player);
+		
 		bgMusic = "level-music";
 		audioPlayer.loadAudio(bgMusic, music);
 		audioPlayer.loop(bgMusic);
 		
 		audioPlayer.loadAudio("blood-explosion", "/sfx/enemies/blood-explosion.mp3");
-		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");*/
+		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
 	}
 	
 	public void tick() {
@@ -69,10 +68,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		
 		player.checkAttack(enemies);
 		player.tick();
-		
-		if (options) {
-			optionsState.tick();
-		}
 		
 		// Get enemies from the queue
 		for(int i = 0; i < enemyQueue.size(); i++) {
@@ -150,6 +145,10 @@ public class LevelState extends GameState implements KeyState, MouseState {
 				
 				deathState.tick();
 			}
+		}
+		
+		if (options) {
+			optionsState.tick();
 		}
 	}
 	
@@ -264,8 +263,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		
 		if (keyPressed == KeyEvent.VK_ESCAPE) {
 			if (options) {
-				options = false;
-				optionsState.setSubState(null);
+				if (optionsState.getSubState() != null) {
+					optionsState.setSubState(null);
+				} else {
+					options = false;
+				}
+				
 			} else {
 				audioPlayer.play("click");
 				options = true;

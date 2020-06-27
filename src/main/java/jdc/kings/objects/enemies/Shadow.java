@@ -1,12 +1,9 @@
 package jdc.kings.objects.enemies;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.utils.Constants;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -14,8 +11,6 @@ public class Shadow extends Enemy {
 	
 	private boolean rising;
 	private boolean standing;
-	
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int RISING = 1;
@@ -55,12 +50,18 @@ public class Shadow extends Enemy {
 		audioPlayer.loadAudio("shadow-agony", "/sfx/enemies/shadow/agony.mp3");
 		audioPlayer.loadAudio("shadow-dying", "/sfx/enemies/shadow/dying.mp3");
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/shadow/idle.png", this, 0, 4, 0, 1, 0, 0, 80, 70, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/shadow/rising.png", this, 0, 5, 0, 2, 0, 0, 80, 70, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/shadow/idle.png", this, 0, 4, 1, 2, 0, 0, 80, 70, 0, 0));
+		if (spriteLoader.getSprites("shadow") == null) {
+			BufferedImage[][] sprites = new BufferedImage[3][];
+			
+			sprites[0] = spriteLoader.loadAction("/sprites/enemies/shadow/idle.png", this, 0, 4, 0, 1, 0, 0, 80, 70, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/enemies/shadow/rising.png", this, 0, 5, 0, 2, 0, 0, 80, 70, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/enemies/shadow/idle.png", this, 0, 4, 1, 2, 0, 0, 80, 70, 0, 0);
+			
+			spriteLoader.loadSprites("shadow", sprites);
+		}
+		
 	
-		animator = new Animator(sprites.get(0));
+		animator = new Animator(spriteLoader.getAction("shadow", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(150);
 		animator.start();
@@ -135,7 +136,7 @@ public class Shadow extends Enemy {
 			}
 			
 			if (rising) {
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("shadow", IDLE));
 				rising = false;
 			}
 		}
@@ -185,7 +186,7 @@ public class Shadow extends Enemy {
 				currentAction = DYING;
 				audioPlayer.play("shadow-dying");
 				audioPlayer.stop("shadow-agony");
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("shadow", IDLE));
 				animator.setSpeed(150);
 				holdTimer = System.nanoTime();
 				left = right = false;
@@ -194,28 +195,28 @@ public class Shadow extends Enemy {
 		} else if (standing) {
 			 if (currentAction != STANDING) {
 					currentAction = STANDING;
-					animator.setFrames(sprites.get(STANDING));
+					animator.setFrames(spriteLoader.getAction("shadow", STANDING));
 					animator.setSpeed(150);
 				}
 		 } else if (rising) {
 			if (currentAction != RISING) {
 				currentAction = RISING;
 				audioPlayer.play("shadow-rising");
-				animator.setFrames(sprites.get(RISING));
+				animator.setFrames(spriteLoader.getAction("shadow", RISING));
 				animator.setSpeed(150);
 				holdTimer = System.nanoTime();
 			}
 		} else if ((left || right) && !corner) {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("shadow", IDLE));
 				animator.setSpeed(150);
 				maxSpeed = 1f;
 			}
 		} else {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("shadow", IDLE));
 				animator.setSpeed(150);
 			}
 		}

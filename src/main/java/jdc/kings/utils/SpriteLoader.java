@@ -3,6 +3,7 @@ package jdc.kings.utils;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -11,6 +12,7 @@ import jdc.kings.objects.GameObject;
 public class SpriteLoader {
 	
 	private static SpriteLoader instance;
+	private HashMap<String, BufferedImage[][]> spritesArray = new HashMap<>();
 	
 	private SpriteLoader() {};
 	
@@ -19,6 +21,23 @@ public class SpriteLoader {
 			instance = new SpriteLoader();
 		}
 		return instance;
+	}
+	
+	public void loadSprites(String key, BufferedImage[][] spritesToAdd) {
+		BufferedImage[][] sprites = spritesArray.get(key);
+		
+		if (sprites == null) {
+			spritesArray.put(key, spritesToAdd);
+		}
+	}
+	
+	public BufferedImage[][] getSprites(String key) {
+		return spritesArray.get(key);
+	}
+	
+	public BufferedImage[] getAction(String key, int actionKey) {
+		BufferedImage[][] sprites = spritesArray.get(key);
+		return sprites[actionKey];
 	}
 	
 	public BufferedImage[] loadAction(String path, GameObject object, int startFrom, int goTo, int startRow, int endRow,

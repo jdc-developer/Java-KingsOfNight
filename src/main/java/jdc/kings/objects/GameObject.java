@@ -11,6 +11,7 @@ import jdc.kings.objects.interactions.Attack;
 import jdc.kings.objects.interactions.Blood;
 import jdc.kings.utils.AudioPlayer;
 import jdc.kings.utils.Constants;
+import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.Tile;
 import jdc.kings.view.TileMap;
@@ -92,11 +93,13 @@ public abstract class GameObject {
 	
 	protected int flinchDirection;
 	protected AudioPlayer audioPlayer;
+	protected SpriteLoader spriteLoader;
 	
 	public GameObject(TileMap tm) {
 		tileMap = tm;
 		tileSize = tm.getTileSize() + tm.getIncreaseSize();
 		audioPlayer = AudioPlayer.getInstance();
+		spriteLoader = SpriteLoader.getInstance();
 	}
 	
 	public boolean intersects(GameObject o) {

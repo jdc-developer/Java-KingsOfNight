@@ -1,14 +1,12 @@
 package jdc.kings.objects;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.interactions.Attack;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -19,8 +17,6 @@ public class Player extends GameObject {
 	private boolean stabbing;
 	private boolean cutting;
 	private boolean slicing;
-	
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -72,19 +68,23 @@ public class Player extends GameObject {
 		
 		rollCost = 5;
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/player/idle.png", this, 0, 15, 0, 1, 22, 38, 26, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/walking.png", this, 0, 8, 0, 1, 40, 66, 30, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 0, 7, 0, 1, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/jumping_and_falling.png", this, 8, 10, 0, 1, 54, 118, 26, 31, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/stabbing.png", this, 0, 9, 0, 1, 54, 94, 50, 30, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/cutting.png", this, 0, 5, 0, 1, 60, 94, 50, 33, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/slicing.png", this, 0, 7, 0, 1, 48, 96, 51, 28, 50, 0));
-		sprites.add(loader.loadAction("/sprites/player/rolling.png", this, 0, 9, 0, 1, 54, 153, 27, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/shield.png", this, 0, 7, 0, 1, 39, 72, 24, 30, 0, 0));
-		sprites.add(loader.loadAction("/sprites/player/dying.png", this, 0, 15, 0, 1, 34, 69, 29, 30, 0, 0));
+		if (spriteLoader.getSprites("player") == null) {
+			BufferedImage[][] sprites = new BufferedImage[10][];
+			sprites[0] = spriteLoader.loadAction("/sprites/player/idle.png", this, 0, 15, 0, 1, 22, 38, 26, 30, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/player/walking.png", this, 0, 8, 0, 1, 40, 66, 30, 30, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/player/jumping_and_falling.png", this, 0, 7, 0, 1, 54, 118, 26, 31, 0, 0);
+			sprites[3] = spriteLoader.loadAction("/sprites/player/jumping_and_falling.png", this, 8, 10, 0, 1, 54, 118, 26, 31, 0, 0);
+			sprites[4] = spriteLoader.loadAction("/sprites/player/stabbing.png", this, 0, 9, 0, 1, 54, 94, 50, 30, 50, 0);
+			sprites[5] = spriteLoader.loadAction("/sprites/player/cutting.png", this, 0, 5, 0, 1, 60, 94, 50, 33, 50, 0);
+			sprites[6] = spriteLoader.loadAction("/sprites/player/slicing.png", this, 0, 7, 0, 1, 48, 96, 51, 28, 50, 0);
+			sprites[7] = spriteLoader.loadAction("/sprites/player/rolling.png", this, 0, 9, 0, 1, 54, 153, 27, 30, 0, 0);
+			sprites[8] = spriteLoader.loadAction("/sprites/player/shield.png", this, 0, 7, 0, 1, 39, 72, 24, 30, 0, 0);
+			sprites[9] = spriteLoader.loadAction("/sprites/player/dying.png", this, 0, 15, 0, 1, 34, 69, 29, 30, 0, 0);
+			
+			spriteLoader.loadSprites("player", sprites);
+		}
 		
-		animator = new Animator(sprites.get(0));
+		animator = new Animator(spriteLoader.getAction("player", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(100);
 		animator.start();
@@ -240,7 +240,7 @@ public class Player extends GameObject {
 		if (dying) {
 			if (currentAction != DYING) {
 				currentAction = DYING;
-				animator.setFrames(sprites.get(DYING));
+				animator.setFrames(spriteLoader.getAction("player", DYING));
 				animator.setSpeed(70);
 				holdTimer = System.nanoTime();
 				right = false;
@@ -255,7 +255,7 @@ public class Player extends GameObject {
 					currentAction = STABBING;
 					audioPlayer.play("player-stab");
 					
-					animator.setFrames(sprites.get(STABBING));
+					animator.setFrames(spriteLoader.getAction("player", STABBING));
 					animator.setSpeed(85);
 					width = 63;
 					stamina -= attack.getCost();
@@ -273,7 +273,7 @@ public class Player extends GameObject {
 					currentAction = CUTTING;
 					audioPlayer.play("player-cut");
 					
-					animator.setFrames(sprites.get(CUTTING));
+					animator.setFrames(spriteLoader.getAction("player", CUTTING));
 					animator.setSpeed(80);
 					width = 63;
 					stamina -= attack.getCost();
@@ -290,7 +290,7 @@ public class Player extends GameObject {
 					currentAction = SLICING;
 					audioPlayer.play("player-slice");
 					
-					animator.setFrames(sprites.get(SLICING));
+					animator.setFrames(spriteLoader.getAction("player", SLICING));
 					animator.setSpeed(100);
 					width = 63;
 					
@@ -312,7 +312,7 @@ public class Player extends GameObject {
 						audioPlayer.play("player-roll");
 					}
 					
-					animator.setFrames(sprites.get(ROLLING));
+					animator.setFrames(spriteLoader.getAction("player", ROLLING));
 					animator.setSpeed(80);
 					width = 63;
 					
@@ -330,7 +330,7 @@ public class Player extends GameObject {
 		} else if (shield) {
 			if (currentAction != SHIELD) {
 				currentAction = SHIELD;
-				animator.setFrames(sprites.get(SHIELD));
+				animator.setFrames(spriteLoader.getAction("player", SHIELD));
 				animator.setSpeed(100);
 				width = 63;
 				holdTimer = System.nanoTime();
@@ -338,7 +338,7 @@ public class Player extends GameObject {
 		} else if (velY > 0) {
 			if (currentAction != FALLING) {
 				currentAction = FALLING;
-				animator.setFrames(sprites.get(FALLING));
+				animator.setFrames(spriteLoader.getAction("player", FALLING));
 				animator.setSpeed(400);
 				width = 63;
 			}
@@ -351,7 +351,7 @@ public class Player extends GameObject {
 					audioPlayer.play("player-jump");
 				}
 				
-				animator.setFrames(sprites.get(JUMPING));
+				animator.setFrames(spriteLoader.getAction("player", JUMPING));
 				animator.setSpeed(100);
 				width = 63;
 				holdTimer = System.nanoTime();
@@ -359,14 +359,14 @@ public class Player extends GameObject {
 		} else if (left || right) {
 			if (currentAction != WALKING) {
 				currentAction = WALKING;
-				animator.setFrames(sprites.get(WALKING));
+				animator.setFrames(spriteLoader.getAction("player", WALKING));
 				animator.setSpeed(100);
 				width = 63;
 			}
 		} else {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("player", IDLE));
 				animator.setSpeed(100);
 				width = 63;
 			}

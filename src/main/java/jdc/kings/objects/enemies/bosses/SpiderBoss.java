@@ -1,14 +1,11 @@
 package jdc.kings.objects.enemies.bosses;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.utils.Constants;
-import jdc.kings.utils.SpriteLoader;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -17,8 +14,6 @@ public class SpiderBoss extends Enemy {
 	private boolean slashing;
 	private boolean slicing;
 	private long randomTimer;
-	
-	private List<BufferedImage[]> sprites = new ArrayList<>();
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -64,13 +59,18 @@ public class SpiderBoss extends Enemy {
 		audioPlayer.loadAudio("spider-boss-scream", "/sfx/enemies/bosses/spider/scream.mp3");
 		audioPlayer.loadAudio("spider-boss-short-scream", "/sfx/enemies/bosses/spider/short-scream.mp3");
 		
-		SpriteLoader loader = SpriteLoader.getInstance();
-		sprites.add(loader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 2, 3, 4, 334, 0, 83, 73, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 4, 0, 1, 0, 0, 92, 71, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 5, 1, 2, 0, 0, 96, 73, 0, 0));
-		sprites.add(loader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 5, 2, 3, 0, 0, 94, 73, 0, 0));
+		if (spriteLoader.getSprites("spider-boss") == null) {
+			BufferedImage[][] sprites = new BufferedImage[4][];
+			
+			sprites[0] = spriteLoader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 2, 3, 4, 334, 0, 83, 73, 0, 0);
+			sprites[1] = spriteLoader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 4, 0, 1, 0, 0, 92, 71, 0, 0);
+			sprites[2] = spriteLoader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 5, 1, 2, 0, 0, 96, 73, 0, 0);
+			sprites[3] = spriteLoader.loadAction("/sprites/enemies/bosses/spider/spritesheet.png", this, 0, 5, 2, 3, 0, 0, 94, 73, 0, 0);
+		
+			spriteLoader.loadSprites("spider-boss", sprites);
+		}
 	
-		animator = new Animator(sprites.get(0));
+		animator = new Animator(spriteLoader.getAction("spider-boss", IDLE));
 		currentAction = IDLE;
 		animator.setSpeed(200);
 		animator.start();
@@ -136,7 +136,7 @@ public class SpiderBoss extends Enemy {
 			}
 			
 			if (slicing || slashing) {
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("spider-boss", IDLE));
 				slicing = false;
 				slashing = false;
 			}
@@ -171,7 +171,7 @@ public class SpiderBoss extends Enemy {
 					audioPlayer.play("spider-boss-whoosh");
 					
 					stamina -= attack.getCost();
-					animator.setFrames(sprites.get(SLASHING));
+					animator.setFrames(spriteLoader.getAction("spider-boss", SLASHING));
 					animator.setSpeed(150);
 					
 					if (facingRight) right = true;
@@ -188,7 +188,7 @@ public class SpiderBoss extends Enemy {
 					audioPlayer.play("spider-boss-whoosh");
 					
 					stamina -= attack.getCost();
-					animator.setFrames(sprites.get(SLICING));
+					animator.setFrames(spriteLoader.getAction("spider-boss", SLICING));
 					animator.setSpeed(150);
 					
 					if (facingRight) right = true;
@@ -198,13 +198,13 @@ public class SpiderBoss extends Enemy {
 		} else if (left || right) {
 			if (currentAction != WALKING) {
 				currentAction = WALKING;
-				animator.setFrames(sprites.get(WALKING));
+				animator.setFrames(spriteLoader.getAction("spider-boss", WALKING));
 				animator.setSpeed(80);
 			}
 		} else {
 			if (currentAction != IDLE) {
 				currentAction = IDLE;
-				animator.setFrames(sprites.get(IDLE));
+				animator.setFrames(spriteLoader.getAction("spider-boss", IDLE));
 				animator.setSpeed(200);
 			}
 		}
