@@ -22,8 +22,6 @@ import jdc.kings.utils.BundleUtil;
 
 public class SettingsState extends GameState implements KeyState {
 	
-	private static SettingsState instance;
-	
 	private BufferedImage image;
 	private Font font;
 	private String title;
@@ -36,14 +34,7 @@ public class SettingsState extends GameState implements KeyState {
 	private int currentState = 0;
 	private int selectedKey = 100;
 	
-	public static SettingsState getInstance() {
-		if (instance == null) {
-			instance = new SettingsState();
-		}
-		return instance;
-	}
-	
-	private SettingsState() {
+	public SettingsState() {
 		try {
 			currentOptions = options;
 			font = new Font("Arial", Font.BOLD, 16);

@@ -8,6 +8,7 @@ import jdc.kings.view.TileMap;
 public class Item extends GameObject {
 	
 	protected int id;
+	protected String description;
 	protected BufferedImage image;
 	protected Player player;
 	private boolean shouldRemove;
@@ -31,7 +32,6 @@ public class Item extends GameObject {
 					inventory.getItems().add(inventoryItem);
 					shouldRemove = true;
 				} else if (searchItem.getQuantity() < 99) {
-					audioPlayer.play("get-item");
 					searchItem.increaseQuantity();
 					shouldRemove = true;
 				}
@@ -43,6 +43,10 @@ public class Item extends GameObject {
 		return id;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
 	public BufferedImage getImage() {
 		return image;
 	}

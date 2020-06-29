@@ -16,20 +16,11 @@ import jdc.kings.utils.BundleUtil;
 
 public class SkillState extends GameState implements KeyState {
 	
-	private static SkillState instance;
-	
 	private BufferedImage image;
 	private Font font;
 	private String title;
 	
-	public static SkillState getInstance() {
-		if (instance == null) {
-			instance = new SkillState();
-		}
-		return instance;
-	}
-	
-	private SkillState() {
+	public SkillState() {
 		try {
 			font = new Font("Arial", Font.BOLD, 16);
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-skills.png"));

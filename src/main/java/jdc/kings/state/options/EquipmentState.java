@@ -16,20 +16,11 @@ import jdc.kings.utils.BundleUtil;
 
 public class EquipmentState extends GameState implements KeyState {
 	
-	private static EquipmentState instance;
-	
 	private BufferedImage image;
 	private Font font;
 	private String title;
 	
-	public static EquipmentState getInstance() {
-		if (instance == null) {
-			instance = new EquipmentState();
-		}
-		return instance;
-	}
-	
-	private EquipmentState() {
+	public EquipmentState() {
 		try {
 			font = new Font("Arial", Font.BOLD, 14);
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-equipment.png"));

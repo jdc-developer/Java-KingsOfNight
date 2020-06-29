@@ -72,7 +72,6 @@ public class StateManager {
 		try {
 			gameStates[currentState].tick();
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
 	
@@ -80,7 +79,6 @@ public class StateManager {
 		try {
 			gameStates[currentState].render(g);
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
 	

@@ -1,13 +1,24 @@
 package jdc.kings.state.objects;
 
+import jdc.kings.objects.InventoryItem;
+
 public class Option {
 	
+	private InventoryItem item;
 	private String description;
 	private float x;
 	private float y;
 	private float width;
 	private float height;
 	
+	public InventoryItem getItem() {
+		return item;
+	}
+
+	public void setItem(InventoryItem item) {
+		this.item = item;
+	}
+
 	public String getDescription() {
 		return description;
 	}

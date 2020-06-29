@@ -152,19 +152,19 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 		
 		switch (currentChoice) {
 			case 0:
-				subState = ItemState.getInstance();
+				subState = new ItemState();
 				break;
 			case 1:
-				subState = SkillState.getInstance();
+				subState = new SkillState();
 				break;
 			case 2:
-				subState = EquipmentState.getInstance();
+				subState = new EquipmentState();
 				break;
 			case 3:
-				subState = StatusState.getInstance();
+				subState = new StatusState();
 				break;
 			case 4:
-				subState = SettingsState.getInstance();
+				subState = new SettingsState();
 				break;
 			case 6:
 				LevelManager.getCurrentLevel().destroy();
@@ -220,6 +220,11 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 					&& (point.getY() >= option.getY() - 20 && point.getY() <= option.getY() + option.getHeight())) {
 				currentChoice = i;
 			}
+		}
+		
+		if (subState != null) {
+			MouseState mouseState = (MouseState) subState;
+			mouseState.mouseMoved(e);
 		}
 	}
 

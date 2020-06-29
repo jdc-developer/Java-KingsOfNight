@@ -17,8 +17,6 @@ import jdc.kings.utils.Constants;
 
 public class StatusState extends GameState implements KeyState {
 	
-	private static StatusState instance;
-	
 	private BufferedImage image;
 	private BufferedImage edronot;
 	private Font titleFont;
@@ -28,14 +26,7 @@ public class StatusState extends GameState implements KeyState {
 	
 	private String[] statusInfo = new String[6];
 	
-	public static StatusState getInstance() {
-		if (instance == null) {
-			instance = new StatusState();
-		}
-		return instance;
-	}
-	
-	private StatusState() {
+	public StatusState() {
 		try {
 			titleFont = new Font("Arial", Font.BOLD, 16);
 			subtitleFont = new Font("Arial", Font.BOLD, 14);
@@ -53,12 +44,12 @@ public class StatusState extends GameState implements KeyState {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		title = BundleUtil.getMessageResourceString("menuOptionFour", locale);
 		
-		statusInfo[0] = BundleUtil.getMessageResourceString("StatusInfoOne", locale);
-		statusInfo[1] = BundleUtil.getMessageResourceString("StatusInfoTwo", locale);
-		statusInfo[2] = BundleUtil.getMessageResourceString("StatusInfoThree", locale);
-		statusInfo[3] = BundleUtil.getMessageResourceString("StatusInfoFour", locale);
-		statusInfo[4] = BundleUtil.getMessageResourceString("StatusInfoFive", locale);
-		statusInfo[5] = BundleUtil.getMessageResourceString("StatusInfoSix", locale);
+		statusInfo[0] = BundleUtil.getMessageResourceString("statusInfoOne", locale);
+		statusInfo[1] = BundleUtil.getMessageResourceString("statusInfoTwo", locale);
+		statusInfo[2] = BundleUtil.getMessageResourceString("statusInfoThree", locale);
+		statusInfo[3] = BundleUtil.getMessageResourceString("statusInfoFour", locale);
+		statusInfo[4] = BundleUtil.getMessageResourceString("statusInfoFive", locale);
+		statusInfo[5] = BundleUtil.getMessageResourceString("menuOptionOne", locale);
 	}
 
 	@Override
