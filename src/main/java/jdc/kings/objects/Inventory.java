@@ -15,7 +15,7 @@ public class Inventory {
 		this.items = items;
 	}
 	
-	public InventoryItem findItem(int id) {
+	public InventoryItem findItem(Integer id) {
 		InventoryItem item = null;
 		for (int i = 0; i < items.size(); i++) {
 			InventoryItem searchItem = items.get(i);
@@ -24,6 +24,15 @@ public class Inventory {
 			}
 		}
 		return item;
+	}
+	
+	public void removeItem(Integer id) {
+		InventoryItem item = findItem(id);
+		if (item.getQuantity() > 1) {
+			item.decreaseQuantity();
+		} else {
+			items.remove(item);
+		}
 	}
 
 	public Inventory() {

@@ -7,7 +7,7 @@ import jdc.kings.view.TileMap;
 
 public class Item extends GameObject {
 	
-	protected int id;
+	protected Integer id;
 	protected String description;
 	protected BufferedImage image;
 	protected Player player;
@@ -39,7 +39,7 @@ public class Item extends GameObject {
 		}
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 	

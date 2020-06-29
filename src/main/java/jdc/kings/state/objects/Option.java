@@ -4,19 +4,28 @@ import jdc.kings.objects.InventoryItem;
 
 public class Option {
 	
-	private InventoryItem item;
+	private InventoryItem inventoryItem;
+	private Action<?, ?> action;
 	private String description;
 	private float x;
 	private float y;
 	private float width;
 	private float height;
 	
-	public InventoryItem getItem() {
-		return item;
+	public InventoryItem getInventoryItem() {
+		return inventoryItem;
 	}
 
-	public void setItem(InventoryItem item) {
-		this.item = item;
+	public void setInventoryItem(InventoryItem inventoryItem) {
+		this.inventoryItem = inventoryItem;
+	}
+
+	public Action<?, ?> getAction() {
+		return action;
+	}
+
+	public void setAction(Action<?, ?> action) {
+		this.action = action;
 	}
 
 	public String getDescription() {

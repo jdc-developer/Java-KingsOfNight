@@ -216,9 +216,9 @@ public class MapState extends GameState implements KeyState, MouseState {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		int key = e.getButton();
+		int button = e.getButton();
 		
-		if (key == MouseEvent.BUTTON1) {
+		if (button == MouseEvent.BUTTON1) {
 			mousePoint = e.getPoint();
 			mousePressed = true;
 		}
@@ -258,9 +258,9 @@ public class MapState extends GameState implements KeyState, MouseState {
 	}
 	
 	public void mouseReleased(MouseEvent e) {
-		int key = e.getButton();
+		int button = e.getButton();
 		
-		if (key == MouseEvent.BUTTON1) {
+		if (button == MouseEvent.BUTTON1) {
 			mousePressed = false;
 			right = left = up = down = false;
 		}

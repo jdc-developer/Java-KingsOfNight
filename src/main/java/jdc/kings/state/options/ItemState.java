@@ -1,7 +1,5 @@
 package jdc.kings.state.options;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -18,11 +17,13 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 
 import jdc.kings.Game;
+import jdc.kings.objects.Inventory;
 import jdc.kings.objects.InventoryItem;
 import jdc.kings.objects.Item;
 import jdc.kings.state.GameState;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
+import jdc.kings.state.objects.Action;
 import jdc.kings.state.objects.Option;
 import jdc.kings.utils.BundleUtil;
 
@@ -35,35 +36,29 @@ public class ItemState extends GameState implements KeyState, MouseState {
 	
 	private List<InventoryItem> items;
 	private LinkedList<Option> options = new LinkedList<>();
-	private Option[] itemOptions = new Option[5];
+	private Option[] actionOptions = new Option[5];
+	private ActionState actionState;
 	
 	private BufferedImage image;
 	private BufferedImage arrow;
 	private BufferedImage inverseArrow;
-	private BufferedImage actionMenuImage;
 	private BufferedImage selectedItemImage;
 	
+	private String title;
 	private Font font;
 	private Font quantityFont;
-	private Font optionsFont;
-	private Point actionPoint;
-	private Color selectedBackground = new Color(61, 11, 11);
-	private String title;
 	
 	private int lastItemsSize;
 	private int page = 0;
 	private int availablePages;
 	private int selectedItem;
-	private int selectedItemOption;
 	
 	public ItemState() {
 		try {
 			font = new Font("Arial", Font.BOLD, 16);
 			quantityFont = new Font("Arial", Font.PLAIN, 12);
-			optionsFont = new Font("Arial", Font.PLAIN, 14);
 			
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-items.png"));
-			actionMenuImage = ImageIO.read(getClass().getResourceAsStream("/game/action-menu.png"));
 			selectedItemImage = ImageIO.read(getClass().getResourceAsStream("/game/glass.png"));
 			arrow = ImageIO.read(getClass().getResourceAsStream("/game/arrow.png"));
 			
@@ -80,8 +75,8 @@ public class ItemState extends GameState implements KeyState, MouseState {
 			final AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 			rotateOp.filter(arrow, inverseArrow);
 			
-			for (int i = 0; i < itemOptions.length; i++) {
-				itemOptions[i] = new Option(null, 120, 18);
+			for (int i = 0; i < actionOptions.length; i++) {
+				actionOptions[i] = new Option(null, 120, 18);
 			}
 			
 			items = player.getInventory().getItems();
@@ -103,13 +98,13 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		String itemOptionFour = BundleUtil.getMessageResourceString("itemOptionFour", locale);
 		String itemOptionFive = BundleUtil.getMessageResourceString("itemOptionFive", locale);
 		
-		itemOptions[0].setDescription(itemOptionOne);
-		itemOptions[1].setDescription(itemOptionTwo);
-		itemOptions[2].setDescription(itemOptionThree);
-		itemOptions[3].setDescription(itemOptionFour);
-		itemOptions[4].setDescription(itemOptionFive);
+		actionOptions[0].setDescription(itemOptionOne);
+		actionOptions[1].setDescription(itemOptionTwo);
+		actionOptions[2].setDescription(itemOptionThree);
+		actionOptions[3].setDescription(itemOptionFour);
+		actionOptions[4].setDescription(itemOptionFive);
 		
-		if (items.size() > lastItemsSize) {
+		if (items.size() != lastItemsSize) {
 			getPageContent();
 		}
 	}
@@ -125,7 +120,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		
 		for (int i = 0; i < options.size(); i++) {
 			Option option = options.get(i);
-			InventoryItem inventoryItem = option.getItem();
+			InventoryItem inventoryItem = option.getInventoryItem();
 			Item item = inventoryItem.getItem();
 			
 			if (i == selectedItem) {
@@ -137,37 +132,15 @@ public class ItemState extends GameState implements KeyState, MouseState {
 			g.drawString(String.valueOf(inventoryItem.getQuantity()), (int)option.getX() + 25, (int)option.getY() + 10);
 		}
 		
-		if (actionPoint != null) {
-			int x = (int)actionPoint.getX();
-			int y = (int)actionPoint.getY();
-			
-			g.drawImage(actionMenuImage, x, y, actionMenuImage.getWidth(),
-					actionMenuImage.getHeight(), null);
-			
-			for (int i = 0; i < itemOptions.length; i++) {
-				Option itemOption = itemOptions[i];
-				g.setFont(optionsFont);
-				
-				if (i == selectedItemOption) {
-					g.setComposite(AlphaComposite.getInstance(
-				            AlphaComposite.SRC_OVER, 0.6f));
-					g.setColor(selectedBackground);
-					g.fillRect(x + 15, y + 16 + (20 * i), (int)itemOption.getWidth(),
-							(int)itemOption.getHeight());
-				}
-				
-				g.setColor(Color.white);
-				g.setComposite(AlphaComposite.getInstance(
-			            AlphaComposite.SRC_OVER, 1f));
-				
-				itemOption.setX(x + 20);
-				itemOption.setY(y + 30 + (20 * i));
-				g.drawString(itemOption.getDescription(), itemOption.getX(),itemOption.getY());
-			}
+		if (actionState != null) {
+			actionState.render(g);
 		}
 	}
 	
 	private void getPageContent() {
+		options.clear();
+		actionState = null;
+		
 		int count = items.size();
 		int startIndex = ITEMSPERPAGE * page;
 		availablePages = (int) Math.floor(count / ITEMSPERPAGE);
@@ -184,7 +157,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 			int x = 408 + (col * 38);
 			int y = 136 + (row * 36);
 			
-			option.setItem(inventoryItem);
+			option.setInventoryItem(inventoryItem);
 			option.setX(x);
 			option.setY(y);
 			options.add(option);
@@ -197,6 +170,20 @@ public class ItemState extends GameState implements KeyState, MouseState {
 					row = 0;
 				}
 			}
+		}
+	}
+	
+	private void createActionState(Option option) {
+		try {
+			audioPlayer.play("click");
+			Method action4 = Inventory.class.getMethod("removeItem", Integer.class);
+			Integer id = option.getInventoryItem().getItem().getId();
+			Action<Integer, Inventory> action = new Action<>(action4, player.getInventory(), id);
+			actionOptions[4].setAction(action);
+			actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
+		} catch (NoSuchMethodException | SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 
@@ -252,8 +239,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		
 		if (key == KeyEvent.VK_ENTER) {
 			Option option = options.get(selectedItem);
-			audioPlayer.play("click");
-			actionPoint = new Point((int)option.getX() + 22, (int)option.getY() + 22);
+			createActionState(option);
 		}
 	}
 
@@ -265,16 +251,16 @@ public class ItemState extends GameState implements KeyState, MouseState {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		int key = e.getButton();
-		if (key == MouseEvent.BUTTON1) {
+		int button = e.getButton();
+		if (button == MouseEvent.BUTTON1) {
 			Point point = e.getPoint();
 			
-			if (actionPoint != null) {
-				if ((point.getX() < actionPoint.getX() || (point.getY() < actionPoint.getY() ||
-						point.getY() > actionPoint.getY() + actionMenuImage.getHeight())) ||
-						(point.getX() > actionPoint.getX() + actionMenuImage.getWidth() || (point.getY() < actionPoint.getY() ||
-								point.getY() > actionPoint.getY() + actionMenuImage.getHeight()))) {
-					actionPoint = null;
+			if (actionState != null) {
+				if ((point.getX() < actionState.getX() || (point.getY() < actionState.getY() ||
+						point.getY() > actionState.getY() + actionState.getImage().getHeight())) ||
+						(point.getX() > actionState.getX() + actionState.getImage().getWidth() || (point.getY() < actionState.getY() ||
+								point.getY() > actionState.getY() + actionState.getImage().getHeight()))) {
+					actionState = null;
 				}
 			}
 			
@@ -283,7 +269,6 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				if (page < availablePages) {
 					page++;
 					selectedItem = 0;
-					options.clear();
 					getPageContent();
 				}
 			}
@@ -293,7 +278,6 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				if (page > 0) {
 					page--;
 					selectedItem = 0;
-					options.clear();
 					getPageContent();
 				}
 			}
@@ -303,32 +287,23 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				if (point.getX() >= option.getX() && point.getX() <= (option.getX() + option.getWidth())
 						&& point.getY() >= option.getY() && point.getY() <= (option.getY() + option.getHeight())) {
 						
-						if (actionPoint != null) {
-							if ((point.getX() < actionPoint.getX() || (point.getY() < actionPoint.getY() ||
-									point.getY() > actionPoint.getY() + actionMenuImage.getHeight())) ||
-									(point.getX() > actionPoint.getX() + actionMenuImage.getWidth() || (point.getY() < actionPoint.getY() ||
-											point.getY() > actionPoint.getY() + actionMenuImage.getHeight()))) {
-								audioPlayer.play("click");
-								selectedItem = i;
-								actionPoint = new Point((int)option.getX() + 22, (int)option.getY() + 22);
+						if (actionState != null) {
+							if ((point.getX() < actionState.getX() || (point.getY() < actionState.getY() ||
+									point.getY() > actionState.getY() + actionState.getImage().getHeight())) ||
+									(point.getX() > actionState.getX() + actionState.getImage().getWidth() || (point.getY() < actionState.getY() ||
+											point.getY() > actionState.getY() + actionState.getImage().getHeight()))) {
+								createActionState(option);
 							}
 						} else {
-							audioPlayer.play("click");
-							selectedItem = i;
-							actionPoint = new Point((int)option.getX() + 22, (int)option.getY() + 22);
+							createActionState(option);
 						}
 					}
 			}
-			
-			for (int i = 0; i < itemOptions.length; i++) {
-				Option option = itemOptions[i];
-				if (point.getX() >= option.getX() && point.getX() <= (option.getX() + option.getWidth())
-					&& point.getY() >= option.getY() - 15 && point.getY() <= (option.getY() + option.getHeight())) {
-					audioPlayer.play("click");
-				}
-			}
 		}
 		
+		if (actionState != null) {
+			actionState.mousePressed(e);
+		}
 	}
 
 	@Override
@@ -345,14 +320,8 @@ public class ItemState extends GameState implements KeyState, MouseState {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Point point = e.getPoint();
-		
-		for (int i = 0; i < itemOptions.length; i++) {
-			Option option = itemOptions[i];
-			if ((point.getX() >= option.getX() && point.getX() <= option.getX() + option.getWidth())
-					&& (point.getY() >= option.getY() - 15 && point.getY() <= option.getY() + option.getHeight())) {
-				selectedItemOption = i;
-			}
+		if (actionState != null) {
+			actionState.mouseMoved(e);
 		}
 	}
 
