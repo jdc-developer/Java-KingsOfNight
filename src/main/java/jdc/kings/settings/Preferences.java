@@ -1,4 +1,4 @@
-package jdc.kings.options;
+package jdc.kings.settings;
 
 import java.io.Serializable;
 import java.util.List;

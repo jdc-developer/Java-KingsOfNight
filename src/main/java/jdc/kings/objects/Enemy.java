@@ -23,14 +23,6 @@ public class Enemy extends GameObject {
 		hitClip = "enemy-hit";
 		audioPlayer.loadAudio(hitClip, "/sfx/enemies/hit.mp3");
 	}
-
-	public float getDamage() {
-		return damage;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
 	
 	protected void checkPlayerDamage() {
 		if (intersects(player) && !dying && !dead) {
@@ -93,6 +85,14 @@ public class Enemy extends GameObject {
 		} else {
 			corner = false;
 		}
+	}
+	
+	public float getDamage() {
+		return damage;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public Player getPlayer() {

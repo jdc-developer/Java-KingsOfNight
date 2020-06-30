@@ -105,171 +105,6 @@ public abstract class GameObject {
 		spriteLoader = SpriteLoader.getInstance();
 	}
 	
-	public boolean intersects(GameObject o) {
-		Rectangle r1 = getRectangle();
-		Rectangle r2 = o.getRectangle();
-		return r1.intersects(r2);
-	}
-	
-	public Rectangle getRectangle() {
-		return new Rectangle(
-				(int)x - cwidth,
-				(int)y - cheight,
-				cwidth,
-				cheight);
-	}
-
-	public float getX() {
-		return x;
-	}
-
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
-
-	public float getVelX() {
-		return velX;
-	}
-
-	public void setVelX(float velX) {
-		this.velX = velX;
-	}
-
-	public float getVelY() {
-		return velY;
-	}
-
-	public void setVelY(float velY) {
-		this.velY = velY;
-	}
-	
-	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	public void setLeft(boolean left) {
-		this.left = left;
-	}
-
-	public void setRight(boolean right) {
-		this.right = right;
-	}
-
-	public void setUp(boolean up) {
-		this.up = up;
-	}
-
-	public void setDown(boolean down) {
-		this.down = down;
-	}
-
-	public void setJumping(boolean jumping) {
-		this.jumping = jumping;
-	}
-
-	public void setFalling(boolean falling) {
-		this.falling = falling;
-	}
-	
-	public boolean isFacingRight() {
-		return facingRight;
-	}
-
-	public float getMaxSpeed() {
-		return maxSpeed;
-	}
-
-	public float getMoveSpeed() {
-		return moveSpeed;
-	}
-
-	public float getHealth() {
-		return health;
-	}
-
-	public float getStamina() {
-		return stamina;
-	}
-
-	public boolean isFlinching() {
-		return flinching;
-	}
-
-	public long getFlinchTimer() {
-		return flinchTimer;
-	}
-	
-	public void setRolling(boolean rolling) {
-		this.rolling = rolling;
-	}
-
-	public boolean isRolling() {
-		return rolling;
-	}
-	
-	public boolean bleeds() {
-		return bleeds;
-	}
-
-	public void setShield(boolean shield) {
-		this.shield = shield;
-	}
-
-	public boolean isShield() {
-		return shield;
-	}
-	
-	public boolean isDead() {
-		return dead;
-	}
-	
-	public boolean isDying() {
-		return dying;
-	}
-	
-	public long getRollTimer() {
-		return rollTimer;
-	}
-
-	public long getHoldTimer() {
-		return holdTimer;
-	}
-
-	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public void setVector(float velX, float velY) {
-		this.velX = velX;
-		this.velY = velY;
-	}
-	
-	public void setMapPosition() {
-		xmap = tileMap.getX();
-		ymap = tileMap.getY();
-	}
-	
 	public void checkTileMapCollision() {
 		currCol = (int)x / tileSize;
 		currRow = (int)y / tileSize;
@@ -474,6 +309,171 @@ public abstract class GameObject {
 			}
 			hit(shieldDamage, right, true);
 		}
+	}
+	
+	public boolean intersects(GameObject o) {
+		Rectangle r1 = getRectangle();
+		Rectangle r2 = o.getRectangle();
+		return r1.intersects(r2);
+	}
+	
+	public Rectangle getRectangle() {
+		return new Rectangle(
+				(int)x - cwidth,
+				(int)y - cheight,
+				cwidth,
+				cheight);
+	}
+	
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void setVector(float velX, float velY) {
+		this.velX = velX;
+		this.velY = velY;
+	}
+	
+	public void setMapPosition() {
+		xmap = tileMap.getX();
+		ymap = tileMap.getY();
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public float getVelX() {
+		return velX;
+	}
+
+	public void setVelX(float velX) {
+		this.velX = velX;
+	}
+
+	public float getVelY() {
+		return velY;
+	}
+
+	public void setVelY(float velY) {
+		this.velY = velY;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setLeft(boolean left) {
+		this.left = left;
+	}
+
+	public void setRight(boolean right) {
+		this.right = right;
+	}
+
+	public void setUp(boolean up) {
+		this.up = up;
+	}
+
+	public void setDown(boolean down) {
+		this.down = down;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
+	}
+
+	public void setFalling(boolean falling) {
+		this.falling = falling;
+	}
+	
+	public boolean isFacingRight() {
+		return facingRight;
+	}
+
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public float getMoveSpeed() {
+		return moveSpeed;
+	}
+
+	public float getHealth() {
+		return health;
+	}
+
+	public float getStamina() {
+		return stamina;
+	}
+
+	public boolean isFlinching() {
+		return flinching;
+	}
+
+	public long getFlinchTimer() {
+		return flinchTimer;
+	}
+	
+	public void setRolling(boolean rolling) {
+		this.rolling = rolling;
+	}
+
+	public boolean isRolling() {
+		return rolling;
+	}
+	
+	public boolean bleeds() {
+		return bleeds;
+	}
+
+	public void setShield(boolean shield) {
+		this.shield = shield;
+	}
+
+	public boolean isShield() {
+		return shield;
+	}
+	
+	public boolean isDead() {
+		return dead;
+	}
+	
+	public boolean isDying() {
+		return dying;
+	}
+	
+	public long getRollTimer() {
+		return rollTimer;
+	}
+
+	public long getHoldTimer() {
+		return holdTimer;
 	}
 
 }

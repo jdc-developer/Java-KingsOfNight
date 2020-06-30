@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 
 import jdc.kings.input.KeyInput;
 import jdc.kings.input.MouseInput;
-import jdc.kings.options.Preferences;
-import jdc.kings.options.PreferencesLoader;
+import jdc.kings.settings.Preferences;
+import jdc.kings.settings.PreferencesLoader;
 import jdc.kings.state.LoadingState;
 import jdc.kings.state.StateManager;
 import jdc.kings.utils.Constants;
