@@ -18,7 +18,9 @@ public class StaminaPotion extends Item {
 		super(tm);
 		try {
 			Locale locale = Game.getInstance().getPreferences().getLocale();
+			name = BundleUtil.getMessageResourceString("staminaPotionName", locale);
 			description = BundleUtil.getMessageResourceString("staminaPotionDescription", locale);
+			type = USABLE;
 			
 			id = 2;
 			fallSpeed = 0.2f;

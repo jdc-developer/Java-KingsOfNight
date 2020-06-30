@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 public class Action<T, K> {
 	
 	private Method action;
-	private K declaringClass;
-	private T actionParameter;
+	private T declaringClass;
+	private K actionParameter;
 	
 	public Method getAction() {
 		return action;
@@ -17,19 +17,19 @@ public class Action<T, K> {
 		this.action = action;
 	}
 	
-	public K getDeclaringClass() {
+	public T getDeclaringClass() {
 		return declaringClass;
 	}
 
-	public void setDeclaringClass(K declaringClass) {
+	public void setDeclaringClass(T declaringClass) {
 		this.declaringClass = declaringClass;
 	}
 
-	public T getActionParameter() {
+	public K getActionParameter() {
 		return actionParameter;
 	}
 	
-	public void setActionParameter(T actionParameter) {
+	public void setActionParameter(K actionParameter) {
 		this.actionParameter = actionParameter;
 	}
 	
@@ -46,7 +46,7 @@ public class Action<T, K> {
 		super();
 	}
 
-	public Action(Method action, K declaringClass, T actionParameter) {
+	public Action(Method action, T declaringClass, K actionParameter) {
 		super();
 		this.action = action;
 		this.declaringClass = declaringClass;

@@ -9,7 +9,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -17,13 +16,12 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 
 import jdc.kings.Game;
-import jdc.kings.objects.Inventory;
 import jdc.kings.objects.InventoryItem;
 import jdc.kings.objects.Item;
 import jdc.kings.state.GameState;
+import jdc.kings.state.LevelManager;
 import jdc.kings.state.interfaces.KeyState;
 import jdc.kings.state.interfaces.MouseState;
-import jdc.kings.state.objects.Action;
 import jdc.kings.state.objects.Option;
 import jdc.kings.utils.BundleUtil;
 
@@ -36,8 +34,10 @@ public class ItemState extends GameState implements KeyState, MouseState {
 	
 	private List<InventoryItem> items;
 	private LinkedList<Option> options = new LinkedList<>();
-	private Option[] actionOptions = new Option[5];
+	private Option[] actionOptions = new Option[4];
+	
 	private ActionState actionState;
+	private DescriptionState descriptionState;
 	
 	private BufferedImage image;
 	private BufferedImage arrow;
@@ -96,16 +96,24 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		String itemOptionTwo = BundleUtil.getMessageResourceString("itemOptionTwo", locale);
 		String itemOptionThree = BundleUtil.getMessageResourceString("itemOptionThree", locale);
 		String itemOptionFour = BundleUtil.getMessageResourceString("itemOptionFour", locale);
-		String itemOptionFive = BundleUtil.getMessageResourceString("itemOptionFive", locale);
 		
 		actionOptions[0].setDescription(itemOptionOne);
 		actionOptions[1].setDescription(itemOptionTwo);
 		actionOptions[2].setDescription(itemOptionThree);
 		actionOptions[3].setDescription(itemOptionFour);
-		actionOptions[4].setDescription(itemOptionFive);
 		
 		if (items.size() != lastItemsSize) {
 			getPageContent();
+		}
+		
+		if (descriptionState != null) {
+			descriptionState.tick();
+		}
+		
+		if (descriptionState != null || actionState != null) {
+			LevelManager.getCurrentLevel().setEscEnabled(false);
+		} else {
+			LevelManager.getCurrentLevel().setEscEnabled(true);
 		}
 	}
 
@@ -116,7 +124,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		g.drawImage(inverseArrow, 406, 440, inverseArrow.getWidth(), inverseArrow.getHeight(), null);
 		
 		g.setFont(font);
-		g.drawString(title, 485, 95);
+		g.drawString(title, 483, 95);
 		
 		for (int i = 0; i < options.size(); i++) {
 			Option option = options.get(i);
@@ -134,6 +142,10 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		
 		if (actionState != null) {
 			actionState.render(g);
+		}
+		
+		if (descriptionState != null) {
+			descriptionState.render(g);
 		}
 	}
 	
@@ -172,23 +184,19 @@ public class ItemState extends GameState implements KeyState, MouseState {
 			}
 		}
 	}
-	
-	private void createActionState(Option option) {
-		try {
-			audioPlayer.play("click");
-			Method action4 = Inventory.class.getMethod("removeItem", Integer.class);
-			Integer id = option.getInventoryItem().getItem().getId();
-			Action<Integer, Inventory> action = new Action<>(action4, player.getInventory(), id);
-			actionOptions[4].setAction(action);
-			actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
-		} catch (NoSuchMethodException | SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (descriptionState != null) {
+			descriptionState.keyPressed(e);
+		} else if (actionState != null) {
+			actionState.keyPressed(e);
+		} else {
+			activeKeyPressed(e);
+		}
+	}
+	
+	private void activeKeyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		
 		if (key == KeyEvent.VK_RIGHT) {
@@ -239,7 +247,8 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		
 		if (key == KeyEvent.VK_ENTER) {
 			Option option = options.get(selectedItem);
-			createActionState(option);
+			audioPlayer.play("click");
+			ItemActionManager.createActionState(this, option);
 		}
 	}
 
@@ -251,6 +260,14 @@ public class ItemState extends GameState implements KeyState, MouseState {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		if (descriptionState != null) {
+			descriptionState.mousePressed(e);
+		} else {
+			activeMousePressed(e);
+		}
+	}
+	
+	private void activeMousePressed(MouseEvent e) {
 		int button = e.getButton();
 		if (button == MouseEvent.BUTTON1) {
 			Point point = e.getPoint();
@@ -292,10 +309,15 @@ public class ItemState extends GameState implements KeyState, MouseState {
 									point.getY() > actionState.getY() + actionState.getImage().getHeight())) ||
 									(point.getX() > actionState.getX() + actionState.getImage().getWidth() || (point.getY() < actionState.getY() ||
 											point.getY() > actionState.getY() + actionState.getImage().getHeight()))) {
-								createActionState(option);
+								selectedItem = i;
+								audioPlayer.play("click");
+								ItemActionManager.createActionState(this, option);
 							}
 						} else {
-							createActionState(option);
+							selectedItem = i;
+							audioPlayer.play("click");
+							ItemActionManager.createActionState(this, option);
+							
 						}
 					}
 			}
@@ -325,4 +347,16 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		}
 	}
 
+	public void setDescriptionState(DescriptionState descriptionState) {
+		this.descriptionState = descriptionState;
+	}
+
+	public void setActionState(ActionState actionState) {
+		this.actionState = actionState;
+	}
+
+	public Option[] getActionOptions() {
+		return actionOptions;
+	}
+	
 }

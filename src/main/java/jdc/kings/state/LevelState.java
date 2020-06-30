@@ -11,7 +11,6 @@ import java.util.concurrent.BlockingQueue;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
-import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
@@ -44,6 +43,7 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private boolean death;
 	private boolean options;
+	private boolean escEnabled = true;
 	private float alpha = 1.0f;
 	private float reduceSound = 0;
 
@@ -257,39 +257,39 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private void inGameKeyPressed(KeyEvent e) {
 		int keyPressed = e.getKeyCode();
-		Key key = KeyInput.getInstance().findKey(keyPressed);
+		Key key = KeyInput.getInstance().findByKey(keyPressed);
 		
 		if (key != null && !player.isDead()) {
 			key.setPressed(true);
-			KeyAction action = key.getAction();
-			if (action == KeyAction.RIGHT) {
+			int action = key.getAction();
+			if (action == KeyInput.RIGHT) {
 				player.setRight(true);
 			}
-			if (action == KeyAction.LEFT) {
+			if (action == KeyInput.LEFT) {
 				player.setLeft(true);
 			}
-			if (action == KeyAction.JUMP) {
+			if (action == KeyInput.JUMP) {
 				player.setJumping(true);
 			}
-			if (action == KeyAction.STABBING) {
+			if (action == KeyInput.STAB) {
 				player.setStabbing(true);
 			}
-			if (action == KeyAction.CUTTING) {
+			if (action == KeyInput.CUT) {
 				player.setCutting(true);
 			}
-			if (action == KeyAction.SLICING) {
+			if (action == KeyInput.SLICE) {
 				player.setSlicing(true);
 			}
-			if (action == KeyAction.ROLLING) {
+			if (action == KeyInput.ROLL) {
 				player.setRolling(true);
 			}
-			if (action == KeyAction.SHIELD) {
+			if (action == KeyInput.SHIELD) {
 				player.setShield(true);
 			}
 		}
 		
 		if (keyPressed == KeyEvent.VK_ESCAPE) {
-			if (options) {
+			if (options && escEnabled) {
 				if (optionsState.getSubState() != null) {
 					optionsState.setSubState(null);
 				} else {
@@ -305,21 +305,21 @@ public class LevelState extends GameState implements KeyState, MouseState {
 	
 	private void inGameKeyReleased(KeyEvent e) {
 		int keyPressed = e.getKeyCode();
-		Key key = KeyInput.getInstance().findKey(keyPressed);
+		Key key = KeyInput.getInstance().findByKey(keyPressed);
 		
 		if (key != null) {
 			key.setPressed(false);
-			KeyAction action = key.getAction();
-			if (action == KeyAction.RIGHT) {
+			int action = key.getAction();
+			if (action == KeyInput.RIGHT) {
 				player.setRight(false);
 			}
-			if (action == KeyAction.LEFT) {
+			if (action == KeyInput.LEFT) {
 				player.setLeft(false);
 			}
-			if (action == KeyAction.JUMP) {
+			if (action == KeyInput.JUMP) {
 				player.setJumping(false);
 			}
-			if (action == KeyAction.SHIELD) {
+			if (action == KeyInput.SHIELD) {
 				player.setShield(false);
 			}
 		}
@@ -351,6 +351,17 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		}
 	}
 	
+	public void destroy() {
+		try {
+			spawnerThread.join();
+			manager.setNextState(StateManager.MENU);
+			manager.setState(StateManager.CLEAR);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public List<BossState> getBossStates() {
 		return bossStates;
 	}
@@ -371,15 +382,12 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		this.spawnerThread = enemyThread;
 	}
 	
-	public void destroy() {
-		try {
-			spawnerThread.join();
-			manager.setNextState(StateManager.MENU);
-			manager.setState(StateManager.CLEAR);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public boolean isEscEnabled() {
+		return escEnabled;
+	}
+
+	public void setEscEnabled(boolean escEnabled) {
+		this.escEnabled = escEnabled;
 	}
 	
 }

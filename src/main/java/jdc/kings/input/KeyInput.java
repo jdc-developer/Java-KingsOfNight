@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jdc.kings.input.enums.KeyAction;
 import jdc.kings.state.StateManager;
 import jdc.kings.state.interfaces.KeyState;
 
@@ -15,6 +14,15 @@ public class KeyInput extends KeyAdapter {
 	private static KeyInput instance;
 	private StateManager manager;
 	private List<Key> keys = new ArrayList<>();
+	
+	public static final int RIGHT = 0;
+	public static final int LEFT = 1;
+	public static final int ROLL = 2;
+	public static final int SHIELD = 3;
+	public static final int SLICE = 4;
+	public static final int CUT = 5;
+	public static final int STAB = 6;
+	public static final int JUMP = 7;
 	
 	private KeyInput() {
 		manager = StateManager.getInstance();
@@ -30,19 +38,19 @@ public class KeyInput extends KeyAdapter {
 	
 	public void defaultKeys() {
 		keys.clear();
-		Key key1 = new Key(KeyEvent.VK_D, KeyAction.RIGHT, false);
-		Key key2 = new Key(KeyEvent.VK_A, KeyAction.LEFT, false);
-		Key key3 = new Key(KeyEvent.VK_U, KeyAction.ROLLING, false);
-		Key key4 = new Key(KeyEvent.VK_I, KeyAction.SHIELD, false);
-		Key key5 = new Key(KeyEvent.VK_H, KeyAction.SLICING, false);
-		Key key6 = new Key(KeyEvent.VK_J, KeyAction.CUTTING, false);
-		Key key7 = new Key(KeyEvent.VK_K, KeyAction.STABBING, false);
-		Key key8 = new Key(KeyEvent.VK_SPACE, KeyAction.JUMP, false);
+		Key key1 = new Key(KeyEvent.VK_D, RIGHT, false);
+		Key key2 = new Key(KeyEvent.VK_A, LEFT, false);
+		Key key3 = new Key(KeyEvent.VK_U, ROLL, false);
+		Key key4 = new Key(KeyEvent.VK_I, SHIELD, false);
+		Key key5 = new Key(KeyEvent.VK_H, SLICE, false);
+		Key key6 = new Key(KeyEvent.VK_J, CUT, false);
+		Key key7 = new Key(KeyEvent.VK_K, STAB, false);
+		Key key8 = new Key(KeyEvent.VK_SPACE, JUMP, false);
 		
 		keys.addAll(Arrays.asList(key1, key2, key3, key4, key5, key6, key7, key8));
 	}
 
-	public Key findKey(int keyPressed) {
+	public Key findByKey(int keyPressed) {
 		for (Key key : keys) {
 			if (key.getMapping() == keyPressed) {
 				return key;
@@ -51,7 +59,7 @@ public class KeyInput extends KeyAdapter {
 		return null;
 	}
 	
-	public Key findKey(KeyAction action) {
+	public Key findByAction(int action) {
 		for (Key key : keys) {
 			if (key.getAction() == action) {
 				return key;

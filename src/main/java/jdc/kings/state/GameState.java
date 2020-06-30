@@ -22,5 +22,9 @@ public abstract class GameState {
 		audioPlayer.close(bgMusic);
 		audioPlayer.removeClip(bgMusic);
 	}
+	
+	public static Player getPlayer() {
+		return player;
+	}
 
 }

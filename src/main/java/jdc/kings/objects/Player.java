@@ -5,7 +5,6 @@ import java.util.List;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
-import jdc.kings.input.enums.KeyAction;
 import jdc.kings.objects.interactions.Attack;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
@@ -187,8 +186,8 @@ public class Player extends GameObject {
 				maxSpeed = 4.6f;
 				
 				KeyInput keyInput = KeyInput.getInstance();
-				Key rightKey = keyInput.findKey(KeyAction.RIGHT);
-				Key leftKey = keyInput.findKey(KeyAction.LEFT);
+				Key rightKey = keyInput.findByAction(KeyInput.RIGHT);
+				Key leftKey = keyInput.findByAction(KeyInput.LEFT);
 				
 				if (facingRight && !rightKey.isPressed()) {
 					right = false;

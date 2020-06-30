@@ -28,11 +28,7 @@ public class Inventory {
 	
 	public void removeItem(Integer id) {
 		InventoryItem item = findItem(id);
-		if (item.getQuantity() > 1) {
-			item.decreaseQuantity();
-		} else {
-			items.remove(item);
-		}
+		items.remove(item);
 	}
 
 	public Inventory() {

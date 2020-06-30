@@ -18,7 +18,9 @@ public class HealthPotion extends Item {
 		super(tm);
 		try {
 			Locale locale = Game.getInstance().getPreferences().getLocale();
+			name = BundleUtil.getMessageResourceString("healthPotionName", locale);
 			description = BundleUtil.getMessageResourceString("healthPotionDescription", locale);
+			type = USABLE;
 			
 			id = 1;
 			fallSpeed = 0.2f;

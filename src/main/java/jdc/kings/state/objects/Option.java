@@ -1,11 +1,13 @@
 package jdc.kings.state.objects;
 
 import jdc.kings.objects.InventoryItem;
+import jdc.kings.state.options.ActionState;
 
 public class Option {
 	
 	private InventoryItem inventoryItem;
 	private Action<?, ?> action;
+	private ActionState prompt;
 	private String description;
 	private float x;
 	private float y;
@@ -26,6 +28,14 @@ public class Option {
 
 	public void setAction(Action<?, ?> action) {
 		this.action = action;
+	}
+
+	public ActionState getPrompt() {
+		return prompt;
+	}
+
+	public void setPrompt(ActionState prompt) {
+		this.prompt = prompt;
 	}
 
 	public String getDescription() {

@@ -8,10 +8,23 @@ import jdc.kings.view.TileMap;
 public class Item extends GameObject {
 	
 	protected Integer id;
+	protected String name;
 	protected String description;
+	protected int type;
+	
 	protected BufferedImage image;
 	protected Player player;
 	private boolean shouldRemove;
+	
+	public static final int USABLE = 0;
+	public static final int HELMET = 1;
+	public static final int ARMOR = 2;
+	public static final int GAUNTLETS = 3;
+	public static final int GREAVES = 4;
+	public static final int SWORD = 5;
+	public static final int SHIELD = 6;
+	public static final int RING = 7;
+	public static final int KEY = 8;
 
 	public Item(TileMap tm) {
 		super(tm);
@@ -43,6 +56,10 @@ public class Item extends GameObject {
 		return id;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public String getDescription() {
 		return description;
 	}

@@ -80,10 +80,14 @@ public abstract class LevelManager {
 		enemySpawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
 		enemySpawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);*/
 		
-		itemSpawners = new ItemSpawner[5];
+		itemSpawners = new ItemSpawner[10];
 		
-		for (int i = 0; i < itemSpawners.length; i++) {
+		for (int i = 0; i < 5; i++) {
 			itemSpawners[i] = new ItemSpawner(HealthPotion.class, 200, 650, tileMap);
+		}
+		
+		for (int i = 5; i < 10; i++) {
+			itemSpawners[i] = new ItemSpawner(StaminaPotion.class, 200, 650, tileMap);
 		}
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
