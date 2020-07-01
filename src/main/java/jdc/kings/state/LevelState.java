@@ -59,7 +59,6 @@ public class LevelState extends GameState implements KeyState, MouseState {
 		audioPlayer.loop(bgMusic);*/
 		
 		audioPlayer.loadAudio("blood-explosion", "/sfx/enemies/blood-explosion.mp3");
-		audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
 	}
 	
 	public void tick() {

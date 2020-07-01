@@ -94,6 +94,7 @@ public class ActionState extends GameState implements KeyState, MouseState {
 			subActionState = option.getPrompt();
 		} else {
 			option.getAction().callAction();
+			closeActionMenu();
 		}
 	}
 
@@ -187,14 +188,7 @@ public class ActionState extends GameState implements KeyState, MouseState {
 		}
 		
 		if (key == KeyEvent.VK_ESCAPE) {
-			try {
-				Method method = parent.getClass().getMethod("setActionState", ActionState.class);
-				ActionState actionState = null;
-				method.invoke(parent, actionState);
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			closeActionMenu();
 		}
 	}
 
@@ -202,6 +196,17 @@ public class ActionState extends GameState implements KeyState, MouseState {
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void closeActionMenu() {
+		try {
+			Method method = parent.getClass().getMethod("setActionState", ActionState.class);
+			ActionState actionState = null;
+			method.invoke(parent, actionState);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
 	public void setTitle(String title) {

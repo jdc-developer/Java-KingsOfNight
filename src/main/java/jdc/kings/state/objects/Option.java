@@ -1,11 +1,14 @@
 package jdc.kings.state.objects;
 
 import jdc.kings.objects.InventoryItem;
+import jdc.kings.objects.Item;
 import jdc.kings.state.options.ActionState;
 
 public class Option {
 	
 	private InventoryItem inventoryItem;
+	private Item item;
+	private int type;
 	private Action<?, ?> action;
 	private ActionState prompt;
 	private String description;
@@ -20,6 +23,22 @@ public class Option {
 
 	public void setInventoryItem(InventoryItem inventoryItem) {
 		this.inventoryItem = inventoryItem;
+	}
+
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public Action<?, ?> getAction() {

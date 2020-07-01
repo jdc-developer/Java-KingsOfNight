@@ -15,6 +15,7 @@ public class Item extends GameObject {
 	protected BufferedImage image;
 	protected Player player;
 	private boolean shouldRemove;
+	private boolean equipped;
 	
 	public static final int USABLE = 0;
 	public static final int HELMET = 1;
@@ -76,4 +77,16 @@ public class Item extends GameObject {
 		this.player = player;
 	}
 
+	public int getType() {
+		return type;
+	}
+
+	public boolean isEquipped() {
+		return equipped;
+	}
+
+	public void setEquipped(boolean equipped) {
+		this.equipped = equipped;
+	}
+	
 }

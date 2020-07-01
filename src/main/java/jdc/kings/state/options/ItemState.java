@@ -52,9 +52,11 @@ public class ItemState extends GameState implements KeyState, MouseState {
 	private int page = 0;
 	private int availablePages;
 	private int selectedItem;
+	private Integer typeFilter;
 	
-	public ItemState() {
+	public ItemState(Integer typeFilter) {
 		try {
+			this.typeFilter = typeFilter;
 			font = new Font("Arial", Font.BOLD, 16);
 			quantityFont = new Font("Arial", Font.PLAIN, 12);
 			
@@ -172,7 +174,11 @@ public class ItemState extends GameState implements KeyState, MouseState {
 			option.setInventoryItem(inventoryItem);
 			option.setX(x);
 			option.setY(y);
-			options.add(option);
+			if (typeFilter == null) {
+				options.add(option);
+			} else if (typeFilter == option.getInventoryItem().getItem().getType()) {
+				options.add(option);
+			}
 			
 			col++;
 			if (col == COLS) {
@@ -248,7 +254,11 @@ public class ItemState extends GameState implements KeyState, MouseState {
 		if (key == KeyEvent.VK_ENTER) {
 			Option option = options.get(selectedItem);
 			audioPlayer.play("click");
-			ItemActionManager.createActionState(this, option);
+			if (typeFilter == null) {
+				ItemActionManager.createActionState(this, option);
+			} else {
+				OptionsState.getInstance().setSubState(new EquipmentState(option.getInventoryItem().getItem()));
+			}
 		}
 	}
 
@@ -311,12 +321,21 @@ public class ItemState extends GameState implements KeyState, MouseState {
 											point.getY() > actionState.getY() + actionState.getImage().getHeight()))) {
 								selectedItem = i;
 								audioPlayer.play("click");
-								ItemActionManager.createActionState(this, option);
+								if (typeFilter == null) {
+									ItemActionManager.createActionState(this, option);
+								} else {
+									OptionsState.getInstance().setSubState(new EquipmentState(option.getInventoryItem().getItem()));
+								}
+								
 							}
 						} else {
 							selectedItem = i;
 							audioPlayer.play("click");
-							ItemActionManager.createActionState(this, option);
+							if (typeFilter == null) {
+								ItemActionManager.createActionState(this, option);
+							} else {
+								OptionsState.getInstance().setSubState(new EquipmentState(option.getInventoryItem().getItem()));
+							}
 							
 						}
 					}

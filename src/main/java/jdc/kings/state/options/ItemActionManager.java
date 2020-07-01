@@ -22,6 +22,7 @@ public abstract class ItemActionManager {
 			
 			Item item = option.getInventoryItem().getItem();
 			setDescriptionMethod(itemState, actionOptions[1], item);
+			setEquipMethod(actionOptions[2], item);
 			setDiscardMethod(actionState, option, actionOptions[3], item);
 			
 			itemState.setActionState(actionState);
@@ -31,11 +32,62 @@ public abstract class ItemActionManager {
 		}
 	}
 	
-	private static void setDescriptionMethod(ItemState parentState, Option actionOption, Item item) throws NoSuchMethodException, SecurityException {
-		Method setDescriptionStateMethod = ItemState.class.getMethod("setDescriptionState", DescriptionState.class);
+	public static void createEquipActionState(EquipmentState equipmentState, Option option, String equip) {
+		try {
+			Option[] actionOptions = new Option[1];
+			ActionState actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
+			actionState.setParent(equipmentState);
+			
+			actionOptions[0] = new Option(null, 120, 18);
+			actionOptions[0].setDescription(equip);
+			
+			Method setSubStateMethod = OptionsState.class.getMethod("setSubState", GameState.class);
+			ItemState itemState = new ItemState(option.getType());
+			Action<OptionsState, GameState> setSubStateAction = new Action<>(setSubStateMethod, OptionsState.getInstance(), itemState);
+			actionOptions[0].setAction(setSubStateAction);
+			
+			equipmentState.setActionState(actionState);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void createUnequipActionState(EquipmentState equipmentState, Option option, String description, String unequip) {
+		try {
+			Option[] actionOptions = new Option[2];
+			ActionState actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
+			actionState.setParent(equipmentState);
+			
+			actionOptions[0] = new Option(description, 120, 18);
+			actionOptions[1] = new Option(unequip, 120, 18);
+			
+			Item item = option.getItem();
+			setDescriptionMethod(equipmentState, actionOptions[0], item);
+			
+			Method unequipMethod = Inventory.class.getMethod("unequipItem", Item.class);
+			Action<Inventory, Item> unequipAction = new Action<>(unequipMethod, GameState.getPlayer().getInventory(), option.getItem());
+			actionOptions[1].setAction(unequipAction);
+			
+			equipmentState.setActionState(actionState);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static void setDescriptionMethod(GameState parentState, Option actionOption, Item item) throws NoSuchMethodException, SecurityException {
+		Method setDescriptionStateMethod = parentState.getClass().getMethod("setDescriptionState", DescriptionState.class);
 		DescriptionState descriptionState = new DescriptionState(parentState, item);
-		Action<ItemState, DescriptionState> setDescriptionStateAction = new Action<>(setDescriptionStateMethod, parentState, descriptionState);
+		Action<GameState, DescriptionState> setDescriptionStateAction = new Action<>(setDescriptionStateMethod, parentState, descriptionState);
 		actionOption.setAction(setDescriptionStateAction);
+	}
+	
+	private static void setEquipMethod(Option actionOption, Item item) throws NoSuchMethodException, SecurityException {
+		Method setSubStateMethod = OptionsState.class.getMethod("setSubState", GameState.class);
+		EquipmentState equipmentState = new EquipmentState(item);
+		Action<OptionsState, GameState> setSubStateAction = new Action<>(setSubStateMethod, OptionsState.getInstance(), equipmentState);
+		actionOption.setAction(setSubStateAction);
 	}
 	
 	private static void setDiscardMethod(ActionState parentActionState, Option selectedOption, Option actionOption, Item item)

@@ -13,7 +13,7 @@ public abstract class GameState {
 	protected static Player player;
 	protected String bgMusic;
 	protected HUD hud;
-	protected AudioPlayer audioPlayer = AudioPlayer.getInstance();
+	protected static AudioPlayer audioPlayer = AudioPlayer.getInstance();
 	
 	public abstract void tick();
 	public abstract void render(Graphics2D g);

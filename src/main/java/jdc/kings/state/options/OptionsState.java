@@ -50,9 +50,6 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 			options[5] = new Option(null, 180, 30);
 			options[6] = new Option(null, 180, 30);
 			
-			audioPlayer.loadAudio("switch", "/sfx/menu/switch.mp3");
-			audioPlayer.loadAudio("click", "/sfx/menu/click.mp3");
-			
 			font = new Font("Arial", Font.PLAIN, 20);
 			image = ImageIO.read(getClass().getResourceAsStream("/game/options.jpg"));
 		} catch (IOException e) {
@@ -152,13 +149,13 @@ public class OptionsState extends GameState implements KeyState, MouseState {
 		
 		switch (currentChoice) {
 			case 0:
-				subState = new ItemState();
+				subState = new ItemState(null);
 				break;
 			case 1:
 				subState = new SkillState();
 				break;
 			case 2:
-				subState = new EquipmentState();
+				subState = new EquipmentState(null);
 				break;
 			case 3:
 				subState = new StatusState();

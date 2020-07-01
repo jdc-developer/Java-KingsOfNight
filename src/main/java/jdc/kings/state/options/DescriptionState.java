@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
@@ -23,20 +25,24 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 	
 	private BufferedImage image;
 	private Item item;
-	private ItemState itemState;
+	private GameState parent;
 	
 	private String title;
+	private String type;
 	private String back;
+	
 	private Font titleFont;
+	private Font typeFont;
 	private Font font;
 
-	public DescriptionState(ItemState itemState, Item item) {
+	public DescriptionState(GameState parent, Item item) {
 		try {
-			this.itemState = itemState;
+			this.parent = parent;
 			this.item = item;
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-description.png"));
 			titleFont = new Font("Arial", Font.BOLD, 15);
-			font = new Font("Arial", Font.PLAIN, 14);
+			typeFont = new Font("Arial", Font.BOLD, 13);
+			font = new Font("Arial", Font.PLAIN, 13);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,6 +54,36 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		title = BundleUtil.getMessageResourceString("itemOptionTwo", locale);
 		back = BundleUtil.getMessageResourceString("back", locale);
+		
+		switch (item.getType()) {
+			case Item.USABLE:
+				type = BundleUtil.getMessageResourceString("itemTypeOne", locale);
+				break;
+			case Item.HELMET:
+				type = BundleUtil.getMessageResourceString("itemTypeTwo", locale);
+				break;
+			case Item.ARMOR:
+				type = BundleUtil.getMessageResourceString("itemTypeThree", locale);
+				break;
+			case Item.GAUNTLETS:
+				type = BundleUtil.getMessageResourceString("itemTypeFour", locale);
+				break;
+			case Item.GREAVES:
+				type = BundleUtil.getMessageResourceString("itemTypeFive", locale);
+				break;
+			case Item.SWORD:
+				type = BundleUtil.getMessageResourceString("itemTypeSix", locale);
+				break;
+			case Item.SHIELD:
+				type = BundleUtil.getMessageResourceString("itemTypeSeven", locale);
+				break;
+			case Item.RING:
+				type = BundleUtil.getMessageResourceString("itemTypeEight", locale);
+				break;
+			case Item.KEY:
+				type = BundleUtil.getMessageResourceString("itemTypeNine", locale);
+				break;
+		}
 	}
 
 	@Override
@@ -62,7 +98,10 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 		g.drawImage(item.getImage(), 405, 140, 64,  64, null);
 		
 		g.setColor(Color.black);
-		g.drawString(item.getName(), 480, 175);
+		g.drawString(item.getName(), 480, 160);
+		
+		g.setFont(typeFont);
+		g.drawString(type, 480, 180);
 		
 		g.setFont(font);
 		int count = 0;
@@ -79,8 +118,15 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 		if (button == MouseEvent.BUTTON1) {
 			Point point = e.getPoint();
 			if (point.getX() >= 395 && point.getX() <= 475 && point.getY() >= 453 && point.getY() <= 477) {
-				audioPlayer.play("click");
-				itemState.setDescriptionState(null);
+				try {
+					audioPlayer.play("click");
+					Method method = parent.getClass().getMethod("setDescriptionState", DescriptionState.class);
+					DescriptionState descriptionState = null;
+					method.invoke(parent, descriptionState);
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
@@ -108,8 +154,15 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 		int key = e.getKeyCode();
 		
 		if (key == KeyEvent.VK_ESCAPE) {
-			audioPlayer.play("click");
-			itemState.setDescriptionState(null);
+			try {
+				audioPlayer.play("click");
+				Method method = parent.getClass().getMethod("setDescriptionState", DescriptionState.class);
+				DescriptionState descriptionState = null;
+				method.invoke(parent, descriptionState);
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
