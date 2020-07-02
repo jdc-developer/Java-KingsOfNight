@@ -69,4 +69,9 @@ public class HealthPotion extends Item {
 		super.tick();
 	}
 
+	@Override
+	public void use() {
+		player.heal(7.2f);
+	}
+
 }

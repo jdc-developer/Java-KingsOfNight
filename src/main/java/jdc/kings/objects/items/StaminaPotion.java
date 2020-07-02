@@ -69,4 +69,10 @@ public class StaminaPotion extends Item {
 		super.tick();
 	}
 
+	@Override
+	public void use() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

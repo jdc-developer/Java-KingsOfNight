@@ -65,7 +65,7 @@ public class SpriteLoader {
 					if (object != null) {
 						bi[count] = resize(temp, object.getWidth() + plusWidth, object.getHeight() + plusHeight);
 					} else {
-						bi[count] = temp;
+						bi[count] = resize(temp, frameWidth + plusWidth, frameHeight + plusHeight);
 					}
 					
 					count++;

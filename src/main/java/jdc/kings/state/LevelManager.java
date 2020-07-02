@@ -10,6 +10,7 @@ import jdc.kings.Game;
 import jdc.kings.objects.Enemy;
 import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
+import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
 import jdc.kings.objects.items.HealthPotion;
 import jdc.kings.objects.items.StaminaPotion;
@@ -36,10 +37,10 @@ public abstract class LevelManager {
 		Player player = new Player(tileMap);
 		player.setPosition(100, 650);
 		
-		enemySpawners = new EnemySpawner[0];
-		/*
+		enemySpawners = new EnemySpawner[1];
+		
 		enemySpawners[0] = new EnemySpawner(SkeletonKnight.class, 500, 650, tileMap);
-		enemySpawners[1] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
+		/*enemySpawners[1] = new EnemySpawner(SkeletonArcher.class, 700, 650, tileMap);
 		enemySpawners[2] = new EnemySpawner(Shadow.class, 9500, 450, tileMap);
 		enemySpawners[3] = new EnemySpawner(SkeletonKnight.class, 8200, 500, tileMap);
 		enemySpawners[4] = new EnemySpawner(SkeletonArcher.class, 8300, 500, tileMap);

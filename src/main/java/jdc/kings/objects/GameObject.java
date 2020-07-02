@@ -81,6 +81,8 @@ public abstract class GameObject {
 	protected float maxStamina;
 	protected float damage;
 	protected float healthBeforeDamage;
+	protected float healthBeforeHeal;
+	protected float healBonus;
 	
 	protected boolean rolling;
 	protected boolean shield;
@@ -89,6 +91,7 @@ public abstract class GameObject {
 	protected boolean flinching;
 	protected boolean bleeds;
 	protected boolean damaged;
+	protected boolean healing;
 	
 	protected long flinchTimer;
 	protected long holdTimer;
@@ -235,6 +238,27 @@ public abstract class GameObject {
 			}
 		}
 		
+		if (damaged) {
+			health -= 0.5f;
+			if (health <= healthBeforeDamage - damage) {
+				damaged = false;
+				health = healthBeforeDamage - damage;
+			}
+		}
+		
+		if (healing) {
+			health += 0.5f;
+			if (health >= healthBeforeHeal + healBonus) {
+				healing = false;
+				health = healthBeforeHeal + healBonus;
+			}
+			
+			if (health >= maxHealth) {
+				healing = false;
+				health = maxHealth;
+			}
+		}
+		
 		if (y >= 850) {
 			dead = true;
 		}
@@ -298,6 +322,12 @@ public abstract class GameObject {
 			shielding = true;
 			flinchTimer = System.nanoTime();
 		}
+	}
+	
+	public void heal(float healBonus) {
+		healthBeforeHeal = health;
+		this.healBonus = healBonus;
+		healing = true;
 	}
 	
 	public void shieldDamage(float shieldDamage, float damage, float cost, boolean right) {

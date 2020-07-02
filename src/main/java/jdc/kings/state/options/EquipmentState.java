@@ -23,23 +23,32 @@ import jdc.kings.utils.BundleUtil;
 
 public class EquipmentState extends GameState implements KeyState, MouseState {
 	
-	private BufferedImage image;
-	private Font font;
-	private String title;
+	private static final int ROWS = 5;
+	private static final int COLS = 2;
+	public static final int ITEMS = ROWS * COLS;
 	
-	private ActionState actionState;
-	private DescriptionState descriptionState;
+	private BufferedImage image;
+	private BufferedImage selectedItemImage;
 	
 	private Inventory inventory;
+	private ActionState actionState;
+	private DescriptionState descriptionState;
+	private PromptState promptState;
+	
+	private String title;
 	private String equip;
 	private String unequip;
 	private String description;
 	
 	private Option[] options = new Option[10];
 	
+	private Font font;
+	private int selectedItem;
+	
 	public EquipmentState(Item item) {
 		try {
 			font = new Font("Arial", Font.BOLD, 14);
+			selectedItemImage = ImageIO.read(getClass().getResourceAsStream("/game/glass.png"));
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-equipment.png"));
 			inventory = player.getInventory();
 			
@@ -68,7 +77,18 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 			}
 			
 			if (item != null) {
-				inventory.equipItem(item, 1);
+				Locale locale = Game.getInstance().getPreferences().getLocale();
+				if (item.isEquipped()) {
+					String equipped = BundleUtil.getMessageResourceString("currentlyEquipped", locale);
+					promptState = new PromptState(equipped);
+				} else {
+					if (item.getType() == Item.USABLE || item.getType() == Item.RING) {
+						String slotDescription = BundleUtil.getMessageResourceString("equipOption", locale);
+						ItemActionManager.createSlotEquipActionState(this, item, slotDescription);
+					} else {
+						inventory.equipItem(item, null);
+					}
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -103,19 +123,15 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 		options[8].setType(Item.USABLE);
 		options[9].setType(Item.RING);
 		
-		String itemOptionTwo = BundleUtil.getMessageResourceString("itemOptionTwo", locale);
-		String itemOptionThree = BundleUtil.getMessageResourceString("itemOptionThree", locale);
-		String itemOptionFive = BundleUtil.getMessageResourceString("itemOptionFive", locale);
-		
-		equip = itemOptionThree;
-		unequip = itemOptionFive;
-		description = itemOptionTwo;
+		description = BundleUtil.getMessageResourceString("itemOptionTwo", locale);
+		equip = BundleUtil.getMessageResourceString("itemOptionThree", locale);
+		unequip = BundleUtil.getMessageResourceString("itemOptionFive", locale);
 		
 		if (descriptionState != null) {
 			descriptionState.tick();
 		}
 		
-		if (descriptionState != null || actionState != null) {
+		if (descriptionState != null || actionState != null || promptState != null) {
 			LevelManager.getCurrentLevel().setEscEnabled(false);
 		} else {
 			LevelManager.getCurrentLevel().setEscEnabled(true);
@@ -138,6 +154,10 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 			Option option = options[i];
 			Item item = option.getItem();
 			
+			if (i == selectedItem) {
+				g.drawImage(selectedItemImage, (int)option.getX() + 2, (int)option.getY() + 2, null);
+			}
+			
 			if (item != null) {
 				g.drawImage(item.getImage(), (int)option.getX() + 2, (int)option.getY(), item.getImage().getWidth(),
 						item.getImage().getHeight(), null);
@@ -151,12 +171,88 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 		if (descriptionState != null) {
 			descriptionState.render(g);
 		}
+		
+		if (promptState != null) {
+			promptState.render(g);
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if (descriptionState != null) {
+			descriptionState.keyPressed(e);
+		} else if (actionState != null) {
+			actionState.keyPressed(e);
+		} else if (promptState != null) {
+			promptState = null;
+		} else {
+			activeKeyPressed(e);
+		}
+	}
+	
+	private void activeKeyPressed(KeyEvent e) {
+		int key = e.getKeyCode();
 		
+		if (key == KeyEvent.VK_RIGHT) {
+			audioPlayer.play("switch");
+			
+			if (selectedItem == 9) {
+				selectedItem = 0;
+			} else {
+				selectedItem += ROWS;
+			}
+			
+			if (selectedItem >= ITEMS) {
+				int availableRows = (int) Math.ceil(ITEMS / ROWS);
+				selectedItem -= ROWS + (availableRows * ROWS) - (ROWS + 1);
+			}
+		}
+		
+		if (key == KeyEvent.VK_LEFT) {
+			audioPlayer.play("switch");
+			selectedItem -= ROWS;
+			
+			if (selectedItem < 0) {
+				int availableRows = (int) Math.ceil(ITEMS / ROWS);
+				selectedItem += ROWS + (availableRows * ROWS) - 1;
+				
+				if (selectedItem >= ITEMS) {
+					selectedItem -= ROWS;
+				}
+			}
+		}
+		
+		if (key == KeyEvent.VK_UP) {
+			audioPlayer.play("switch");
+			selectedItem--;
+			
+			if (selectedItem < 0) {
+				selectedItem = 9;
+			}
+		}
+		
+		if (key == KeyEvent.VK_DOWN) {
+			audioPlayer.play("switch");
+			selectedItem++;
+			
+			if (selectedItem >= 10) {
+				selectedItem = 0;
+			}
+		}
+		
+		if (key == KeyEvent.VK_ENTER) {
+			Option option = options[selectedItem];
+			audioPlayer.play("click");
+			if (option.getItem() != null) {
+				Integer slot = null;
+				if (selectedItem == 4 || selectedItem == 7) slot = 1;
+				if (selectedItem == 8 || selectedItem == 9) slot = 2;
+				
+				ItemActionManager.createUnequipActionState(this, option, description, unequip, slot);
+			} else {
+				ItemActionManager.createEquipActionState(this, option, equip);
+			}
+		}
 	}
 
 	@Override
@@ -193,10 +289,37 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 				Option option = options[i];
 				if ((point.getX() >= option.getX() && point.getX() <= option.getX() + option.getWidth())
 						&& (point.getY() >= option.getY() - 20 && point.getY() <= option.getY() + option.getHeight())) {
-					if (option.getItem() != null) {
-						ItemActionManager.createUnequipActionState(this, option, description, unequip);
+					
+					if (actionState != null) {
+						if ((point.getX() < actionState.getX() || (point.getY() < actionState.getY() ||
+								point.getY() > actionState.getY() + actionState.getImage().getHeight())) ||
+								(point.getX() > actionState.getX() + actionState.getImage().getWidth() || (point.getY() < actionState.getY() ||
+										point.getY() > actionState.getY() + actionState.getImage().getHeight()))) {
+							
+							selectedItem = i;
+							audioPlayer.play("click");
+							if (option.getItem() != null) {
+								Integer slot = null;
+								if (i == 4 || i == 7) slot = 1;
+								if (i == 8 || i == 9) slot = 2;
+								
+								ItemActionManager.createUnequipActionState(this, option, description, unequip, slot);
+							} else {
+								ItemActionManager.createEquipActionState(this, option, equip);
+							}
+						}
 					} else {
-						ItemActionManager.createEquipActionState(this, option, equip);
+						selectedItem = i;
+						audioPlayer.play("click");
+						if (option.getItem() != null) {
+							Integer slot = null;
+							if (i == 4 || i == 7) slot = 1;
+							if (i == 8 || i == 9) slot = 2;
+							
+							ItemActionManager.createUnequipActionState(this, option, description, unequip, slot);
+						} else {
+							ItemActionManager.createEquipActionState(this, option, equip);
+						}
 					}
 				}
 			}
@@ -204,6 +327,10 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 		
 		if (actionState != null) {
 			actionState.mousePressed(e);
+		}
+		
+		if (promptState != null) {
+			promptState = null;
 		}
 	}
 
@@ -224,6 +351,26 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 		if (actionState != null) {
 			actionState.mouseMoved(e);
 		}
+	}
+	
+	public void equipSlotOne(Item item) {
+		inventory.equipItem(item, 1);
+	}
+	
+	public void equipSlotTwo(Item item) {
+		inventory.equipItem(item, 2);
+	}
+	
+	public void unequip(Item item) {
+		inventory.unequipItem(item, null);
+	}
+	
+	public void unequipSlotOne(Item item) {
+		inventory.unequipItem(item, 1);
+	}
+	
+	public void unequipSlotTwo(Item item) {
+		inventory.unequipItem(item, 2);
 	}
 
 	public void setDescriptionState(DescriptionState descriptionState) {

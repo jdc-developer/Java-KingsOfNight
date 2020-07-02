@@ -21,6 +21,7 @@ public abstract class ItemActionManager {
 			actionState.setParent(itemState);
 			
 			Item item = option.getInventoryItem().getItem();
+			setUseMethod(itemState, actionOptions[0], item);
 			setDescriptionMethod(itemState, actionOptions[1], item);
 			setEquipMethod(actionOptions[2], item);
 			setDiscardMethod(actionState, option, actionOptions[3], item);
@@ -53,7 +54,8 @@ public abstract class ItemActionManager {
 		}
 	}
 	
-	public static void createUnequipActionState(EquipmentState equipmentState, Option option, String description, String unequip) {
+	public static void createUnequipActionState(EquipmentState equipmentState, Option option, String description,
+			String unequip, Integer slot) {
 		try {
 			Option[] actionOptions = new Option[2];
 			ActionState actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
@@ -65,8 +67,16 @@ public abstract class ItemActionManager {
 			Item item = option.getItem();
 			setDescriptionMethod(equipmentState, actionOptions[0], item);
 			
-			Method unequipMethod = Inventory.class.getMethod("unequipItem", Item.class);
-			Action<Inventory, Item> unequipAction = new Action<>(unequipMethod, GameState.getPlayer().getInventory(), option.getItem());
+			Method unequipMethod = null;
+			if (slot == 1) {
+				unequipMethod = EquipmentState.class.getMethod("unequipSlotOne", Item.class);
+			} else if (slot == 2) {
+				unequipMethod = EquipmentState.class.getMethod("unequipSlotTwo", Item.class);
+			} else {
+				unequipMethod = EquipmentState.class.getMethod("unequip", Item.class);
+			}
+			
+			Action<EquipmentState, Item> unequipAction = new Action<>(unequipMethod, equipmentState, option.getItem());
 			actionOptions[1].setAction(unequipAction);
 			
 			equipmentState.setActionState(actionState);
@@ -74,6 +84,37 @@ public abstract class ItemActionManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void createSlotEquipActionState(EquipmentState equipmentState, Item item, String slotDescription) {
+		try {
+			Option[] actionOptions = new Option[2];
+			ActionState actionState = new ActionState(actionOptions, 447, 142);
+			actionState.setParent(equipmentState);
+			actionState.setTitle(slotDescription);
+			
+			actionOptions[0] = new Option("Slot 1", 120, 18);
+			actionOptions[1] = new Option("Slot 2", 120, 18);
+			
+			Method equipSlotOneMethod = EquipmentState.class.getMethod("equipSlotOne", Item.class);
+			Action<EquipmentState, Item> equipSlotOneAction = new Action<>(equipSlotOneMethod, equipmentState, item);
+			actionOptions[0].setAction(equipSlotOneAction);
+			
+			Method equipSlotTwoMethod = EquipmentState.class.getMethod("equipSlotTwo", Item.class);
+			Action<EquipmentState, Item> equipSlotTwoAction = new Action<>(equipSlotTwoMethod, equipmentState, item);
+			actionOptions[1].setAction(equipSlotTwoAction);
+			
+			equipmentState.setActionState(actionState);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static void setUseMethod(ItemState itemState, Option actionOption, Item item) throws NoSuchMethodException, SecurityException {
+		Method useMethod = Inventory.class.getMethod("useItem", Integer.class);
+		Action<Inventory, Integer> useAction = new Action<>(useMethod, GameState.getPlayer().getInventory(), item.getId());
+		actionOption.setAction(useAction);
 	}
 	
 	private static void setDescriptionMethod(GameState parentState, Option actionOption, Item item) throws NoSuchMethodException, SecurityException {

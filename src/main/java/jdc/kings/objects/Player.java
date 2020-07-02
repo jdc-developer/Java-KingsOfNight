@@ -1,23 +1,31 @@
 package jdc.kings.objects;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
 import jdc.kings.input.Key;
 import jdc.kings.input.KeyInput;
 import jdc.kings.objects.interactions.Attack;
+import jdc.kings.objects.interactions.Shining;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
 public class Player extends GameObject {
 	
-	private int rollCost;
+	private float attackBonus;
+	private float armorBonus;
+	private float shieldBonus;
+	private float vigor;
+	private float vigorBonus;
+	private float rollCost;
 	
 	private boolean stabbing;
 	private boolean cutting;
 	private boolean slicing;
 	
 	private Inventory inventory;
+	private Shining[] shining = new Shining[3];
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -49,8 +57,10 @@ public class Player extends GameObject {
 		maxFlinchXSpeed = 4f;
 		flinchYSpeed = 5.5f;
 		maxFlinchYSpeed = 5.8f;
+		vigor = 0.04f;
 		
 		inventory = new Inventory();
+		rollCost = 5.2f;
 		
 		attacks.add(new Attack(13.5f, 4, 4.5f, 80.5f, 3, 250, 400));
 		attacks.add(new Attack(8.2f, 2.8f, 3, 105.2f, 2.5f, 50, 250));
@@ -65,11 +75,13 @@ public class Player extends GameObject {
 		audioPlayer.loadAudio("player-sword-hit", "/sfx/player/sword-hit.mp3");
 		audioPlayer.loadAudio("player-jump", "/sfx/player/jump.mp3");
 		
+		shining[0] = new Shining(32, 32, -10, -10);
+		shining[1] = new Shining(32, 32, -10, -10);
+		shining[2] = new Shining(32, 32, -10, -10);
+		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
 		bleeds = true;
-		
-		rollCost = 5;
 		
 		if (spriteLoader.getSprites("player") == null) {
 			BufferedImage[][] sprites = new BufferedImage[10][];
@@ -118,6 +130,12 @@ public class Player extends GameObject {
 			}
 		}
 		
+		for (int i = 0; i < shining.length; i++) {
+			shining[i].setMapPosition((int)(x + xmap - width / 2) + 20,
+					(int)(y + ymap - height / 2) + 10);
+		}
+		
+		
 		if ((currentAction == STABBING || currentAction == CUTTING || currentAction == SHIELD || currentAction == SLICING) &&
 				!(jumping || falling)) {
 			velX = 0;
@@ -133,7 +151,7 @@ public class Player extends GameObject {
 		}
 		
 		if (stamina < maxStamina) {
-			stamina += 0.04f;
+			stamina += vigor + vigorBonus;
 		}
 		
 		if (stamina < 0) {
@@ -377,6 +395,18 @@ public class Player extends GameObject {
 		
 		if (right) facingRight = true;
 		if (left) facingRight = false;
+		
+		for (int i = 0; i < shining.length; i++) {
+			shining[i].tick();
+		}
+	}
+	
+	@Override
+	public void render(Graphics2D g) {
+		super.render(g);
+		for (int i = 0; i < shining.length; i++) {
+			shining[i].render(g);
+		}
 	}
 	
 	public void checkAttack(List<Enemy> enemies) {
@@ -431,6 +461,46 @@ public class Player extends GameObject {
 
 	public Inventory getInventory() {
 		return inventory;
+	}
+
+	public float getAttackBonus() {
+		return attackBonus;
+	}
+
+	public void addAttackBonus(float attackBonus) {
+		this.attackBonus += attackBonus;
+	}
+
+	public float getArmorBonus() {
+		return armorBonus;
+	}
+
+	public void addArmorBonus(float armorBonus) {
+		this.armorBonus += armorBonus;
+	}
+
+	public float getShieldBonus() {
+		return shieldBonus;
+	}
+
+	public void addShieldBonus(float shieldBonus) {
+		this.shieldBonus += shieldBonus;
+	}
+
+	public float getVigor() {
+		return vigor;
+	}
+
+	public void setVigor(float vigor) {
+		this.vigor = vigor;
+	}
+
+	public float getVigorBonus() {
+		return vigorBonus;
+	}
+	
+	public void setVigorBonus(float vigorBonus) {
+		this.vigorBonus = vigorBonus;
 	}
 
 }

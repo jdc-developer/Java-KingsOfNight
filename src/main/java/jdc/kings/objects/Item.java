@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import jdc.kings.state.options.ItemState;
 import jdc.kings.view.TileMap;
 
-public class Item extends GameObject {
+public abstract class Item extends GameObject {
 	
 	protected Integer id;
 	protected String name;
@@ -52,6 +52,8 @@ public class Item extends GameObject {
 			}
 		}
 	}
+	
+	public abstract void use();
 
 	public Integer getId() {
 		return id;

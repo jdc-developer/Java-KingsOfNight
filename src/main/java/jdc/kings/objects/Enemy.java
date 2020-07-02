@@ -2,7 +2,7 @@ package jdc.kings.objects;
 
 import jdc.kings.view.TileMap;
 
-public class Enemy extends GameObject {
+public abstract class Enemy extends GameObject {
 	
 	protected float damage;
 	protected float shieldDamage;
