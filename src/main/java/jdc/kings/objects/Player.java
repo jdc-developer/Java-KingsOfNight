@@ -23,9 +23,10 @@ public class Player extends GameObject {
 	private boolean stabbing;
 	private boolean cutting;
 	private boolean slicing;
+	private boolean shining;
 	
 	private Inventory inventory;
-	private Shining[] shining = new Shining[3];
+	private Shining[] shiningEffects = new Shining[3];
 	
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
@@ -74,10 +75,6 @@ public class Player extends GameObject {
 		audioPlayer.loadAudio("player-stab", "/sfx/player/stabbing.mp3");
 		audioPlayer.loadAudio("player-sword-hit", "/sfx/player/sword-hit.mp3");
 		audioPlayer.loadAudio("player-jump", "/sfx/player/jump.mp3");
-		
-		shining[0] = new Shining(32, 32, -10, -10);
-		shining[1] = new Shining(32, 32, -10, -10);
-		shining[2] = new Shining(32, 32, -10, -10);
 		
 		health = maxHealth = 50;
 		stamina = maxStamina = 20;
@@ -130,12 +127,6 @@ public class Player extends GameObject {
 			}
 		}
 		
-		for (int i = 0; i < shining.length; i++) {
-			shining[i].setMapPosition((int)(x + xmap - width / 2) + 20,
-					(int)(y + ymap - height / 2) + 10);
-		}
-		
-		
 		if ((currentAction == STABBING || currentAction == CUTTING || currentAction == SHIELD || currentAction == SLICING) &&
 				!(jumping || falling)) {
 			velX = 0;
@@ -164,6 +155,14 @@ public class Player extends GameObject {
 			if (velY > 0) jumping = false;
 			if (velY < 0 && !jumping) velY += stopJumpSpeed;
 			if (velY > maxFallSpeed) velY = maxFallSpeed;
+		}
+		
+		if (shining) {
+			for (int i = 0; i < shiningEffects.length; i++) {
+				Shining shining = shiningEffects[i];
+				shining.setMapPosition((int)(x + xmap - width / 2) + 20,
+						(int)(y + ymap - height / 2) + 10);
+			}
 		}
 	}
 
@@ -396,16 +395,22 @@ public class Player extends GameObject {
 		if (right) facingRight = true;
 		if (left) facingRight = false;
 		
-		for (int i = 0; i < shining.length; i++) {
-			shining[i].tick();
+		if (shining) {
+			for (int i = 0; i < shiningEffects.length; i++) {
+				Shining shining = shiningEffects[i];
+				shining.tick();
+			}
 		}
 	}
 	
 	@Override
 	public void render(Graphics2D g) {
 		super.render(g);
-		for (int i = 0; i < shining.length; i++) {
-			shining[i].render(g);
+		if (shining) {
+			for (int i = 0; i < shiningEffects.length; i++) {
+				Shining shining = shiningEffects[i];
+				shining.render(g);
+			}
 		}
 	}
 	
@@ -425,6 +430,15 @@ public class Player extends GameObject {
 			audioPlayer.play("player-shield");
 		}
 		super.hit(damage, right, shield);
+	}
+	
+	public void setShining(boolean shining) {
+		this.shining = shining;
+		if (shining) {
+			for (int i = 0; i < 3; i++) {
+				shiningEffects[i] = new Shining(32, 32, -10, -10);
+			}
+		}
 	}
 
 	public void setStabbing(boolean stabbing) {

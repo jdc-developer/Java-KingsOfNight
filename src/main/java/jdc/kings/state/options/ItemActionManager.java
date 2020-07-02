@@ -68,12 +68,13 @@ public abstract class ItemActionManager {
 			setDescriptionMethod(equipmentState, actionOptions[0], item);
 			
 			Method unequipMethod = null;
-			if (slot == 1) {
+			
+			if (slot == null) {
+				unequipMethod = EquipmentState.class.getMethod("unequip", Item.class);
+			} else if (slot == 1) {
 				unequipMethod = EquipmentState.class.getMethod("unequipSlotOne", Item.class);
 			} else if (slot == 2) {
 				unequipMethod = EquipmentState.class.getMethod("unequipSlotTwo", Item.class);
-			} else {
-				unequipMethod = EquipmentState.class.getMethod("unequip", Item.class);
 			}
 			
 			Action<EquipmentState, Item> unequipAction = new Action<>(unequipMethod, equipmentState, option.getItem());

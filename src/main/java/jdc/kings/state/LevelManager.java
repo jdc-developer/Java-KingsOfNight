@@ -12,8 +12,8 @@ import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
 import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
+import jdc.kings.objects.items.ChainMail;
 import jdc.kings.objects.items.HealthPotion;
-import jdc.kings.objects.items.StaminaPotion;
 import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.state.objects.ItemSpawner;
 import jdc.kings.utils.BundleUtil;
@@ -88,7 +88,7 @@ public abstract class LevelManager {
 		}
 		
 		for (int i = 5; i < 10; i++) {
-			itemSpawners[i] = new ItemSpawner(StaminaPotion.class, 200, 650, tileMap);
+			itemSpawners[i] = new ItemSpawner(ChainMail.class, 200, 650, tileMap);
 		}
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);

@@ -12,17 +12,17 @@ import jdc.kings.utils.BundleUtil;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
-public class StaminaPotion extends Item {
+public class ChainMail extends Item {
 
-	public StaminaPotion(TileMap tm) {
+	public ChainMail(TileMap tm) {
 		super(tm);
 		try {
 			Locale locale = Game.getInstance().getPreferences().getLocale();
-			name = BundleUtil.getMessageResourceString("staminaPotionName", locale);
-			description = BundleUtil.getMessageResourceString("staminaPotionDescription", locale);
-			type = USABLE;
+			name = BundleUtil.getMessageResourceString("chainMailName", locale);
+			description = BundleUtil.getMessageResourceString("chainMailDescription", locale);
+			type = ARMOR;
 			
-			id = 2;
+			id = 3;
 			fallSpeed = 0.2f;
 			maxFallSpeed = 10.0f;
 			
@@ -31,14 +31,14 @@ public class StaminaPotion extends Item {
 			cwidth = 25;
 			cheight = 22;
 			
-			if (spriteLoader.getSprites("stamina-potion") == null) {
+			if (spriteLoader.getSprites("chain-mail") == null) {
 				BufferedImage[][] sprites = new BufferedImage[1][1];
-				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/stamina-potion.png"));
-				spriteLoader.loadSprites("stamina-potion", sprites);
+				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/chain-mail.png"));
+				spriteLoader.loadSprites("chain-mail", sprites);
 			}
 			
-			image = spriteLoader.getAction("stamina-potion", 0)[0];
-			animator = new Animator(spriteLoader.getAction("stamina-potion", 0));
+			image = spriteLoader.getAction("chain-mail", 0)[0];
+			animator = new Animator(spriteLoader.getAction("chain-mail", 0));
 			animator.setSpeed(120);
 			animator.start();
 		} catch (IOException e) {
@@ -71,23 +71,6 @@ public class StaminaPotion extends Item {
 
 	@Override
 	public void use() {
-		player.setVigorBonus(0.03f);
-		player.setShining(true);
-		Runnable runnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(20000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				player.setVigorBonus(0);
-				player.setShining(false);
-			}
-		};
-		new Thread(runnable).start();
 	}
 
 }
