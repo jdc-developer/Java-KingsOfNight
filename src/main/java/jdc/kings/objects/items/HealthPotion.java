@@ -2,13 +2,10 @@ package jdc.kings.objects.items;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
-import jdc.kings.Game;
 import jdc.kings.objects.Item;
-import jdc.kings.utils.BundleUtil;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
@@ -17,9 +14,8 @@ public class HealthPotion extends Item {
 	public HealthPotion(TileMap tm) {
 		super(tm);
 		try {
-			Locale locale = Game.getInstance().getPreferences().getLocale();
-			name = BundleUtil.getMessageResourceString("healthPotionName", locale);
-			description = BundleUtil.getMessageResourceString("healthPotionDescription", locale);
+			name = "healthPotionName";
+			description = "healthPotionDescription";
 			type = USABLE;
 			
 			id = 1;
@@ -71,7 +67,19 @@ public class HealthPotion extends Item {
 
 	@Override
 	public void use() {
-		player.heal(7.2f);
+		player.heal(70.2f);
+	}
+
+	@Override
+	public void equip() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unequip() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

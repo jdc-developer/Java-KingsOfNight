@@ -14,6 +14,12 @@ import jdc.kings.objects.enemies.SkeletonKnight;
 import jdc.kings.objects.enemies.bosses.SpiderBoss;
 import jdc.kings.objects.items.ChainMail;
 import jdc.kings.objects.items.HealthPotion;
+import jdc.kings.objects.items.IliSword;
+import jdc.kings.objects.items.LeatherBoots;
+import jdc.kings.objects.items.LeatherChest;
+import jdc.kings.objects.items.LeatherGloves;
+import jdc.kings.objects.items.StaminaPotion;
+import jdc.kings.objects.items.TinyIronShield;
 import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.state.objects.ItemSpawner;
 import jdc.kings.utils.BundleUtil;
@@ -81,15 +87,22 @@ public abstract class LevelManager {
 		enemySpawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
 		enemySpawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);*/
 		
-		itemSpawners = new ItemSpawner[10];
+		itemSpawners = new ItemSpawner[16];
 		
 		for (int i = 0; i < 5; i++) {
 			itemSpawners[i] = new ItemSpawner(HealthPotion.class, 200, 650, tileMap);
 		}
 		
 		for (int i = 5; i < 10; i++) {
-			itemSpawners[i] = new ItemSpawner(ChainMail.class, 200, 650, tileMap);
+			itemSpawners[i] = new ItemSpawner(StaminaPotion.class, 200, 650, tileMap);
 		}
+		
+		itemSpawners[10] = new ItemSpawner(ChainMail.class, 200, 650, tileMap);
+		itemSpawners[11] = new ItemSpawner(LeatherBoots.class, 200, 650, tileMap);
+		itemSpawners[12] = new ItemSpawner(LeatherChest.class, 200, 650, tileMap);
+		itemSpawners[13] = new ItemSpawner(LeatherGloves.class, 200, 650, tileMap);
+		itemSpawners[14] = new ItemSpawner(TinyIronShield.class, 200, 650, tileMap);
+		itemSpawners[15] = new ItemSpawner(IliSword.class, 200, 650, tileMap);
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
 		BlockingQueue<Item> itemQueue = new ArrayBlockingQueue<Item>(100);

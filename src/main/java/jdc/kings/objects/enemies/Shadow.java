@@ -36,12 +36,12 @@ public class Shadow extends Enemy {
 		cwidth = 35;
 		cheight = 80;
 		
-		health = maxHealth = 20;
-		stamina = maxStamina = 15;
-		damage = 7.7f;
+		health = maxHealth = 195;
+		stamina = maxStamina = 150;
+		damage = 73.7f;
 		
-		shieldDamage = 1.9f;
-		shieldCost = 4.8f;
+		shieldDamage = 11.9f;
+		shieldCost = 40.8f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
@@ -91,7 +91,7 @@ public class Shadow extends Enemy {
 		}
 		
 		if (stamina < maxStamina) {
-			stamina += 0.04f;
+			stamina += 0.4f;
 		}
 		
 		if (stamina < 0) {

@@ -239,7 +239,7 @@ public abstract class GameObject {
 		}
 		
 		if (damaged) {
-			health -= 0.5f;
+			health -= 5;
 			if (health <= healthBeforeDamage - damage) {
 				damaged = false;
 				health = healthBeforeDamage - damage;
@@ -247,7 +247,7 @@ public abstract class GameObject {
 		}
 		
 		if (healing) {
-			health += 0.5f;
+			health += 5;
 			if (health >= healthBeforeHeal + healBonus) {
 				healing = false;
 				health = healthBeforeHeal + healBonus;
@@ -505,5 +505,11 @@ public abstract class GameObject {
 	public long getHoldTimer() {
 		return holdTimer;
 	}
+
+	public int getCurrentAction() {
+		return currentAction;
+	}
+	
+	
 
 }

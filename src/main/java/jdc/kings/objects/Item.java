@@ -7,6 +7,8 @@ import jdc.kings.view.TileMap;
 
 public abstract class Item extends GameObject {
 	
+	public static final int SIZE = 32;
+	
 	protected Integer id;
 	protected String name;
 	protected String description;
@@ -14,8 +16,8 @@ public abstract class Item extends GameObject {
 	
 	protected BufferedImage image;
 	protected Player player;
-	private boolean shouldRemove;
-	private boolean equipped;
+	protected boolean shouldRemove;
+	protected boolean equipped;
 	
 	public static final int USABLE = 0;
 	public static final int HELMET = 1;
@@ -36,7 +38,7 @@ public abstract class Item extends GameObject {
 	public void tick() {
 		super.tick();
 		if (intersects(player) && !player.isDying() && !player.isDead()) {
-			Inventory inventory = player.getInventory();
+			PlayerStatus inventory = player.getStatus();
 			InventoryItem searchItem = inventory.findItem(id);
 			
 			if (inventory.getItems().size() < ItemState.ITEMSPERPAGE * ItemState.PAGES) {
@@ -54,6 +56,8 @@ public abstract class Item extends GameObject {
 	}
 	
 	public abstract void use();
+	public abstract void equip();
+	public abstract void unequip();
 
 	public Integer getId() {
 		return id;

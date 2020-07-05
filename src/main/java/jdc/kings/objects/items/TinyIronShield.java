@@ -9,16 +9,16 @@ import jdc.kings.objects.Item;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
-public class ChainMail extends Item {
+public class TinyIronShield extends Item {
 
-	public ChainMail(TileMap tm) {
+	public TinyIronShield(TileMap tm) {
 		super(tm);
 		try {
-			name = "chainMailName";
-			description = "chainMailDescription";
-			type = ARMOR;
+			name = "tinyIronShieldName";
+			description = "tinyIronShieldDescription";
+			type = SHIELD;
 			
-			id = 3;
+			id = 7;
 			fallSpeed = 0.2f;
 			maxFallSpeed = 10.0f;
 			
@@ -27,14 +27,14 @@ public class ChainMail extends Item {
 			cwidth = 25;
 			cheight = 22;
 			
-			if (spriteLoader.getSprites("chain-mail") == null) {
+			if (spriteLoader.getSprites("iron-shield") == null) {
 				BufferedImage[][] sprites = new BufferedImage[1][1];
-				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/chain-mail.png"));
-				spriteLoader.loadSprites("chain-mail", sprites);
+				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/iron-shield.png"));
+				spriteLoader.loadSprites("iron-shield", sprites);
 			}
 			
-			image = spriteLoader.getAction("chain-mail", 0)[0];
-			animator = new Animator(spriteLoader.getAction("chain-mail", 0));
+			image = spriteLoader.getAction("iron-shield", 0)[0];
+			animator = new Animator(spriteLoader.getAction("iron-shield", 0));
 			animator.setSpeed(120);
 			animator.start();
 		} catch (IOException e) {
@@ -71,12 +71,12 @@ public class ChainMail extends Item {
 
 	@Override
 	public void equip() {
-		player.addArmorBonus(5f);
+		player.addShieldBonus(3.3f);
 	}
 
 	@Override
 	public void unequip() {
-		player.removeArmorBonus(5f);
+		player.removeShieldBonus(3.3f);
 	}
 
 }

@@ -38,12 +38,12 @@ public class HellHound extends Enemy {
 		cwidth = 35;
 		cheight = 60;
 		
-		health = maxHealth = 20;
+		health = maxHealth = 195;
 		bleeds = true;
-		damage = 6.8f;
+		damage = 63.8f;
 		
-		shieldDamage = 1.5f;
-		shieldCost = 3.8f;
+		shieldDamage = 12.5f;
+		shieldCost = 30.8f;
 		sightXDistance = 650;
 		sightYDistance = 250;
 		

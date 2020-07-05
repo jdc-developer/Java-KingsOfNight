@@ -28,6 +28,8 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 	private GameState parent;
 	
 	private String title;
+	private String itemName;
+	private String itemDescription;
 	private String type;
 	private String back;
 	
@@ -53,6 +55,8 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 	public void tick() {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		title = BundleUtil.getMessageResourceString("itemOptionTwo", locale);
+		itemName = BundleUtil.getMessageResourceString(item.getName(), locale);
+		itemDescription = BundleUtil.getMessageResourceString(item.getDescription(), locale);
 		back = BundleUtil.getMessageResourceString("back", locale);
 		
 		switch (item.getType()) {
@@ -95,18 +99,23 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 		g.drawString(title, 482, 95);
 		g.drawString(back, 415, 468);
 		
-		g.drawImage(item.getImage(), 405, 140, 64,  64, null);
+		g.drawImage(item.getImage(), 405, 140, Item.SIZE * 2,  Item.SIZE * 2, null);
 		
 		g.setColor(Color.black);
-		g.drawString(item.getName(), 480, 160);
+		int count = 0;
+		for (String line : itemName.split("\n")) {
+			g.drawString(line, 480, 160 + (17 * count));
+			count++;
+		}
 		
 		g.setFont(typeFont);
-		g.drawString(type, 480, 180);
+		if (count == 1) count = 0;
+		g.drawString(type, 480, 180 + (9 * count));
 		
 		g.setFont(font);
-		int count = 0;
-		for (String line : item.getDescription().split("\n")) {
-			g.drawString(line, 405, 225 + (20 * count));
+		count = 0;
+		for (String line : itemDescription.split("\n")) {
+			g.drawString(line, 405, 230 + (20 * count));
 			count++;
 		}
 	}

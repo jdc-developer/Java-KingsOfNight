@@ -81,7 +81,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				actionOptions[i] = new Option(null, 120, 18);
 			}
 			
-			items = player.getInventory().getItems();
+			items = player.getStatus().getItems();
 			getPageContent();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -137,7 +137,7 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				g.drawImage(selectedItemImage, (int)option.getX(), (int)option.getY(), null);
 			}
 			
-			g.drawImage(item.getImage(), (int)option.getX(), (int)option.getY(), null);
+			g.drawImage(item.getImage(), (int)option.getX(), (int)option.getY(), Item.SIZE, Item.SIZE, null);
 			g.setFont(quantityFont);
 			g.drawString(String.valueOf(inventoryItem.getQuantity()), (int)option.getX() + 25, (int)option.getY() + 10);
 		}
@@ -178,6 +178,12 @@ public class ItemState extends GameState implements KeyState, MouseState {
 				options.add(option);
 			} else if (typeFilter == option.getInventoryItem().getItem().getType()) {
 				options.add(option);
+			} else {
+				col--;
+				if (col < 0) {
+					row--;
+					col = COLS - 1;
+				}
 			}
 			
 			col++;

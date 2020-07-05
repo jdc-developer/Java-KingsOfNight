@@ -23,6 +23,7 @@ public class StatusState extends GameState implements KeyState {
 	private Font subtitleFont;
 	private Font font;
 	private String title;
+	private String level;
 	
 	private String[] statusInfo = new String[6];
 	
@@ -44,23 +45,33 @@ public class StatusState extends GameState implements KeyState {
 		Locale locale = Game.getInstance().getPreferences().getLocale();
 		title = BundleUtil.getMessageResourceString("menuOptionFour", locale);
 		
-		statusInfo[0] = BundleUtil.getMessageResourceString("statusInfoOne", locale);
-		statusInfo[1] = BundleUtil.getMessageResourceString("statusInfoTwo", locale);
-		statusInfo[2] = BundleUtil.getMessageResourceString("statusInfoThree", locale);
-		statusInfo[3] = BundleUtil.getMessageResourceString("statusInfoFour", locale);
-		statusInfo[4] = BundleUtil.getMessageResourceString("statusInfoFive", locale);
+		level = BundleUtil.getMessageResourceString("statusInfoOne", locale);
+		statusInfo[0] = BundleUtil.getMessageResourceString("statusInfoTwo", locale);
+		statusInfo[1] = BundleUtil.getMessageResourceString("statusInfoThree", locale);
+		statusInfo[2] = BundleUtil.getMessageResourceString("statusInfoFour", locale);
+		statusInfo[3] = BundleUtil.getMessageResourceString("statusInfoFive", locale);
+		statusInfo[4] = BundleUtil.getMessageResourceString("statusInfoSix", locale);
 		statusInfo[5] = BundleUtil.getMessageResourceString("menuOptionOne", locale);
 	}
 
 	@Override
 	public void render(Graphics2D g) {
+		Locale locale = Game.getInstance().getPreferences().getLocale();
+		
 		g.drawImage(image, 380, 70, image.getWidth(), image.getHeight(), null);
 		g.drawImage(edronot, 405, 140, edronot.getWidth() + 40, edronot.getHeight() + 40, null);
 		
 		g.setFont(titleFont);
 		g.drawString(title, 492, 95);
-		
 		g.drawString(Constants.NAME, 502, 155);
+		
+		g.setFont(subtitleFont);
+		g.drawString(level + ":", 502, 175);
+		g.setFont(font);
+		
+		int level = player.getStatus().getLevel();
+		g.drawString(String.valueOf(level), 547, 175);
+		
 		for (int i = 0; i < statusInfo.length; i++) {
 			String status = statusInfo[i];
 			g.setFont(subtitleFont);
@@ -78,8 +89,24 @@ public class StatusState extends GameState implements KeyState {
 					Integer maxStamina = (int) player.getMaxStamina();
 					g.drawString(stamina + " / " + maxStamina, 475, 250 + (i * 20));
 					break;
+				case 2:
+					Integer attack = (int) player.getAttackBonus();
+					g.drawString(attack.toString(), 530, 250 + (i * 20));
+					break;
+				case 3:
+					Integer armor = (int) player.getArmorBonus();
+					if (locale.getCountry().equals("US") && locale.getLanguage().equals("en")) {
+						g.drawString(armor.toString(), 460, 250 + (i * 20));
+					} else {
+						g.drawString(armor.toString(), 485, 250 + (i * 20));
+					}
+					break;
+				case 4:
+					Integer shield = (int) player.getShieldBonus();
+					g.drawString(shield.toString(), 467, 250 + (i * 20));
+					break;
 				case 5:
-					Integer items = player.getInventory().getItems().size();
+					Integer items = player.getStatus().getItems().size();
 					Integer storage = ItemState.ITEMSPERPAGE * ItemState.PAGES;
 					g.drawString(items + " / " + storage, 488, 250 + (i * 20));
 					break;

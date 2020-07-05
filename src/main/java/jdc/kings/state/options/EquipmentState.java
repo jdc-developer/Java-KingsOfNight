@@ -12,7 +12,7 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 
 import jdc.kings.Game;
-import jdc.kings.objects.Inventory;
+import jdc.kings.objects.PlayerStatus;
 import jdc.kings.objects.Item;
 import jdc.kings.state.GameState;
 import jdc.kings.state.LevelManager;
@@ -30,7 +30,7 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 	private BufferedImage image;
 	private BufferedImage selectedItemImage;
 	
-	private Inventory inventory;
+	private PlayerStatus inventory;
 	private ActionState actionState;
 	private DescriptionState descriptionState;
 	private PromptState promptState;
@@ -50,7 +50,7 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 			font = new Font("Arial", Font.BOLD, 14);
 			selectedItemImage = ImageIO.read(getClass().getResourceAsStream("/game/glass.png"));
 			image = ImageIO.read(getClass().getResourceAsStream("/game/menu-equipment.png"));
-			inventory = player.getInventory();
+			inventory = player.getStatus();
 			
 			int yOffset = 0;
 			for (int i = 0; i < 5; i++) {
@@ -159,8 +159,7 @@ public class EquipmentState extends GameState implements KeyState, MouseState {
 			}
 			
 			if (item != null) {
-				g.drawImage(item.getImage(), (int)option.getX() + 2, (int)option.getY(), item.getImage().getWidth(),
-						item.getImage().getHeight(), null);
+				g.drawImage(item.getImage(), (int)option.getX() + 2, (int)option.getY(), Item.SIZE, Item.SIZE, null);
 			}
 		}
 		

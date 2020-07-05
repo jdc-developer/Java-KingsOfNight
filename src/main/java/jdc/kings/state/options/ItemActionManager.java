@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 
 import jdc.kings.Game;
-import jdc.kings.objects.Inventory;
+import jdc.kings.objects.PlayerStatus;
 import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
 import jdc.kings.state.GameState;
@@ -113,8 +113,8 @@ public abstract class ItemActionManager {
 	}
 	
 	private static void setUseMethod(ItemState itemState, Option actionOption, Item item) throws NoSuchMethodException, SecurityException {
-		Method useMethod = Inventory.class.getMethod("useItem", Integer.class);
-		Action<Inventory, Integer> useAction = new Action<>(useMethod, GameState.getPlayer().getInventory(), item.getId());
+		Method useMethod = PlayerStatus.class.getMethod("useItem", Integer.class);
+		Action<PlayerStatus, Integer> useAction = new Action<>(useMethod, GameState.getPlayer().getStatus(), item.getId());
 		actionOption.setAction(useAction);
 	}
 	
@@ -145,9 +145,9 @@ public abstract class ItemActionManager {
 		promptOptions[0] = new Option(yes, 120, 18);
 		promptOptions[1] = new Option(no, 120, 18);
 		
-		Method removeItemMethod = Inventory.class.getMethod("removeItem", Integer.class);
+		Method removeItemMethod = PlayerStatus.class.getMethod("removeItem", Integer.class);
 		Integer id = item.getId();
-		Action<Inventory, Integer> removeItemAction = new Action<>(removeItemMethod, player.getInventory(), id);
+		Action<PlayerStatus, Integer> removeItemAction = new Action<>(removeItemMethod, player.getStatus(), id);
 		
 		Method setSubActionMethod = ActionState.class.getMethod("setActionState", ActionState.class);
 		Action<ActionState, Integer> setSubAction = new Action<>(setSubActionMethod, null, null);

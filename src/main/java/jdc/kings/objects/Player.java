@@ -25,7 +25,7 @@ public class Player extends GameObject {
 	private boolean slicing;
 	private boolean shining;
 	
-	private Inventory inventory;
+	private PlayerStatus status;
 	private Shining[] shiningEffects = new Shining[3];
 	
 	private static final int IDLE = 0;
@@ -58,14 +58,14 @@ public class Player extends GameObject {
 		maxFlinchXSpeed = 4f;
 		flinchYSpeed = 5.5f;
 		maxFlinchYSpeed = 5.8f;
-		vigor = 0.04f;
+		vigor = 0.4f;
 		
-		inventory = new Inventory();
-		rollCost = 5.2f;
+		status = new PlayerStatus();
+		rollCost = 50.2f;
 		
-		attacks.add(new Attack(13.5f, 4, 4.5f, 80.5f, 3, 250, 400));
-		attacks.add(new Attack(8.2f, 2.8f, 3, 105.2f, 2.5f, 50, 250));
-		attacks.add(new Attack(15, 5, 4.5f, 106.9f, 6, 250, 400));
+		attacks.add(new Attack(140.9f, 40, 40.5f, 80.5f, 30.7f, 250, 400));
+		attacks.add(new Attack(105.6f, 30.8f, 30.2f, 105.2f, 20.5f, 50, 250));
+		attacks.add(new Attack(150.5f, 50, 40.5f, 106.9f, 60, 250, 400));
 		
 		audioPlayer.loadAudio("player-cut", "/sfx/player/cutting.mp3");
 		audioPlayer.loadAudio("player-slice", "/sfx/player/slicing.mp3");
@@ -76,8 +76,8 @@ public class Player extends GameObject {
 		audioPlayer.loadAudio("player-sword-hit", "/sfx/player/sword-hit.mp3");
 		audioPlayer.loadAudio("player-jump", "/sfx/player/jump.mp3");
 		
-		health = maxHealth = 50;
-		stamina = maxStamina = 20;
+		health = maxHealth = 500;
+		stamina = maxStamina = 200;
 		bleeds = true;
 		
 		if (spriteLoader.getSprites("player") == null) {
@@ -418,7 +418,7 @@ public class Player extends GameObject {
 		for (int i = 0; i < enemies.size(); i++) {
 			Enemy e = enemies.get(i);
 			if ((stabbing || cutting || slicing) && attack != null) {
-				attack.checkAttack(this, e, false, "player-sword-hit");
+				attack.checkAttack(this, e, false, "player-sword-hit", attackBonus);
 			}
 			
 		}
@@ -427,8 +427,12 @@ public class Player extends GameObject {
 	@Override
 	public void hit(float damage, boolean right, boolean shield) {
 		if (shield) {
+			damage -= shieldBonus;
 			audioPlayer.play("player-shield");
+		} else {
+			damage -= armorBonus;
 		}
+		
 		super.hit(damage, right, shield);
 	}
 	
@@ -473,8 +477,8 @@ public class Player extends GameObject {
 		return stamina;
 	}
 
-	public Inventory getInventory() {
-		return inventory;
+	public PlayerStatus getStatus() {
+		return status;
 	}
 
 	public float getAttackBonus() {
@@ -484,6 +488,10 @@ public class Player extends GameObject {
 	public void addAttackBonus(float attackBonus) {
 		this.attackBonus += attackBonus;
 	}
+	
+	public void removeAttackBonus(float attackBonus) {
+		this.attackBonus -= attackBonus;
+	}
 
 	public float getArmorBonus() {
 		return armorBonus;
@@ -492,6 +500,10 @@ public class Player extends GameObject {
 	public void addArmorBonus(float armorBonus) {
 		this.armorBonus += armorBonus;
 	}
+	
+	public void removeArmorBonus(float armorBonus) {
+		this.armorBonus -= armorBonus;
+	}
 
 	public float getShieldBonus() {
 		return shieldBonus;
@@ -499,6 +511,10 @@ public class Player extends GameObject {
 
 	public void addShieldBonus(float shieldBonus) {
 		this.shieldBonus += shieldBonus;
+	}
+	
+	public void removeShieldBonus(float shieldBonus) {
+		this.shieldBonus -= shieldBonus;
 	}
 
 	public float getVigor() {

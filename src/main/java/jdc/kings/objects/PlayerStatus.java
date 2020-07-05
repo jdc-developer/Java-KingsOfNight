@@ -3,7 +3,9 @@ package jdc.kings.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+public class PlayerStatus {
+	
+	private int level;
 	
 	private Item helmet;
 	private Item gauntlets;
@@ -30,11 +32,15 @@ public class Inventory {
 	}
 	
 	public void useItem(Integer id) {
-		InventoryItem item = findItem(id);
-		item.getItem().use();
-		item.decreaseQuantity();
-		if (item.getQuantity() == 0) {
-			removeItem(id);
+		InventoryItem inventoryItem = findItem(id);
+		Item item = inventoryItem.getItem();
+		
+		if (item.getType() == Item.USABLE) {
+			item.use();
+			inventoryItem.decreaseQuantity();
+			if (inventoryItem.getQuantity() == 0) {
+				removeItem(id);
+			}
 		}
 	}
 	
@@ -100,6 +106,8 @@ public class Inventory {
 					}
 					break;
 			}
+			
+			item.equip();
 		}
 	}
 	
@@ -146,7 +154,9 @@ public class Inventory {
 	
 	public void unequipItem(Item item, Integer slot) {
 		if (item != null) {
+			item.unequip();
 			item.setEquipped(false);
+			
 			switch (item.getType()) {
 				case Item.USABLE:
 					if (slot == 1) {
@@ -273,7 +283,11 @@ public class Inventory {
 		this.ringTwo = ringTwo;
 	}
 
-	public Inventory() {
+	public int getLevel() {
+		return level;
+	}
+
+	public PlayerStatus() {
 		super();
 	}
 	

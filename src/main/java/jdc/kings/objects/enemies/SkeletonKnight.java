@@ -42,19 +42,19 @@ public class SkeletonKnight extends Enemy {
 		cwidth = 35;
 		cheight = 105;
 		
-		attacks.add(new Attack(7.6f, 2.5f, 3.8f, 66.6f, 4.5f, 250, 500));
-		attacks.add(new Attack(9.8f, 3.1f, 5.8f, 100.9f, 6.9f, 250, 500));
+		attacks.add(new Attack(73.6f, 23.5f, 30.8f, 66.6f, 40.5f, 250, 500));
+		attacks.add(new Attack(93.8f, 33.1f, 50.8f, 100.9f, 60.9f, 250, 500));
 		
 		audioPlayer.loadAudio("skeleton-knight-axe", "/sfx/enemies/skeleton-knight/axe.mp3");
 		audioPlayer.loadAudio("skeleton-knight-axe-hit", "/sfx/enemies/skeleton-knight/axe-hit.mp3");
 		audioPlayer.loadAudio("skull-break", "/sfx/enemies/skull-break.mp3");
 		
-		health = maxHealth = 20;
-		stamina = maxStamina = 15;
-		damage = 6.1f;
+		health = maxHealth = 225;
+		stamina = maxStamina = 150;
+		damage = 63.1f;
 		
-		shieldDamage = 1.2f;
-		shieldCost = 2.5f;
+		shieldDamage = 13.2f;
+		shieldCost = 20.5f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
@@ -101,7 +101,7 @@ public class SkeletonKnight extends Enemy {
 		}
 		
 		if (stamina < maxStamina) {
-			stamina += 0.04f;
+			stamina += 0.4f;
 		}
 		
 		if (stamina < 0) {
@@ -255,7 +255,7 @@ public class SkeletonKnight extends Enemy {
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
 		if ((cutting || slicing) && attack != null) {
-			attack.checkAttack(this, player, false, "skeleton-knight-axe-hit");
+			attack.checkAttack(this, player, false, "skeleton-knight-axe-hit", 0);
 		}
 	}
 	

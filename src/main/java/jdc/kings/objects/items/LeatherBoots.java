@@ -9,16 +9,16 @@ import jdc.kings.objects.Item;
 import jdc.kings.view.Animator;
 import jdc.kings.view.TileMap;
 
-public class ChainMail extends Item {
+public class LeatherBoots extends Item {
 
-	public ChainMail(TileMap tm) {
+	public LeatherBoots(TileMap tm) {
 		super(tm);
 		try {
-			name = "chainMailName";
-			description = "chainMailDescription";
-			type = ARMOR;
+			name = "leatherBootsName";
+			description = "leatherBootsDescription";
+			type = GREAVES;
 			
-			id = 3;
+			id = 4;
 			fallSpeed = 0.2f;
 			maxFallSpeed = 10.0f;
 			
@@ -27,14 +27,14 @@ public class ChainMail extends Item {
 			cwidth = 25;
 			cheight = 22;
 			
-			if (spriteLoader.getSprites("chain-mail") == null) {
+			if (spriteLoader.getSprites("leather-boots") == null) {
 				BufferedImage[][] sprites = new BufferedImage[1][1];
-				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/chain-mail.png"));
-				spriteLoader.loadSprites("chain-mail", sprites);
+				sprites[0][0] = ImageIO.read(getClass().getResourceAsStream("/sprites/items/leather-boots.png"));
+				spriteLoader.loadSprites("leather-boots", sprites);
 			}
 			
-			image = spriteLoader.getAction("chain-mail", 0)[0];
-			animator = new Animator(spriteLoader.getAction("chain-mail", 0));
+			image = spriteLoader.getAction("leather-boots", 0)[0];
+			animator = new Animator(spriteLoader.getAction("leather-boots", 0));
 			animator.setSpeed(120);
 			animator.start();
 		} catch (IOException e) {
@@ -71,12 +71,12 @@ public class ChainMail extends Item {
 
 	@Override
 	public void equip() {
-		player.addArmorBonus(5f);
+		player.addArmorBonus(1.2f);
 	}
 
 	@Override
 	public void unequip() {
-		player.removeArmorBonus(5f);
+		player.removeArmorBonus(1.2f);
 	}
 
 }

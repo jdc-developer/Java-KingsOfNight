@@ -44,18 +44,18 @@ public class SkeletonArcher extends Enemy {
 		cwidth = 35;
 		cheight = 80;
 		
-		health = maxHealth = 20;
-		stamina = maxStamina = 15;
-		damage = 5.5f;
+		health = maxHealth = 195;
+		stamina = maxStamina = 150;
+		damage = 53.5f;
 		arrows = new ArrayList<>();
 		
-		shieldDamage = 1;
-		shieldCost = 2.8f;
+		shieldDamage = 12;
+		shieldCost = 20.8f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		attacks.add(new Attack(4.5f, 2.2f, 3.1f, 0, 5.6f, 0, 0));
+		attacks.add(new Attack(43.5f, 23.2f, 30.1f, 0, 50.6f, 0, 0));
 		
 		audioPlayer.loadAudio("skeleton-archer-arrow-throw", "/sfx/enemies/skeleton-archer/arrow-throw.mp3");
 		audioPlayer.loadAudio("skeleton-archer-arrow-hit", "/sfx/enemies/skeleton-archer/arrow-hit.mp3");
@@ -102,7 +102,7 @@ public class SkeletonArcher extends Enemy {
 		}
 		
 		if (stamina < maxStamina) {
-			stamina += 0.04f;
+			stamina += 0.4f;
 		}
 		
 		if (stamina < 0) {
@@ -240,7 +240,7 @@ public class SkeletonArcher extends Enemy {
 		super.checkPlayerDamage();
 		for (int j = 0; j < arrows.size(); j++) {
 			if (arrows.get(j).intersects(player) && !player.isDead()) {
-				attack.checkAttack(this, player, true, "skeleton-archer-arrow-hit");
+				attack.checkAttack(this, player, true, "skeleton-archer-arrow-hit", 0);
 				if (player.isRolling()) {
 					
 					long rollElapsed = (System.nanoTime() - player.getRollTimer()) / 1000000;

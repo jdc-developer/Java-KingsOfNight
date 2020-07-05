@@ -40,19 +40,19 @@ public class SpiderBoss extends Enemy {
 		cwidth = 65;
 		cheight = 80;
 		
-		health = maxHealth = 200;
+		health = maxHealth = 2000;
 		bleeds = true;
-		stamina = maxStamina = 100;
-		damage = 8.8f;
+		stamina = maxStamina = 1000;
+		damage = 83.8f;
 		
-		shieldDamage = 2.2f;
-		shieldCost = 4.7f;
+		shieldDamage = 23.2f;
+		shieldCost = 40.7f;
 		
 		sightXDistance = 650;
 		sightYDistance = 250;
 		
-		attacks.add(new Attack(12.2f, 3.2f, 4.8f, 100.1f, 10.1f, 100, 300));
-		attacks.add(new Attack(15.1f, 5.6f, 7.8f, 100.8f, 15.3f, 100, 300));
+		attacks.add(new Attack(123.2f, 33.2f, 40.8f, 100.1f, 100.1f, 100, 300));
+		attacks.add(new Attack(153.1f, 53.6f, 70.8f, 100.8f, 150.3f, 100, 300));
 		
 		audioPlayer.loadAudio("spider-boss-tear", "/sfx/enemies/bosses/spider/tearing.mp3");
 		audioPlayer.loadAudio("spider-boss-whoosh", "/sfx/enemies/bosses/spider/whoosh.mp3");
@@ -216,7 +216,7 @@ public class SpiderBoss extends Enemy {
 	public void checkPlayerDamage() {
 		super.checkPlayerDamage();
 		if ((slashing || slicing) && attack != null) {
-			attack.checkAttack(this, player, false, "spider-boss-tear");
+			attack.checkAttack(this, player, false, "spider-boss-tear", 0);
 		}
 	}
 	
