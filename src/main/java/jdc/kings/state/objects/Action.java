@@ -35,7 +35,11 @@ public class Action<T, K> {
 	
 	public void callAction() {
 		try {
-			action.invoke(declaringClass, actionParameter);
+			if (actionParameter.equals("none")) {
+				action.invoke(declaringClass);
+			} else {
+				action.invoke(declaringClass, actionParameter);
+			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

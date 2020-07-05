@@ -20,6 +20,7 @@ import jdc.kings.objects.items.LeatherChest;
 import jdc.kings.objects.items.LeatherGloves;
 import jdc.kings.objects.items.StaminaPotion;
 import jdc.kings.objects.items.TinyIronShield;
+import jdc.kings.objects.skills.BlackDragon;
 import jdc.kings.state.objects.EnemySpawner;
 import jdc.kings.state.objects.ItemSpawner;
 import jdc.kings.utils.BundleUtil;
@@ -87,7 +88,7 @@ public abstract class LevelManager {
 		enemySpawners[39] = new EnemySpawner(SkeletonArcher.class, 18500, 50, tileMap);
 		enemySpawners[40] = new EnemySpawner(SkeletonArcher.class, 18600, 50, tileMap);*/
 		
-		itemSpawners = new ItemSpawner[16];
+		itemSpawners = new ItemSpawner[30];
 		
 		for (int i = 0; i < 5; i++) {
 			itemSpawners[i] = new ItemSpawner(HealthPotion.class, 200, 650, tileMap);
@@ -103,6 +104,10 @@ public abstract class LevelManager {
 		itemSpawners[13] = new ItemSpawner(LeatherGloves.class, 200, 650, tileMap);
 		itemSpawners[14] = new ItemSpawner(TinyIronShield.class, 200, 650, tileMap);
 		itemSpawners[15] = new ItemSpawner(IliSword.class, 200, 650, tileMap);
+		
+		for (int i = 16; i < 30; i++) {
+			itemSpawners[i] = new ItemSpawner(BlackDragon.class, 200, 650, tileMap);
+		}
 		
 		BlockingQueue<Enemy> enemyQueue = new ArrayBlockingQueue<Enemy>(100);
 		BlockingQueue<Item> itemQueue = new ArrayBlockingQueue<Item>(100);

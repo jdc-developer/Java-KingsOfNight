@@ -42,28 +42,6 @@ public class HealthPotion extends Item {
 			e.printStackTrace();
 		}
 	}
-	
-	private void getNextPosition() {
-		if (jumping && !falling) {
-			velY = jumpStart;
-			falling = true;
-		}
-		
-		if (falling) {
-			velY += fallSpeed;
-			
-			if (velY > 0) jumping = false;
-			if (velY < 0 && !jumping) velY += stopJumpSpeed;
-			
-			if (velY > maxFallSpeed) velY = maxFallSpeed;
-		}
-	}
-	
-	@Override
-	public void tick() {
-		getNextPosition();
-		super.tick();
-	}
 
 	@Override
 	public void use() {

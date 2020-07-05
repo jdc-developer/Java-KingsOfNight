@@ -18,7 +18,10 @@ public class PlayerStatus {
 	private Item ringOne;
 	private Item ringTwo;
 	
+	private Item skill;
+	
 	private List<InventoryItem> items = new ArrayList<>();
+	private List<Item> skills = new ArrayList<>();
 	
 	public InventoryItem findItem(Integer id) {
 		InventoryItem item = null;
@@ -194,6 +197,21 @@ public class PlayerStatus {
 			}
 		}
 	}
+	
+	public void equipSkill(Item item) {
+		unequipSkill();
+		skill = item;
+		skill.equip();
+		skill.setEquipped(true);
+	}
+	
+	public void unequipSkill() {
+		if (skill != null) {
+			skill.unequip();
+			skill.setEquipped(false);
+			skill = null;
+		}
+	}
 
 	public List<InventoryItem> getItems() {
 		return items;
@@ -203,76 +221,48 @@ public class PlayerStatus {
 		this.items = items;
 	}
 
-	public Item getHelmet() {
-		return helmet;
+	public List<Item> getSkills() {
+		return skills;
 	}
 
-	public void setHelmet(Item helmet) {
-		this.helmet = helmet;
+	public void setSkills(List<Item> skills) {
+		this.skills = skills;
+	}
+
+	public Item getHelmet() {
+		return helmet;
 	}
 
 	public Item getGauntlets() {
 		return gauntlets;
 	}
 
-	public void setGauntlets(Item gauntlets) {
-		this.gauntlets = gauntlets;
-	}
-
 	public Item getArmor() {
 		return armor;
-	}
-
-	public void setArmor(Item armor) {
-		this.armor = armor;
 	}
 
 	public Item getGreaves() {
 		return greaves;
 	}
 
-	public void setGreaves(Item greaves) {
-		this.greaves = greaves;
-	}
-
 	public Item getSword() {
 		return sword;
-	}
-
-	public void setSword(Item sword) {
-		this.sword = sword;
 	}
 
 	public Item getShield() {
 		return shield;
 	}
 
-	public void setShield(Item shield) {
-		this.shield = shield;
-	}
-
 	public Item getFastUsableOne() {
 		return fastUsableOne;
-	}
-
-	public void setFastUsableOne(Item fastUsableOne) {
-		this.fastUsableOne = fastUsableOne;
 	}
 
 	public Item getFastUsableTwo() {
 		return fastUsableTwo;
 	}
 
-	public void setFastUsableTwo(Item fastUsableTwo) {
-		this.fastUsableTwo = fastUsableTwo;
-	}
-
 	public Item getRingOne() {
 		return ringOne;
-	}
-
-	public void setRingOne(Item ringOne) {
-		this.ringOne = ringOne;
 	}
 
 	public Item getRingTwo() {
@@ -285,6 +275,10 @@ public class PlayerStatus {
 
 	public int getLevel() {
 		return level;
+	}
+
+	public Item getSkill() {
+		return skill;
 	}
 
 	public PlayerStatus() {

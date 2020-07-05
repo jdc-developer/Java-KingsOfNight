@@ -15,6 +15,7 @@ public abstract class Item extends GameObject {
 	protected int type;
 	
 	protected BufferedImage image;
+	protected BufferedImage menuImage;
 	protected Player player;
 	protected boolean shouldRemove;
 	protected boolean equipped;
@@ -28,28 +29,51 @@ public abstract class Item extends GameObject {
 	public static final int SHIELD = 6;
 	public static final int RING = 7;
 	public static final int KEY = 8;
+	public static final int SKILL = 9;
 
 	public Item(TileMap tm) {
 		super(tm);
 		audioPlayer.loadAudio("get-item", "/sfx/menu/item.mp3");
 	}
 	
+	private void getNextPosition() {
+		if (jumping && !falling) {
+			velY = jumpStart;
+			falling = true;
+		}
+		
+		if (falling) {
+			velY += fallSpeed;
+			
+			if (velY > 0) jumping = false;
+			if (velY < 0 && !jumping) velY += stopJumpSpeed;
+			
+			if (velY > maxFallSpeed) velY = maxFallSpeed;
+		}
+	}
+	
 	@Override
 	public void tick() {
+		getNextPosition();
 		super.tick();
 		if (intersects(player) && !player.isDying() && !player.isDead()) {
 			PlayerStatus inventory = player.getStatus();
-			InventoryItem searchItem = inventory.findItem(id);
-			
-			if (inventory.getItems().size() < ItemState.ITEMSPERPAGE * ItemState.PAGES) {
-				if (searchItem == null) {
-					audioPlayer.play("get-item");
-					InventoryItem inventoryItem = new InventoryItem(this, 1);
-					inventory.getItems().add(inventoryItem);
-					shouldRemove = true;
-				} else if (searchItem.getQuantity() < 99) {
-					searchItem.increaseQuantity();
-					shouldRemove = true;
+			if (type == SKILL) {
+				inventory.getSkills().add(this);
+				shouldRemove = true;
+			} else {
+				InventoryItem searchItem = inventory.findItem(id);
+				
+				if (inventory.getItems().size() < ItemState.ITEMSPERPAGE * ItemState.PAGES) {
+					if (searchItem == null) {
+						audioPlayer.play("get-item");
+						InventoryItem inventoryItem = new InventoryItem(this, 1);
+						inventory.getItems().add(inventoryItem);
+						shouldRemove = true;
+					} else if (searchItem.getQuantity() < 99) {
+						searchItem.increaseQuantity();
+						shouldRemove = true;
+					}
 				}
 			}
 		}
@@ -93,6 +117,10 @@ public abstract class Item extends GameObject {
 
 	public void setEquipped(boolean equipped) {
 		this.equipped = equipped;
+	}
+
+	public BufferedImage getMenuImage() {
+		return menuImage;
 	}
 	
 }

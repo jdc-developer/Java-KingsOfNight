@@ -87,6 +87,9 @@ public class DescriptionState extends GameState implements MouseState, KeyState 
 			case Item.KEY:
 				type = BundleUtil.getMessageResourceString("itemTypeNine", locale);
 				break;
+			case Item.SKILL:
+				type = BundleUtil.getMessageResourceString("itemTypeTen", locale);
+				break;
 		}
 	}
 

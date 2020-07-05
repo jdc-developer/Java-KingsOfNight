@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 
 import jdc.kings.Game;
-import jdc.kings.objects.PlayerStatus;
 import jdc.kings.objects.Item;
 import jdc.kings.objects.Player;
+import jdc.kings.objects.PlayerStatus;
 import jdc.kings.state.GameState;
 import jdc.kings.state.objects.Action;
 import jdc.kings.state.objects.Option;
@@ -109,6 +109,41 @@ public abstract class ItemActionManager {
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static void createSkillActionState(SkillState skillState, Option option, String equipStr, String unequipStr,
+			String description, boolean equip) {
+		try {
+			Option[] actionOptions = new Option[2];
+			ActionState actionState = new ActionState(actionOptions, option.getX() + 22, option.getY() + 22);
+			actionState.setParent(skillState);
+			
+			actionOptions[0] = new Option(null, 120, 18);
+			actionOptions[1] = new Option(description, 120, 18);
+			actionState.setParent(skillState);
+			
+			Item item = option.getItem();
+			
+			if (equip) {
+				Method equipMethod = PlayerStatus.class.getMethod("equipSkill", Item.class);
+				Action<PlayerStatus, Item> equipAction = new Action<>(equipMethod, GameState.getPlayer().getStatus(), item);
+				actionOptions[0].setAction(equipAction);
+				actionOptions[0].setDescription(equipStr);
+			} else {
+				Method unequipMethod = PlayerStatus.class.getMethod("unequipSkill");
+				Action<PlayerStatus, String> unequipAction = new Action<>(unequipMethod, GameState.getPlayer().getStatus(), "none");
+				actionOptions[0].setAction(unequipAction);
+				actionOptions[0].setDescription(unequipStr);
+			}
+			
+			
+			setDescriptionMethod(skillState, actionOptions[1], item);
+			
+			skillState.setActionState(actionState);
+		} catch (NoSuchMethodException | SecurityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 	
