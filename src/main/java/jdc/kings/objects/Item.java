@@ -15,7 +15,6 @@ public abstract class Item extends GameObject {
 	protected int type;
 	
 	protected BufferedImage image;
-	protected BufferedImage menuImage;
 	protected Player player;
 	protected boolean shouldRemove;
 	protected boolean equipped;
@@ -117,10 +116,6 @@ public abstract class Item extends GameObject {
 
 	public void setEquipped(boolean equipped) {
 		this.equipped = equipped;
-	}
-
-	public BufferedImage getMenuImage() {
-		return menuImage;
 	}
 	
 }
