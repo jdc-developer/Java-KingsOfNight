@@ -36,7 +36,6 @@ public class BlackDragon extends Item {
 			}
 			
 			image = spriteLoader.getAction("black-dragon", 0)[0];
-			menuImage = ImageIO.read(getClass().getResourceAsStream("/sprites/skills/black-dragon/black-dragon-menu.png"));
 			animator = new Animator(spriteLoader.getAction("black-dragon", 0));
 			animator.setSpeed(120);
 			animator.start();
